@@ -59,7 +59,7 @@ public class CheckManager {
     ClassToInstanceMap<RotationCheck> rotationCheck;
     ClassToInstanceMap<VehicleCheck> vehicleCheck;
     ClassToInstanceMap<PacketCheck> prePredictionChecks;
-
+    ClassToInstanceMap<BlockBreakCheck> blockBreakChecks;
     ClassToInstanceMap<BlockPlaceCheck> blockPlaceCheck;
     ClassToInstanceMap<PostPredictionCheck> postPredictionCheck;
 
@@ -160,6 +160,9 @@ public class CheckManager {
                 .put(GhostBlockMitigation.class, new GhostBlockMitigation(player))
                 .build();
 
+        blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
+                .build();
+
         prePredictionChecks = new ImmutableClassToInstanceMap.Builder<PacketCheck>()
                 .put(TimerCheck.class, new TimerCheck(player))
                 .put(CrashA.class, new CrashA(player))
@@ -184,6 +187,7 @@ public class CheckManager {
                 .putAll(postPredictionCheck)
                 .putAll(blockPlaceCheck)
                 .putAll(prePredictionChecks)
+                .putAll(blockBreakChecks)
                 .build();
 
         init();
@@ -220,6 +224,9 @@ public class CheckManager {
         for (BlockPlaceCheck check : blockPlaceCheck.values()) {
             check.onPacketReceive(packet);
         }
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
+            check.onPacketReceive(packet);
+        }
     }
 
     public void onPacketSend(final PacketSendEvent packet) {
@@ -233,6 +240,9 @@ public class CheckManager {
             check.onPacketSend(packet);
         }
         for (BlockPlaceCheck check : blockPlaceCheck.values()) {
+            check.onPacketSend(packet);
+        }
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
             check.onPacketSend(packet);
         }
     }
@@ -265,11 +275,20 @@ public class CheckManager {
         for (BlockPlaceCheck check : blockPlaceCheck.values()) {
             check.onPredictionComplete(complete);
         }
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
+            check.onPredictionComplete(complete);
+        }
     }
 
     public void onBlockPlace(final BlockPlace place) {
         for (BlockPlaceCheck check : blockPlaceCheck.values()) {
             check.onBlockPlace(place);
+        }
+    }
+
+    public void onBlockBreak(final BlockBreak blockBreak) {
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
+            check.onBlockBreak(blockBreak);
         }
     }
 

@@ -70,7 +70,7 @@ Punishments:
       - "NoSlow"
       - "Place"
       - "Baritone"
-      - "FastBreak"
+      - "Break"
       - "TransactionOrder"
     commands:
       - "10:5 [alert]"
