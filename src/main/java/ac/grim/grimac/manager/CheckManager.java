@@ -5,6 +5,8 @@ import ac.grim.grimac.checks.impl.aim.AimDuplicateLook;
 import ac.grim.grimac.checks.impl.aim.AimModulo360;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
+import ac.grim.grimac.checks.impl.breaking.WrongBreak;
+import ac.grim.grimac.checks.impl.breaking.PositionBreak;
 import ac.grim.grimac.checks.impl.combat.MultiInteractA;
 import ac.grim.grimac.checks.impl.combat.MultiInteractB;
 import ac.grim.grimac.checks.impl.combat.Reach;
@@ -59,7 +61,7 @@ public class CheckManager {
     ClassToInstanceMap<RotationCheck> rotationCheck;
     ClassToInstanceMap<VehicleCheck> vehicleCheck;
     ClassToInstanceMap<PacketCheck> prePredictionChecks;
-
+    ClassToInstanceMap<BlockBreakCheck> blockBreakChecks;
     ClassToInstanceMap<BlockPlaceCheck> blockPlaceCheck;
     ClassToInstanceMap<PostPredictionCheck> postPredictionCheck;
 
@@ -103,7 +105,6 @@ public class CheckManager {
                 .put(BadPacketsW.class, new BadPacketsW(player))
                 .put(BadPacketsX.class, new BadPacketsX(player))
                 .put(BadPacketsY.class, new BadPacketsY(player))
-                .put(BadPacketsZ.class, new BadPacketsZ(player))
                 .put(FastBreak.class, new FastBreak(player))
                 .put(TransactionOrder.class, new TransactionOrder(player))
                 .put(NoSlowB.class, new NoSlowB(player))
@@ -160,6 +161,11 @@ public class CheckManager {
                 .put(GhostBlockMitigation.class, new GhostBlockMitigation(player))
                 .build();
 
+        blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
+                .put(WrongBreak.class, new WrongBreak(player))
+                .put(PositionBreak.class, new PositionBreak(player))
+                .build();
+
         prePredictionChecks = new ImmutableClassToInstanceMap.Builder<PacketCheck>()
                 .put(TimerCheck.class, new TimerCheck(player))
                 .put(CrashA.class, new CrashA(player))
@@ -184,6 +190,7 @@ public class CheckManager {
                 .putAll(postPredictionCheck)
                 .putAll(blockPlaceCheck)
                 .putAll(prePredictionChecks)
+                .putAll(blockBreakChecks)
                 .build();
 
         init();
@@ -270,6 +277,12 @@ public class CheckManager {
     public void onBlockPlace(final BlockPlace place) {
         for (BlockPlaceCheck check : blockPlaceCheck.values()) {
             check.onBlockPlace(place);
+        }
+    }
+
+    public void onBlockBreak(final BlockBreak blockBreak) {
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
+            check.onBlockBreak(blockBreak);
         }
     }
 
