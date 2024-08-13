@@ -71,6 +71,7 @@
       - "EntityControl"
       - "NoSlow"
       - "Place"
+      - "Break"
       - "Baritone"
       - "FastBreak"
       - "TransactionOrder"
