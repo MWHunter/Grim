@@ -8,9 +8,9 @@ import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 
-@CheckData(name = "PositionBreak")
-public class PositionBreak extends BlockBreakCheck {
-    public PositionBreak(GrimPlayer player) {
+@CheckData(name = "PositionBreakA")
+public class PositionBreakA extends BlockBreakCheck {
+    public PositionBreakA(GrimPlayer player) {
         super(player);
     }
 
