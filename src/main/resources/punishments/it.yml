@@ -39,6 +39,7 @@ Punishments:
     remove-violations-after: 300
     checks:
       - "BadPackets"
+      - "PacketOrder"
       - "Crash"
     commands:
       - "20:20 [alert]"
@@ -62,7 +63,6 @@ Punishments:
       - "Place"
       - "Baritone"
       - "Break"
-      - "TransactionOrder"
     commands:
       - "10:5 [alert]"
       - "20:10 [webhook]"
