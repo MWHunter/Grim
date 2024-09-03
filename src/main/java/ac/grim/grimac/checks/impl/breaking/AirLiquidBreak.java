@@ -1,6 +1,7 @@
 package ac.grim.grimac.checks.impl.breaking;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.BlockBreakCheck;
 import ac.grim.grimac.player.GrimPlayer;
@@ -13,7 +14,7 @@ import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
 
 @CheckData(name = "AirLiquidBreak")
-public class AirLiquidBreak extends BlockBreakCheck {
+public class AirLiquidBreak extends Check implements BlockBreakCheck {
     public AirLiquidBreak(GrimPlayer player) {
         super(player);
     }
