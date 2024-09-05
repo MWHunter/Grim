@@ -6,6 +6,7 @@ import ac.grim.grimac.checks.impl.aim.AimModulo360;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
 import ac.grim.grimac.checks.impl.breaking.FastBreakB;
+import ac.grim.grimac.checks.impl.breaking.RotationBreak;
 import ac.grim.grimac.checks.impl.combat.MultiInteractA;
 import ac.grim.grimac.checks.impl.combat.MultiInteractB;
 import ac.grim.grimac.checks.impl.combat.Reach;
@@ -162,6 +163,7 @@ public class CheckManager {
                 .build();
 
         blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
+                .put(RotationBreak.class, new RotationBreak(player))
                 .put(FastBreakB.class, new FastBreakB(player))
                 .build();
 
@@ -288,15 +290,21 @@ public class CheckManager {
         }
     }
 
+    public void onPostFlyingBlockPlace(final BlockPlace place) {
+        for (BlockPlaceCheck check : blockPlaceCheck.values()) {
+            check.onPostFlyingBlockPlace(place);
+        }
+    }
+
     public void onBlockBreak(final BlockBreak blockBreak) {
         for (BlockBreakCheck check : blockBreakChecks.values()) {
             check.onBlockBreak(blockBreak);
         }
     }
 
-    public void onPostFlyingBlockPlace(final BlockPlace place) {
-        for (BlockPlaceCheck check : blockPlaceCheck.values()) {
-            check.onPostFlyingBlockPlace(place);
+    public void onPostFlyingBlockBreak(final BlockBreak blockBreak) {
+        for (BlockBreakCheck check : blockBreakChecks.values()) {
+            check.onPostFlyingBlockBreak(blockBreak);
         }
     }
 

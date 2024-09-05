@@ -14,6 +14,7 @@ import ac.grim.grimac.predictionengine.MovementCheckRunner;
 import ac.grim.grimac.predictionengine.PointThreeEstimator;
 import ac.grim.grimac.predictionengine.UncertaintyHandler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
+import ac.grim.grimac.utils.anticheat.update.BlockBreak;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.*;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
@@ -199,6 +200,7 @@ public class GrimPlayer implements GrimUser {
     public DimensionType dimensionType;
     public Vector3d bedPosition;
     public long lastBlockPlaceUseItem = 0;
+    public long lastBlockBreak = 0;
     public AtomicInteger cancelledPackets = new AtomicInteger(0);
     public MainSupportingBlockData mainSupportingBlockData = new MainSupportingBlockData(null, false);
     // possibleEyeHeights[0] = Standing eye heights, [1] = Sneaking. [2] = Elytra, Swimming, and Riptide Trident which only exists in 1.9+
@@ -214,6 +216,7 @@ public class GrimPlayer implements GrimUser {
 
     public int totalFlyingPacketsSent;
     public Queue<BlockPlaceSnapshot> placeUseItemPackets = new LinkedBlockingQueue<>();
+    public Queue<BlockBreak> queuedBreaks = new LinkedBlockingQueue<>();
     // This variable is for support with test servers that want to be able to disable grim
     // Grim disabler 2022 still working!
     public boolean disableGrim = false;
@@ -351,8 +354,10 @@ public class GrimPlayer implements GrimUser {
                 playerClockAtLeast = data.second();
             } while (data.first() != id);
 
-            // A transaction means a new tick, so apply any block places
-            CheckManagerListener.handleQueuedPlaces(this, false, 0, 0, System.currentTimeMillis());
+            // A transaction means a new tick, so apply any block places or breaks
+            long now = System.currentTimeMillis();
+            CheckManagerListener.handleQueuedPlaces(this, false, 0, 0, now);
+            CheckManagerListener.handleQueuedBreaks(this, false, 0, 0, now);
             latencyUtils.handleNettySyncTransaction(lastTransactionReceived.get());
         }
 
