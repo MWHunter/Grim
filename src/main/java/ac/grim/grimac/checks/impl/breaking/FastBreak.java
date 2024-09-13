@@ -13,6 +13,7 @@ import ac.grim.grimac.utils.nmsutil.Ray;
 import ac.grim.grimac.utils.nmsutil.ReachUtils;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.attribute.Attributes;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
@@ -66,13 +67,9 @@ public class FastBreak extends Check implements BlockBreakCheck {
         }
 
         if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())) {
-            if (!player.compensatedEntities.getSelf().inVehicle()) {
-                if (!didRayTraceHit() || !isWithinRange()) {
-                    return;
-                }
+            if (player.compensatedEntities.getSelf().inVehicle() || didRayTraceHit() && isWithinRange()) {
+                progress += BlockBreakSpeed.getBlockDamage(player, targetBlock);
             }
-
-            progress += BlockBreakSpeed.getBlockDamage(player, targetBlock);
         }
     }
 
