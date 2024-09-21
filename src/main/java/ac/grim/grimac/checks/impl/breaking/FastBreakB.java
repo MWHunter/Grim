@@ -66,8 +66,10 @@ public class FastBreakB extends Check implements BlockBreakCheck {
         }
 
         if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())) {
-            if (player.compensatedEntities.getSelf().inVehicle() || didRayTraceHit() && isWithinRange()) {
-                progress += BlockBreakSpeed.getBlockDamage(player, targetBlock);
+            if (!player.packetStateData.isSlowedByUsingItem() || player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_7_10)) {
+                if (player.compensatedEntities.getSelf().inVehicle() || didRayTraceHit() && isWithinRange()) {
+                    progress += BlockBreakSpeed.getBlockDamage(player, targetBlock);
+                }
             }
         }
     }
