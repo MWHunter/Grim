@@ -1,21 +1,17 @@
-# GrimAC
+# Rino AC
 
-This project is considered feature complete for the 2.0 (open-source) branch of this project. If you would like a bugfix or enhancement and cannot sponsor the work, pull requests are welcome. You can join the [discord](https://discord.com/invite/kqQAhTmkUF) for jar releases & changelogs.
 
-GrimAC is an open source Minecraft anticheat designed for 1.21 and supports 1.8-1.21. It is free while in beta. It will eventually become paid and/or will include offering additional subscription based paid checks. Geyser players are fully exempt.
+Rino AC is an open source Minecraft anticheat designed for 1.21.1 and supports 1.20.4-1.21.1. It will always be free.
 
 ### Compiling through terminal/command prompt
-1. git clone https://github.com/GrimAnticheat/Grim.git (or click the green code button, download ZIP, then unzip it.)
-2. cd Grim
-3. gradlew build
-4. The final jar is located in build/libs
+1. No cuz i'm too lazy
 
 ### API Information
-Grim's API allows you to integrate Grim into your own plugins. For more information, check out the API's GitHub repository [here](https://github.com/GrimAnticheat/GrimAPI).
+Also too lazy
 
-## Grim supremacy
+## Rino supremacy
 
-Here are the main cores that make Grim stand out against other anticheats
+Here are the main cores that make Rino stand out against other anticheats
 
 ### Movement Simulation Engine
 
