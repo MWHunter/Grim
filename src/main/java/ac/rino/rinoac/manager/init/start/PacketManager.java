@@ -6,7 +6,6 @@ import ac.rino.rinoac.events.packets.worldreader.PacketWorldReaderEight;
 import ac.rino.rinoac.events.packets.worldreader.PacketWorldReaderEighteen;
 import ac.rino.rinoac.manager.init.Initable;
 import ac.rino.rinoac.utils.anticheat.LogUtil;
-
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
 

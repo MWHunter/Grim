@@ -29,20 +29,13 @@ import com.github.retrooper.packetevents.protocol.potion.PotionType;
 import com.github.retrooper.packetevents.util.Vector3d;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.UUID;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 // You may not copy this check unless your anticheat is licensed under GPL
 public class PacketEntity extends TypedPacketEntity {
 
     public final TrackedPosition trackedServerPosition;
-
+    protected final Map<Attribute, ValuedAttribute> attributeMap = new IdentityHashMap<>();
     // TODO in what cases is UUID null in 1.9+?
     @Getter
     private final UUID uuid; // NULL ON VERSIONS BELOW 1.9 (or for some entities, apparently??)
@@ -53,9 +46,7 @@ public class PacketEntity extends TypedPacketEntity {
     public boolean hasGravity = true;
     private ReachInterpolationData oldPacketLocation;
     private ReachInterpolationData newPacketLocation;
-
     private Map<PotionType, Integer> potionsMap = null;
-    protected final Map<Attribute, ValuedAttribute> attributeMap = new IdentityHashMap<>();
 
     public PacketEntity(RinoPlayer player, EntityType type) {
         super(type);
@@ -100,7 +91,8 @@ public class PacketEntity extends TypedPacketEntity {
 
     public void setAttribute(Attribute attribute, double value) {
         ValuedAttribute property = getAttribute(attribute).orElse(null);
-        if (property == null) throw new IllegalArgumentException("Cannot set attribute " + attribute.getName() + " for entity " + getType().getName().toString() + "!");
+        if (property == null)
+            throw new IllegalArgumentException("Cannot set attribute " + attribute.getName() + " for entity " + getType().getName().toString() + "!");
         property.override(value);
     }
 

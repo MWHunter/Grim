@@ -15,11 +15,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPl
 // Else the player will fly for a tick, and we won't know about it, which is bad.
 public class PacketPlayerAbilities extends Check implements PacketCheck {
 
+    boolean lastSentPlayerCanFly = false;
+
     public PacketPlayerAbilities(RinoPlayer player) {
         super(player);
     }
-
-    boolean lastSentPlayerCanFly = false;
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {

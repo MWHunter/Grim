@@ -16,12 +16,11 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerOp
 @CheckData(name = "CrashD", experimental = false)
 public class CrashD extends Check implements PacketCheck {
 
+    private MenuType type = MenuType.UNKNOWN;
+    private int lecternId = -1;
     public CrashD(RinoPlayer playerData) {
         super(playerData);
     }
-
-    private MenuType type = MenuType.UNKNOWN;
-    private int lecternId = -1;
 
     @Override
     public void onPacketSend(final PacketSendEvent event) {

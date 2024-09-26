@@ -12,26 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 public class PredictionEngineElytra extends PredictionEngine {
-    // Inputs have no effect on movement
-    @Override
-    public List<VectorData> applyInputsToVelocityPossibilities(RinoPlayer player, Set<VectorData> possibleVectors, float speed) {
-        List<VectorData> results = new ArrayList<>();
-        Vector currentLook = ReachUtils.getLook(player, player.xRot, player.yRot);
-
-        for (VectorData data : possibleVectors) {
-            Vector elytraResult = getElytraMovement(player, data.vector.clone(), currentLook).multiply(player.stuckSpeedMultiplier).multiply(new Vector(0.99F, 0.98F, 0.99F));
-            results.add(data.returnNewModified(elytraResult, VectorData.VectorType.InputResult));
-
-            // We must bruteforce Optifine ShitMath
-            player.trigHandler.toggleShitMath();
-            elytraResult = getElytraMovement(player, data.vector.clone(), ReachUtils.getLook(player, player.xRot, player.yRot)).multiply(player.stuckSpeedMultiplier).multiply(new Vector(0.99F, 0.98F, 0.99F));
-            player.trigHandler.toggleShitMath();
-            results.add(data.returnNewModified(elytraResult, VectorData.VectorType.InputResult));
-        }
-
-        return results;
-    }
-
     public static Vector getElytraMovement(RinoPlayer player, Vector vector, Vector lookVector) {
         float yRotRadians = player.yRot * 0.017453292F;
         double horizontalSqrt = Math.sqrt(lookVector.getX() * lookVector.getX() + lookVector.getZ() * lookVector.getZ());
@@ -71,6 +51,26 @@ public class PredictionEngineElytra extends PredictionEngine {
         }
 
         return vector;
+    }
+
+    // Inputs have no effect on movement
+    @Override
+    public List<VectorData> applyInputsToVelocityPossibilities(RinoPlayer player, Set<VectorData> possibleVectors, float speed) {
+        List<VectorData> results = new ArrayList<>();
+        Vector currentLook = ReachUtils.getLook(player, player.xRot, player.yRot);
+
+        for (VectorData data : possibleVectors) {
+            Vector elytraResult = getElytraMovement(player, data.vector.clone(), currentLook).multiply(player.stuckSpeedMultiplier).multiply(new Vector(0.99F, 0.98F, 0.99F));
+            results.add(data.returnNewModified(elytraResult, VectorData.VectorType.InputResult));
+
+            // We must bruteforce Optifine ShitMath
+            player.trigHandler.toggleShitMath();
+            elytraResult = getElytraMovement(player, data.vector.clone(), ReachUtils.getLook(player, player.xRot, player.yRot)).multiply(player.stuckSpeedMultiplier).multiply(new Vector(0.99F, 0.98F, 0.99F));
+            player.trigHandler.toggleShitMath();
+            results.add(data.returnNewModified(elytraResult, VectorData.VectorType.InputResult));
+        }
+
+        return results;
     }
 
     // Yes... you can jump while using an elytra as long as you are on the ground

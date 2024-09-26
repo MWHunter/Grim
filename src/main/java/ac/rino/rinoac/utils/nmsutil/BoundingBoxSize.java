@@ -42,7 +42,7 @@ public final class BoundingBoxSize {
             return 0.3125f;
         } else if (EntityTypes.HOGLIN.equals(type) || EntityTypes.ZOGLIN.equals(type)) {
             return 1.3964844f;
-        } else if (EntityTypes.SKELETON_HORSE.equals(type) || EntityTypes.ZOMBIE_HORSE.equals(type) || EntityTypes.HORSE.equals(type) ||EntityTypes.DONKEY.equals(type) || EntityTypes.MULE.equals(type)) {
+        } else if (EntityTypes.SKELETON_HORSE.equals(type) || EntityTypes.ZOMBIE_HORSE.equals(type) || EntityTypes.HORSE.equals(type) || EntityTypes.DONKEY.equals(type) || EntityTypes.MULE.equals(type)) {
             return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9) ? 1.3964844f : 1.4f;
         } else if (EntityTypes.isTypeInstanceOf(type, EntityTypes.BOAT)) {
             return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9) ? 1.375f : 1.5f;
@@ -129,8 +129,7 @@ public final class BoundingBoxSize {
         double y = box.minY;
         double z = (box.maxZ + box.minZ) / 2.0;
 
-        if (entity instanceof PacketEntityTrackXRot) {
-            PacketEntityTrackXRot xRotEntity = (PacketEntityTrackXRot) entity;
+        if (entity instanceof PacketEntityTrackXRot xRotEntity) {
 
             // Horses desync here, and we can't do anything about it without interpolating animations.
             // Mojang just has to fix it.  I'm not attempting to fix it.
@@ -231,6 +230,7 @@ public final class BoundingBoxSize {
         }
         return getHeight(player, packetEntity) * 0.75;
     }
+
     private static float getHeightMinusBaby(RinoPlayer player, PacketEntity packetEntity) {
         final EntityType type = packetEntity.getType();
         if (EntityTypes.ARMADILLO.equals(type)) {

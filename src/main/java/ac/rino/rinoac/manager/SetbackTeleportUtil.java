@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
     // Sync to netty
     public final ConcurrentLinkedQueue<TeleportData> pendingTeleports = new ConcurrentLinkedQueue<>();
+    private final Random random = new Random();
     // Sync to netty, a player MUST accept a teleport to spawn into the world
     // A teleport is used to end the loading screen.  Some cheats pretend to never end the loading screen
     // in an attempt to disable the anticheat.  Be careful.
@@ -48,15 +49,14 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
     public boolean hasAcceptedSpawnTeleport = false;
     // Was there a ghost block that forces us to block offsets until the player accepts their teleport?
     public boolean blockOffsets = false;
-    // This required setback data is the head of the teleport.
-    // It is set by both bukkit and netty due to going on the bukkit thread to setback players
-    private SetBackData requiredSetBack = null;
     public SetbackPosWithVector lastKnownGoodPosition;
     // Are we currently sending setback stuff?
     public boolean isSendingSetback = false;
     public int cheatVehicleInterpolationDelay = 0;
+    // This required setback data is the head of the teleport.
+    // It is set by both bukkit and netty due to going on the bukkit thread to setback players
+    private SetBackData requiredSetBack = null;
     private long lastWorldResync = 0;
-
 
     public SetbackTeleportUtil(RinoPlayer player) {
         super(player);
@@ -111,8 +111,7 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
         // Setbacks aren't allowed
         if (player.disableGrim) return true;
         // Player has permission to cheat, permission not given to OP by default.
-        if (player.bukkitPlayer != null && player.noSetbackPermission) return true;
-        return false;
+        return player.bukkitPlayer != null && player.noSetbackPermission;
     }
 
     private void simulateFriction(Vector vector) {
@@ -186,7 +185,8 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
 
         player.boundingBox = oldBB; // reset back to the new bounding box
 
-        if (!hasAcceptedSpawnTeleport || player.isFlying) clientVel = null; // if the player is flying or hasn't spawned... don't force kb
+        if (!hasAcceptedSpawnTeleport || player.isFlying)
+            clientVel = null; // if the player is flying or hasn't spawned... don't force kb
 
         // Something weird has occurred in the player's movement, block offsets until we resync
         if (isResync) {
@@ -196,8 +196,6 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
         SetBackData data = new SetBackData(new TeleportData(position, new RelativeFlag(0b11000), player.lastTransactionSent.get(), 0), player.xRot, player.yRot, clientVel, player.compensatedEntities.getSelf().getRiding() != null, false);
         sendSetback(data);
     }
-
-    private final Random random = new Random();
 
     private void sendSetback(SetBackData data) {
         isSendingSetback = true;

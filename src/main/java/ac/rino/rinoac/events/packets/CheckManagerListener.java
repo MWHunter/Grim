@@ -226,9 +226,8 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
     private static void handleBlockPlaceOrUseItem(PacketWrapper packet, RinoPlayer player) {
         // Legacy "use item" packet
-        if (packet instanceof WrapperPlayClientPlayerBlockPlacement &&
+        if (packet instanceof WrapperPlayClientPlayerBlockPlacement place &&
                 PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)) {
-            WrapperPlayClientPlayerBlockPlacement place = (WrapperPlayClientPlayerBlockPlacement) packet;
 
             if (player.gamemode == GameMode.SPECTATOR || player.gamemode == GameMode.ADVENTURE) return;
 
@@ -243,8 +242,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             }
         }
 
-        if (packet instanceof WrapperPlayClientUseItem) {
-            WrapperPlayClientUseItem place = (WrapperPlayClientUseItem) packet;
+        if (packet instanceof WrapperPlayClientUseItem place) {
 
             if (player.gamemode == GameMode.SPECTATOR || player.gamemode == GameMode.ADVENTURE) return;
 
@@ -257,8 +255,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
         }
 
         // Check for interactable first (door, etc)
-        if (packet instanceof WrapperPlayClientPlayerBlockPlacement) {
-            WrapperPlayClientPlayerBlockPlacement place = (WrapperPlayClientPlayerBlockPlacement) packet;
+        if (packet instanceof WrapperPlayClientPlayerBlockPlacement place) {
 
             ItemStack placedWith = player.getInventory().getHeldItem();
             ItemStack offhand = player.getInventory().getOffHand();
@@ -295,8 +292,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             }
         }
 
-        if (packet instanceof WrapperPlayClientPlayerBlockPlacement) {
-            WrapperPlayClientPlayerBlockPlacement place = (WrapperPlayClientPlayerBlockPlacement) packet;
+        if (packet instanceof WrapperPlayClientPlayerBlockPlacement place) {
             Vector3i blockPosition = place.getBlockPosition();
             BlockFace face = place.getFace();
 
@@ -320,6 +316,166 @@ public class CheckManagerListener extends PacketListenerAbstract {
                 BlockPlaceResult.getMaterialData(placedWith.getType()).applyBlockPlaceToWorld(player, blockPlace);
             }
         }
+    }
+
+    private static void placeBucket(RinoPlayer player, InteractionHand hand) {
+        HitData data = getNearestHitResult(player, null, true);
+
+        if (data != null) {
+            BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
+            blockPlace.setReplaceClicked(true); // Replace the block clicked, not the block in the direction
+
+            boolean placed = false;
+            ItemType type = null;
+
+            if (data.getState().getType() == StateTypes.POWDER_SNOW) {
+                blockPlace.set(StateTypes.AIR);
+                type = ItemTypes.POWDER_SNOW_BUCKET;
+                placed = true;
+            }
+
+            if (data.getState().getType() == StateTypes.LAVA) {
+                blockPlace.set(StateTypes.AIR);
+                type = ItemTypes.LAVA_BUCKET;
+                placed = true;
+            }
+
+            // We didn't hit fluid source
+            if (!placed && !player.compensatedWorld.isWaterSourceBlock(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()))
+                return;
+
+            // We can't replace plants with a water bucket
+            if (data.getState().getType() == StateTypes.KELP || data.getState().getType() == StateTypes.SEAGRASS || data.getState().getType() == StateTypes.TALL_SEAGRASS) {
+                return;
+            }
+
+            if (!placed) {
+                type = ItemTypes.WATER_BUCKET;
+            }
+
+            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13)) {
+                WrappedBlockState existing = blockPlace.getExistingBlockData();
+                if (existing.getInternalData().containsKey(StateValue.WATERLOGGED)) { // waterloggable
+                    existing.setWaterlogged(false);
+                    blockPlace.set(existing);
+                    placed = true;
+                }
+            }
+
+            // Therefore, not waterlogged and is a fluid, and is therefore a source block
+            if (!placed) {
+                blockPlace.set(StateTypes.AIR);
+            }
+
+            if (player.gamemode != GameMode.CREATIVE) {
+                player.getInventory().markSlotAsResyncing(blockPlace);
+                setPlayerItem(player, hand, type);
+            }
+        }
+    }
+
+    public static void setPlayerItem(RinoPlayer player, InteractionHand hand, ItemType type) {
+        // Give the player a water bucket
+        if (player.gamemode != GameMode.CREATIVE) {
+            if (hand == InteractionHand.MAIN_HAND) {
+                if (player.getInventory().getHeldItem().getAmount() == 1) {
+                    player.getInventory().inventory.setHeldItem(ItemStack.builder().type(type).amount(1).build());
+                } else { // Give the player a water bucket
+                    player.getInventory().inventory.add(ItemStack.builder().type(type).amount(1).build());
+                    // and reduce the held item
+                    player.getInventory().getHeldItem().setAmount(player.getInventory().getHeldItem().getAmount() - 1);
+                }
+            } else {
+                if (player.getInventory().getOffHand().getAmount() == 1) {
+                    player.getInventory().inventory.setPlayerInventoryItem(Inventory.SLOT_OFFHAND, ItemStack.builder().type(type).amount(1).build());
+                } else { // Give the player a water bucket
+                    player.getInventory().inventory.add(Inventory.SLOT_OFFHAND, ItemStack.builder().type(type).amount(1).build());
+                    // and reduce the held item
+                    player.getInventory().getOffHand().setAmount(player.getInventory().getOffHand().getAmount() - 1);
+                }
+            }
+        }
+    }
+
+    private static void placeLilypad(RinoPlayer player, InteractionHand hand) {
+        HitData data = getNearestHitResult(player, null, true);
+
+        if (data != null) {
+            // A lilypad cannot replace a fluid
+            if (player.compensatedWorld.getFluidLevelAt(data.getPosition().getX(), data.getPosition().getY() + 1, data.getPosition().getZ()) > 0)
+                return;
+
+            BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
+            blockPlace.setReplaceClicked(false); // Not possible with use item
+
+            // We checked for a full fluid block below here.
+            if (player.compensatedWorld.getWaterFluidLevelAt(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()) > 0
+                    || data.getState().getType() == StateTypes.ICE || data.getState().getType() == StateTypes.FROSTED_ICE) {
+                Vector3i pos = data.getPosition();
+                pos = pos.add(0, 1, 0);
+
+                blockPlace.set(pos, StateTypes.LILY_PAD.createBlockState(CompensatedWorld.blockVersion));
+
+                if (player.gamemode != GameMode.CREATIVE) {
+                    player.getInventory().markSlotAsResyncing(blockPlace);
+                    if (hand == InteractionHand.MAIN_HAND) {
+                        player.getInventory().inventory.getHeldItem().setAmount(player.getInventory().inventory.getHeldItem().getAmount() - 1);
+                    } else {
+                        player.getInventory().getOffHand().setAmount(player.getInventory().getOffHand().getAmount() - 1);
+                    }
+                }
+            }
+        }
+    }
+
+    private static HitData getNearestHitResult(RinoPlayer player, StateType heldItem, boolean sourcesHaveHitbox) {
+        Vector3d startingPos = new Vector3d(player.x, player.y + player.getEyeHeight(), player.z);
+        Vector startingVec = new Vector(startingPos.getX(), startingPos.getY(), startingPos.getZ());
+        Ray trace = new Ray(player, startingPos.getX(), startingPos.getY(), startingPos.getZ(), player.xRot, player.yRot);
+        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
+        Vector endVec = trace.getPointAtDistance(distance);
+        Vector3d endPos = new Vector3d(endVec.getX(), endVec.getY(), endVec.getZ());
+
+        return traverseBlocks(player, startingPos, endPos, (block, vector3i) -> {
+            CollisionBox data = HitboxData.getBlockHitbox(player, heldItem, player.getClientVersion(), block, vector3i.getX(), vector3i.getY(), vector3i.getZ());
+            List<SimpleCollisionBox> boxes = new ArrayList<>();
+            data.downCast(boxes);
+
+            double bestHitResult = Double.MAX_VALUE;
+            Vector bestHitLoc = null;
+            BlockFace bestFace = null;
+
+            for (SimpleCollisionBox box : boxes) {
+                Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));
+                if (intercept.getFirst() == null) continue; // No intercept
+
+                Vector hitLoc = intercept.getFirst();
+
+                if (hitLoc.distanceSquared(startingVec) < bestHitResult) {
+                    bestHitResult = hitLoc.distanceSquared(startingVec);
+                    bestHitLoc = hitLoc;
+                    bestFace = intercept.getSecond();
+                }
+            }
+            if (bestHitLoc != null) {
+                return new HitData(vector3i, bestHitLoc, bestFace, block);
+            }
+
+            if (sourcesHaveHitbox &&
+                    (player.compensatedWorld.isWaterSourceBlock(vector3i.getX(), vector3i.getY(), vector3i.getZ())
+                            || player.compensatedWorld.getLavaFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ()) == (8 / 9f))) {
+                double waterHeight = player.compensatedWorld.getFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ());
+                SimpleCollisionBox box = new SimpleCollisionBox(vector3i.getX(), vector3i.getY(), vector3i.getZ(), vector3i.getX() + 1, vector3i.getY() + waterHeight, vector3i.getZ() + 1);
+
+                Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));
+
+                if (intercept.getFirst() != null) {
+                    return new HitData(vector3i, intercept.getFirst(), intercept.getSecond(), block);
+                }
+            }
+
+            return null;
+        });
     }
 
     private boolean isMojangStupid(RinoPlayer player, WrapperPlayClientPlayerFlying flying) {
@@ -581,85 +737,6 @@ public class CheckManagerListener extends PacketListenerAbstract {
         player.packetStateData.lastPacketWasTeleport = false;
     }
 
-    private static void placeBucket(RinoPlayer player, InteractionHand hand) {
-        HitData data = getNearestHitResult(player, null, true);
-
-        if (data != null) {
-            BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
-            blockPlace.setReplaceClicked(true); // Replace the block clicked, not the block in the direction
-
-            boolean placed = false;
-            ItemType type = null;
-
-            if (data.getState().getType() == StateTypes.POWDER_SNOW) {
-                blockPlace.set(StateTypes.AIR);
-                type = ItemTypes.POWDER_SNOW_BUCKET;
-                placed = true;
-            }
-
-            if (data.getState().getType() == StateTypes.LAVA) {
-                blockPlace.set(StateTypes.AIR);
-                type = ItemTypes.LAVA_BUCKET;
-                placed = true;
-            }
-
-            // We didn't hit fluid source
-            if (!placed && !player.compensatedWorld.isWaterSourceBlock(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()))
-                return;
-
-            // We can't replace plants with a water bucket
-            if (data.getState().getType() == StateTypes.KELP || data.getState().getType() == StateTypes.SEAGRASS || data.getState().getType() == StateTypes.TALL_SEAGRASS) {
-                return;
-            }
-
-            if (!placed) {
-                type = ItemTypes.WATER_BUCKET;
-            }
-
-            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13)) {
-                WrappedBlockState existing = blockPlace.getExistingBlockData();
-                if (existing.getInternalData().containsKey(StateValue.WATERLOGGED)) { // waterloggable
-                    existing.setWaterlogged(false);
-                    blockPlace.set(existing);
-                    placed = true;
-                }
-            }
-
-            // Therefore, not waterlogged and is a fluid, and is therefore a source block
-            if (!placed) {
-                blockPlace.set(StateTypes.AIR);
-            }
-
-            if (player.gamemode != GameMode.CREATIVE) {
-                player.getInventory().markSlotAsResyncing(blockPlace);
-                setPlayerItem(player, hand, type);
-            }
-        }
-    }
-
-    public static void setPlayerItem(RinoPlayer player, InteractionHand hand, ItemType type) {
-        // Give the player a water bucket
-        if (player.gamemode != GameMode.CREATIVE) {
-            if (hand == InteractionHand.MAIN_HAND) {
-                if (player.getInventory().getHeldItem().getAmount() == 1) {
-                    player.getInventory().inventory.setHeldItem(ItemStack.builder().type(type).amount(1).build());
-                } else { // Give the player a water bucket
-                    player.getInventory().inventory.add(ItemStack.builder().type(type).amount(1).build());
-                    // and reduce the held item
-                    player.getInventory().getHeldItem().setAmount(player.getInventory().getHeldItem().getAmount() - 1);
-                }
-            } else {
-                if (player.getInventory().getOffHand().getAmount() == 1) {
-                    player.getInventory().inventory.setPlayerInventoryItem(Inventory.SLOT_OFFHAND, ItemStack.builder().type(type).amount(1).build());
-                } else { // Give the player a water bucket
-                    player.getInventory().inventory.add(Inventory.SLOT_OFFHAND, ItemStack.builder().type(type).amount(1).build());
-                    // and reduce the held item
-                    player.getInventory().getOffHand().setAmount(player.getInventory().getOffHand().getAmount() - 1);
-                }
-            }
-        }
-    }
-
     private void handleFlying(RinoPlayer player, double x, double y, double z, float yaw, float pitch, boolean hasPosition, boolean hasLook, boolean onGround, TeleportAcceptData teleportData, PacketReceiveEvent event) {
         long now = System.currentTimeMillis();
 
@@ -745,87 +822,6 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
         player.packetStateData.didLastLastMovementIncludePosition = player.packetStateData.didLastMovementIncludePosition;
         player.packetStateData.didLastMovementIncludePosition = hasPosition;
-    }
-
-    private static void placeLilypad(RinoPlayer player, InteractionHand hand) {
-        HitData data = getNearestHitResult(player, null, true);
-
-        if (data != null) {
-            // A lilypad cannot replace a fluid
-            if (player.compensatedWorld.getFluidLevelAt(data.getPosition().getX(), data.getPosition().getY() + 1, data.getPosition().getZ()) > 0)
-                return;
-
-            BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
-            blockPlace.setReplaceClicked(false); // Not possible with use item
-
-            // We checked for a full fluid block below here.
-            if (player.compensatedWorld.getWaterFluidLevelAt(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()) > 0
-                    || data.getState().getType() == StateTypes.ICE || data.getState().getType() == StateTypes.FROSTED_ICE) {
-                Vector3i pos = data.getPosition();
-                pos = pos.add(0, 1, 0);
-
-                blockPlace.set(pos, StateTypes.LILY_PAD.createBlockState(CompensatedWorld.blockVersion));
-
-                if (player.gamemode != GameMode.CREATIVE) {
-                    player.getInventory().markSlotAsResyncing(blockPlace);
-                    if (hand == InteractionHand.MAIN_HAND) {
-                        player.getInventory().inventory.getHeldItem().setAmount(player.getInventory().inventory.getHeldItem().getAmount() - 1);
-                    } else {
-                        player.getInventory().getOffHand().setAmount(player.getInventory().getOffHand().getAmount() - 1);
-                    }
-                }
-            }
-        }
-    }
-
-    private static HitData getNearestHitResult(RinoPlayer player, StateType heldItem, boolean sourcesHaveHitbox) {
-        Vector3d startingPos = new Vector3d(player.x, player.y + player.getEyeHeight(), player.z);
-        Vector startingVec = new Vector(startingPos.getX(), startingPos.getY(), startingPos.getZ());
-        Ray trace = new Ray(player, startingPos.getX(), startingPos.getY(), startingPos.getZ(), player.xRot, player.yRot);
-        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
-        Vector endVec = trace.getPointAtDistance(distance);
-        Vector3d endPos = new Vector3d(endVec.getX(), endVec.getY(), endVec.getZ());
-
-        return traverseBlocks(player, startingPos, endPos, (block, vector3i) -> {
-            CollisionBox data = HitboxData.getBlockHitbox(player, heldItem, player.getClientVersion(), block, vector3i.getX(), vector3i.getY(), vector3i.getZ());
-            List<SimpleCollisionBox> boxes = new ArrayList<>();
-            data.downCast(boxes);
-
-            double bestHitResult = Double.MAX_VALUE;
-            Vector bestHitLoc = null;
-            BlockFace bestFace = null;
-
-            for (SimpleCollisionBox box : boxes) {
-                Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));
-                if (intercept.getFirst() == null) continue; // No intercept
-
-                Vector hitLoc = intercept.getFirst();
-
-                if (hitLoc.distanceSquared(startingVec) < bestHitResult) {
-                    bestHitResult = hitLoc.distanceSquared(startingVec);
-                    bestHitLoc = hitLoc;
-                    bestFace = intercept.getSecond();
-                }
-            }
-            if (bestHitLoc != null) {
-                return new HitData(vector3i, bestHitLoc, bestFace, block);
-            }
-
-            if (sourcesHaveHitbox &&
-                    (player.compensatedWorld.isWaterSourceBlock(vector3i.getX(), vector3i.getY(), vector3i.getZ())
-                            || player.compensatedWorld.getLavaFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ()) == (8 / 9f))) {
-                double waterHeight = player.compensatedWorld.getFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ());
-                SimpleCollisionBox box = new SimpleCollisionBox(vector3i.getX(), vector3i.getY(), vector3i.getZ(), vector3i.getX() + 1, vector3i.getY() + waterHeight, vector3i.getZ() + 1);
-
-                Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));
-
-                if (intercept.getFirst() != null) {
-                    return new HitData(vector3i, intercept.getFirst(), intercept.getSecond(), block);
-                }
-            }
-
-            return null;
-        });
     }
 
     @Override

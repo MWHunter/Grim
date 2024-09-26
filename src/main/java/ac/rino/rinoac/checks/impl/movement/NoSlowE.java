@@ -14,11 +14,11 @@ import static com.github.retrooper.packetevents.protocol.potion.PotionTypes.BLIN
 
 @CheckData(name = "NoSlowE", setback = 5, experimental = true)
 public class NoSlowE extends Check implements PostPredictionCheck, PacketCheck {
+    public boolean startedSprintingBeforeBlind = false;
+
     public NoSlowE(RinoPlayer player) {
         super(player);
     }
-
-    public boolean startedSprintingBeforeBlind = false;
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {

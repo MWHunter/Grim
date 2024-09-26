@@ -22,6 +22,10 @@ import java.util.function.Function;
 public class RinoExternalAPI implements GrimAbstractAPI, Initable {
 
     private final RinoAPI api;
+    @Getter
+    private final Map<String, Function<GrimUser, String>> variableReplacements = new ConcurrentHashMap<>();
+    @Getter
+    private final Map<String, String> staticReplacements = new ConcurrentHashMap<>();
 
     public RinoExternalAPI(RinoAPI api) {
         this.api = api;
@@ -37,11 +41,6 @@ public class RinoExternalAPI implements GrimAbstractAPI, Initable {
     public void setServerName(String name) {
         variableReplacements.put("%server%", user -> name);
     }
-
-    @Getter
-    private final Map<String, Function<GrimUser, String>> variableReplacements = new ConcurrentHashMap<>();
-
-    @Getter private final Map<String, String> staticReplacements = new ConcurrentHashMap<>();
 
     public String replaceVariables(GrimUser user, String content, boolean colors) {
         if (colors) content = ChatColor.translateAlternateColorCodes('&', content);

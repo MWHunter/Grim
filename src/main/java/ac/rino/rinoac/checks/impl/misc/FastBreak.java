@@ -31,10 +31,6 @@ import org.bukkit.entity.Player;
 // Also based off minecraft wiki: https://minecraft.wiki/w/Breaking#Instant_breaking
 @CheckData(name = "FastBreak", experimental = false)
 public class FastBreak extends Check implements PacketCheck {
-    public FastBreak(RinoPlayer playerData) {
-        super(playerData);
-    }
-
     // The block the player is currently breaking
     Vector3i targetBlock = null;
     // The maximum amount of damage the player deals to the block
@@ -44,10 +40,12 @@ public class FastBreak extends Check implements PacketCheck {
     long lastFinishBreak = 0;
     // The time the player started to break the block, to know how long the player waited until they finished breaking the block
     long startBreak = 0;
-
     // The buffer to this check
     double blockBreakBalance = 0;
     double blockDelayBalance = 0;
+    public FastBreak(RinoPlayer playerData) {
+        super(playerData);
+    }
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
@@ -63,15 +61,15 @@ public class FastBreak extends Check implements PacketCheck {
 
             if (digging.getAction() == DiggingAction.START_DIGGING) {
                 WrappedBlockState block = player.compensatedWorld.getWrappedBlockStateAt(blockPosition);
-                
+
                 // Exempt all blocks that do not exist in the player version
                 if (WrappedBlockState.getDefaultState(player.getClientVersion(), block.getType()).getType() == StateTypes.AIR) {
                     return;
                 }
-            
+
                 startBreak = System.currentTimeMillis() - (targetBlock == null ? 50 : 0); // ???
                 targetBlock = blockPosition;
-                
+
                 maximumBlockDamage = BlockBreakSpeed.getBlockDamage(player, targetBlock);
 
                 double breakDelay = System.currentTimeMillis() - lastFinishBreak;
@@ -114,7 +112,8 @@ public class FastBreak extends Check implements PacketCheck {
                         if (bukkitPlayer.getLocation().distance(new Location(bukkitPlayer.getWorld(), blockPosition.getX(), blockPosition.getY(), blockPosition.getZ())) < 64) {
                             final int chunkX = blockPosition.getX() >> 4;
                             final int chunkZ = blockPosition.getZ() >> 4;
-                            if (!bukkitPlayer.getWorld().isChunkLoaded(chunkX, chunkZ)) return; // Don't load chunks sync
+                            if (!bukkitPlayer.getWorld().isChunkLoaded(chunkX, chunkZ))
+                                return; // Don't load chunks sync
 
                             Chunk chunk = bukkitPlayer.getWorld().getChunkAt(chunkX, chunkZ);
                             Block block = chunk.getBlock(blockPosition.getX() & 15, blockPosition.getY(), blockPosition.getZ() & 15);

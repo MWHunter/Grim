@@ -72,13 +72,12 @@ public class SpectateManager implements Initable {
     }
 
     private static class PreviousState {
+        private final org.bukkit.GameMode gameMode;
+        private final Location location;
         public PreviousState(org.bukkit.GameMode gameMode, Location location) {
             this.gameMode = gameMode;
             this.location = location;
         }
-
-        private final org.bukkit.GameMode gameMode;
-        private final Location location;
     }
 
 }

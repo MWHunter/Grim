@@ -18,16 +18,14 @@ import java.util.List;
 
 @CheckData(name = "MultiPlace", experimental = true)
 public class MultiPlace extends BlockPlaceCheck {
-    public MultiPlace(RinoPlayer player) {
-        super(player);
-    }
-
     private final List<String> flags = new ArrayList<>();
-
     private boolean hasPlaced;
     private BlockFace lastFace;
     private Vector3f lastCursor;
     private Vector3i lastPos;
+    public MultiPlace(RinoPlayer player) {
+        super(player);
+    }
 
     @Override
     public void onBlockPlace(final BlockPlace place) {

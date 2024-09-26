@@ -27,15 +27,13 @@ public class ConfigManager {
     private final File discordFile = new File(RinoAPI.INSTANCE.getPlugin().getDataFolder(), "discord.yml");
     @Getter
     private final File punishFile = new File(RinoAPI.INSTANCE.getPlugin().getDataFolder(), "punishments.yml");
+    private final List<Pattern> ignoredClientPatterns = new ArrayList<>();
     @Getter
     private int maxPingTransaction = 60; // This is just a really hot variable so cache it.
     @Getter
     private boolean ignoreDuplicatePacketRotation = false;
-
     @Getter
     private boolean experimentalChecks = false;
-
-    private final List<Pattern> ignoredClientPatterns = new ArrayList<>();
 
     public ConfigManager() {
         upgrade();

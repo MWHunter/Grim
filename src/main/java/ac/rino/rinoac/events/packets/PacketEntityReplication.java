@@ -31,8 +31,6 @@ import java.util.UUID;
 
 public class PacketEntityReplication extends Check implements PacketCheck {
 
-    private boolean hasSentPreWavePacket = true;
-
     // Let's imagine the player is on a boat.
     // The player breaks this boat
     // If we were to despawn the boat without an extra transaction, then the boat would disappear before
@@ -51,9 +49,9 @@ public class PacketEntityReplication extends Check implements PacketCheck {
     //
     // Another valid solution is to simply spam more transactions, but let's not waste bandwidth.
     private final List<Integer> despawnedEntitiesThisTransaction = new ArrayList<>();
-
     // Maximum ping when a firework boost is removed from the player.
     private final int maxFireworkBoostPing = RinoAPI.INSTANCE.getConfigManager().getConfig().getIntElse("max-ping-firework-boost", 1000);
+    private boolean hasSentPreWavePacket = true;
 
     public PacketEntityReplication(RinoPlayer player) {
         super(player);
@@ -228,9 +226,8 @@ public class PacketEntityReplication extends Check implements PacketCheck {
 
             if (status.getStatus() == 31) {
                 PacketEntity hook = player.compensatedEntities.getEntity(status.getEntityId());
-                if (!(hook instanceof PacketEntityHook)) return;
+                if (!(hook instanceof PacketEntityHook hookEntity)) return;
 
-                PacketEntityHook hookEntity = (PacketEntityHook) hook;
                 if (hookEntity.attached == player.entityID) {
                     player.sendTransaction();
                     // We don't transaction sandwich this, it's too rare to be a real problem.
@@ -455,8 +452,7 @@ public class PacketEntityReplication extends Check implements PacketCheck {
         player.latencyUtils.addRealTimeTask(lastTrans, () -> {
             PacketEntity entity = player.compensatedEntities.getEntity(entityId);
             if (entity == null) return;
-            if (entity instanceof PacketEntityTrackXRot && yaw != null) {
-                PacketEntityTrackXRot xRotEntity = (PacketEntityTrackXRot) entity;
+            if (entity instanceof PacketEntityTrackXRot xRotEntity && yaw != null) {
                 xRotEntity.packetYaw = yaw;
                 xRotEntity.steps = entity.isBoat() ? 10 : 3;
             }

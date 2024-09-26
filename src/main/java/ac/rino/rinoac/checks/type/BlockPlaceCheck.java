@@ -18,6 +18,28 @@ public class BlockPlaceCheck extends Check implements RotationCheck, PostPredict
     private static final List<StateType> weirdBoxes = new ArrayList<>();
     private static final List<StateType> buggyBoxes = new ArrayList<>();
 
+    static {
+        // Fences and walls aren't worth checking.
+        weirdBoxes.addAll(new ArrayList<>(BlockTags.FENCES.getStates()));
+        weirdBoxes.addAll(new ArrayList<>(BlockTags.WALLS.getStates()));
+        weirdBoxes.add(StateTypes.LECTERN);
+
+        buggyBoxes.addAll(new ArrayList<>(BlockTags.DOORS.getStates()));
+        buggyBoxes.addAll(new ArrayList<>(BlockTags.STAIRS.getStates()));
+        buggyBoxes.add(StateTypes.CHEST);
+        buggyBoxes.add(StateTypes.TRAPPED_CHEST);
+        buggyBoxes.add(StateTypes.CHORUS_PLANT);
+
+        // The client changes these block states around when placing blocks, temporary desync
+        buggyBoxes.add(StateTypes.KELP);
+        buggyBoxes.add(StateTypes.KELP_PLANT);
+        buggyBoxes.add(StateTypes.TWISTING_VINES);
+        buggyBoxes.add(StateTypes.TWISTING_VINES_PLANT);
+        buggyBoxes.add(StateTypes.WEEPING_VINES);
+        buggyBoxes.add(StateTypes.WEEPING_VINES_PLANT);
+        buggyBoxes.add(StateTypes.REDSTONE_WIRE);
+    }
+
     protected int cancelVL;
 
     public BlockPlaceCheck(RinoPlayer player) {
@@ -40,28 +62,6 @@ public class BlockPlaceCheck extends Check implements RotationCheck, PostPredict
 
     protected boolean shouldCancel() {
         return cancelVL >= 0 && violations >= cancelVL;
-    }
-
-    static {
-        // Fences and walls aren't worth checking.
-        weirdBoxes.addAll(new ArrayList<>(BlockTags.FENCES.getStates()));
-        weirdBoxes.addAll(new ArrayList<>(BlockTags.WALLS.getStates()));
-        weirdBoxes.add(StateTypes.LECTERN);
-
-        buggyBoxes.addAll(new ArrayList<>(BlockTags.DOORS.getStates()));
-        buggyBoxes.addAll(new ArrayList<>(BlockTags.STAIRS.getStates()));
-        buggyBoxes.add(StateTypes.CHEST);
-        buggyBoxes.add(StateTypes.TRAPPED_CHEST);
-        buggyBoxes.add(StateTypes.CHORUS_PLANT);
-
-        // The client changes these block states around when placing blocks, temporary desync
-        buggyBoxes.add(StateTypes.KELP);
-        buggyBoxes.add(StateTypes.KELP_PLANT);
-        buggyBoxes.add(StateTypes.TWISTING_VINES);
-        buggyBoxes.add(StateTypes.TWISTING_VINES_PLANT);
-        buggyBoxes.add(StateTypes.WEEPING_VINES);
-        buggyBoxes.add(StateTypes.WEEPING_VINES_PLANT);
-        buggyBoxes.add(StateTypes.REDSTONE_WIRE);
     }
 
     protected SimpleCollisionBox getCombinedBox(final BlockPlace place) {

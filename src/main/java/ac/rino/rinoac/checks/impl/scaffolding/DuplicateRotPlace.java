@@ -9,14 +9,15 @@ import ac.rino.rinoac.utils.anticheat.update.RotationUpdate;
 @CheckData(name = "DuplicateRotPlace", experimental = true)
 public class DuplicateRotPlace extends BlockPlaceCheck {
 
+    private float deltaX, deltaY;
+    private double deltaDotsX;
+    private boolean rotated = false;
+    private float lastPlacedDeltaX;
+    private double lastPlacedDeltaDotsX;
+
     public DuplicateRotPlace(RinoPlayer player) {
         super(player);
     }
-
-    private float deltaX, deltaY;
-
-    private double deltaDotsX;
-    private boolean rotated = false;
 
     @Override
     public void process(final RotationUpdate rotationUpdate) {
@@ -25,9 +26,6 @@ public class DuplicateRotPlace extends BlockPlaceCheck {
         deltaDotsX = rotationUpdate.getProcessor().deltaDotsX;
         rotated = true;
     }
-
-    private float lastPlacedDeltaX;
-    private double lastPlacedDeltaDotsX;
 
     public void onPostFlyingBlockPlace(BlockPlace place) {
         if (rotated) {

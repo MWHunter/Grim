@@ -12,17 +12,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @CheckData(name = "Simulation", configName = "Simulation", decay = 0.02)
 public class OffsetHandler extends Check implements PostPredictionCheck {
+    private static final AtomicInteger flags = new AtomicInteger(0);
     // Config
     double setbackDecayMultiplier;
     double threshold;
     double immediateSetbackThreshold;
     double maxAdvantage;
     double maxCeiling;
-
     // Current advantage gained
     double advantageGained = 0;
-
-    private static final AtomicInteger flags = new AtomicInteger(0);
 
     public OffsetHandler(RinoPlayer player) {
         super(player);
@@ -66,7 +64,7 @@ public class OffsetHandler extends Check implements PostPredictionCheck {
                     humanFormattedOffset = humanFormattedOffset.replace("0.", ".");
                 }
 
-                if(alert(humanFormattedOffset + " /gl " + flagId)) {
+                if (alert(humanFormattedOffset + " /gl " + flagId)) {
                     flags.incrementAndGet(); // This debug was sent somewhere
                     predictionComplete.setIdentifier(flagId);
                 }

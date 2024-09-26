@@ -16,12 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DiscordManager implements Initable {
+    public static final Pattern WEBHOOK_PATTERN = Pattern.compile("(?:https?://)?(?:\\w+\\.)?\\w+\\.\\w+/api(?:/v\\d+)?/webhooks/(\\d+)/([\\w-]+)(?:/(?:\\w+)?)?");
     private static WebhookClient client;
     private int embedColor;
     private String staticContent = "";
     private String embedTitle = "";
-
-    public static final Pattern WEBHOOK_PATTERN = Pattern.compile("(?:https?://)?(?:\\w+\\.)?\\w+\\.\\w+/api(?:/v\\d+)?/webhooks/(\\d+)/([\\w-]+)(?:/(?:\\w+)?)?");
 
     @Override
     public void start() {

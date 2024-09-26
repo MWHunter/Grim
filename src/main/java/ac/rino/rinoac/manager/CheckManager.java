@@ -44,16 +44,16 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 
 public class CheckManager {
+    public ClassToInstanceMap<AbstractCheck> allChecks;
     ClassToInstanceMap<PacketCheck> packetChecks;
     ClassToInstanceMap<PositionCheck> positionCheck;
     ClassToInstanceMap<RotationCheck> rotationCheck;
     ClassToInstanceMap<VehicleCheck> vehicleCheck;
     ClassToInstanceMap<PacketCheck> prePredictionChecks;
-
     ClassToInstanceMap<BlockPlaceCheck> blockPlaceCheck;
     ClassToInstanceMap<PostPredictionCheck> postPredictionCheck;
-
-    public ClassToInstanceMap<AbstractCheck> allChecks;
+    private PacketEntityReplication packetEntityReplication = null;
+    private CompensatedInventory inventory = null;
 
     public CheckManager(RinoPlayer player) {
         // Include post checks in the packet check too
@@ -278,8 +278,6 @@ public class CheckManager {
         return (T) prePredictionChecks.get(check);
     }
 
-    private PacketEntityReplication packetEntityReplication = null;
-
     public PacketEntityReplication getEntityReplication() {
         if (packetEntityReplication == null) packetEntityReplication = getPacketCheck(PacketEntityReplication.class);
         return packetEntityReplication;
@@ -288,8 +286,6 @@ public class CheckManager {
     public NoFallA getNoFall() {
         return getPacketCheck(NoFallA.class);
     }
-
-    private CompensatedInventory inventory = null;
 
     public CompensatedInventory getInventory() {
         if (inventory == null) inventory = getPacketCheck(CompensatedInventory.class);

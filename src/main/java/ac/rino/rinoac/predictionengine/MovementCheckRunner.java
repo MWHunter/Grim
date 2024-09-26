@@ -258,8 +258,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             // When in control of the entity, the player sets the entity position to their current position
             riding.setPositionRaw(GetBoundingBox.getPacketEntityBoundingBox(player, player.x, player.y, player.z, riding));
 
-            if (riding instanceof PacketEntityTrackXRot) {
-                PacketEntityTrackXRot boat = (PacketEntityTrackXRot) riding;
+            if (riding instanceof PacketEntityTrackXRot boat) {
                 boat.packetYaw = player.xRot;
                 boat.interpYaw = player.xRot;
                 boat.steps = 0;

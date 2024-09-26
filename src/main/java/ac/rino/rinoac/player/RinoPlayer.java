@@ -1,8 +1,8 @@
 package ac.rino.rinoac.player;
 
-import ac.rino.rinoac.RinoAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.GrimUser;
+import ac.rino.rinoac.RinoAPI;
 import ac.rino.rinoac.checks.impl.aim.processor.AimProcessor;
 import ac.rino.rinoac.checks.impl.misc.ClientBrand;
 import ac.rino.rinoac.checks.impl.misc.TransactionOrder;
@@ -66,17 +66,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 // Variables that need lag compensation should have their own class
 // Soon there will be a generic class for lag compensation
 public class RinoPlayer implements GrimUser {
-    public UUID playerUUID;
     public final User user;
-    public int entityID;
-    @Nullable
-    public Player bukkitPlayer;
     // Start transaction handling stuff
     // Determining player ping
     // The difference between keepalive and transactions is that keepalive is async while transactions are sync
     public final Queue<Pair<Short, Long>> transactionsSent = new ConcurrentLinkedQueue<>();
     public final Set<Short> didWeSendThatTrans = ConcurrentHashMap.newKeySet();
+    public final long joinTime = System.currentTimeMillis();
     private final AtomicInteger transactionIDCounter = new AtomicInteger(0);
+    public UUID playerUUID;
+    public int entityID;
+    @Nullable
+    public Player bukkitPlayer;
     public AtomicInteger lastTransactionSent = new AtomicInteger(0);
     public AtomicInteger lastTransactionReceived = new AtomicInteger(0);
     // End transaction handling stuff
@@ -88,17 +89,13 @@ public class RinoPlayer implements GrimUser {
     public SyncedTags tagManager;
     // End manager like classes
     public Vector clientVelocity = new Vector();
-    PacketTracker packetTracker;
-    private long transactionPing = 0;
     public long lastTransSent = 0;
     public long lastTransReceived = 0;
-    private long playerClockAtLeast = System.nanoTime();
     public double lastWasClimbing = 0;
     public boolean canSwimHop = false;
     public int riptideSpinAttackTicks = 0;
     public int powderSnowFrozenTicks = 0;
     public boolean hasGravity = true;
-    public final long joinTime = System.currentTimeMillis();
     public boolean playerEntityHasGravity = true;
     public VectorData predictedVelocity = new VectorData(new Vector(), VectorData.VectorType.Normal);
     public Vector actualMovement = new Vector();
@@ -198,20 +195,17 @@ public class RinoPlayer implements GrimUser {
     public long lastBlockPlaceUseItem = 0;
     public AtomicInteger cancelledPackets = new AtomicInteger(0);
     public MainSupportingBlockData mainSupportingBlockData = new MainSupportingBlockData(null, false);
-
-    public void onPacketCancel() {
-        if (spamThreshold != -1 && cancelledPackets.incrementAndGet() > spamThreshold) {
-            LogUtil.info("Disconnecting " + getName() + " for spamming invalid packets, packets cancelled within a second " + cancelledPackets);
-            disconnect(Component.translatable("disconnect.closed"));
-            cancelledPackets.set(0);
-        }
-    }
-
     public int totalFlyingPacketsSent;
     public Queue<BlockPlaceSnapshot> placeUseItemPackets = new LinkedBlockingQueue<>();
     // This variable is for support with test servers that want to be able to disable grim
     // Grim disabler 2022 still working!
     public boolean disableGrim = false;
+    public boolean noModifyPacketPermission = false;
+    public boolean noSetbackPermission = false;
+    PacketTracker packetTracker;
+    private long transactionPing = 0;
+    private long playerClockAtLeast = System.nanoTime();
+    private int spamThreshold = 100;
 
     public RinoPlayer(User user) {
         this.user = user;
@@ -239,6 +233,14 @@ public class RinoPlayer implements GrimUser {
         packetStateData = new PacketStateData();
 
         uncertaintyHandler.collidingEntities.add(0);
+    }
+
+    public void onPacketCancel() {
+        if (spamThreshold != -1 && cancelledPackets.incrementAndGet() > spamThreshold) {
+            LogUtil.info("Disconnecting " + getName() + " for spamming invalid packets, packets cancelled within a second " + cancelledPackets);
+            disconnect(Component.translatable("disconnect.closed"));
+            cancelledPackets.set(0);
+        }
     }
 
     public Set<VectorData> getPossibleVelocities() {
@@ -315,7 +317,8 @@ public class RinoPlayer implements GrimUser {
             // Transactions that we send don't count towards total limit
             if (packetTracker != null) packetTracker.setIntervalPackets(packetTracker.getIntervalPackets() - 1);
 
-            if (skipped > 0 && System.currentTimeMillis() - joinTime > 5000) checkManager.getPacketCheck(TransactionOrder.class).flagAndAlert("skipped: " + skipped);
+            if (skipped > 0 && System.currentTimeMillis() - joinTime > 5000)
+                checkManager.getPacketCheck(TransactionOrder.class).flagAndAlert("skipped: " + skipped);
 
             do {
                 data = transactionsSent.poll();
@@ -420,8 +423,7 @@ public class RinoPlayer implements GrimUser {
 
     public void disconnect(Component reason) {
         String textReason;
-        if (reason instanceof TranslatableComponent) {
-            TranslatableComponent translatableComponent = (TranslatableComponent) reason;
+        if (reason instanceof TranslatableComponent translatableComponent) {
             textReason = translatableComponent.key();
         } else {
             textReason = LegacyComponentSerializer.legacySection().serialize(reason);
@@ -494,9 +496,6 @@ public class RinoPlayer implements GrimUser {
         }
     }
 
-    public boolean noModifyPacketPermission = false;
-    public boolean noSetbackPermission = false;
-
     //TODO: Create a configurable timer for this
     @Override
     public void updatePermissions() {
@@ -504,8 +503,6 @@ public class RinoPlayer implements GrimUser {
         this.noModifyPacketPermission = bukkitPlayer.hasPermission("grim.nomodifypacket");
         this.noSetbackPermission = bukkitPlayer.hasPermission("grim.nosetback");
     }
-
-    private int spamThreshold = 100;
 
     public void onReload() {
         spamThreshold = RinoAPI.INSTANCE.getConfigManager().getConfig().getIntElse("packet-spam-threshold", 100);
@@ -540,7 +537,7 @@ public class RinoPlayer implements GrimUser {
     //     - 3 ticks is a magic value, but it should buffer out incorrect predictions somewhat.
     // 2. The player is in a vehicle
     public boolean isTickingReliablyFor(int ticks) {
-        return (getClientVersion().isOlderThan(ClientVersion.V_1_9) 
+        return (getClientVersion().isOlderThan(ClientVersion.V_1_9)
                 || !uncertaintyHandler.lastPointThree.hasOccurredSince(ticks))
                 || compensatedEntities.getSelf().inVehicle();
     }

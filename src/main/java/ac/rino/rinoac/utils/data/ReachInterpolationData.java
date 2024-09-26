@@ -67,10 +67,6 @@ public class ReachInterpolationData {
         this.targetLocation = finishedLoc;
     }
 
-    private int getInterpolationSteps() {
-        return interpolationSteps;
-    }
-
     public static SimpleCollisionBox combineCollisionBox(SimpleCollisionBox one, SimpleCollisionBox two) {
         double minX = Math.min(one.minX, two.minX);
         double maxX = Math.max(one.maxX, two.maxX);
@@ -80,6 +76,10 @@ public class ReachInterpolationData {
         double maxZ = Math.max(one.maxZ, two.maxZ);
 
         return new SimpleCollisionBox(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    private int getInterpolationSteps() {
+        return interpolationSteps;
     }
 
     // To avoid huge branching when bruteforcing interpolation -

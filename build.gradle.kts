@@ -8,7 +8,7 @@ plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
-group = "ac.grim.grimac"
+group = "ac.rino.rinoac"
 version = "2.3.68"
 description = "Libre simulation anticheat designed for 1.21.1 with 1.20.4-1.21.1 support, powered by PacketEvents 2.0."
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -23,7 +23,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
     maven("https://jitpack.io/") { // Grim API
         content {
-            includeGroup("com.github.rinoanticheat")
+            includeGroup("com.github.grimanticheat") // Change when we are ready to use our own api.
         }
     }
     maven("https://repo.viaversion.com") // ViaVersion
@@ -49,7 +49,7 @@ dependencies {
 
     implementation("org.jetbrains:annotations:24.1.0")
     compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.viaversion:viaversion-api:4.9.4-SNAPSHOT")
     //
     compileOnly("io.netty:netty-all:4.1.85.Final")
@@ -58,7 +58,7 @@ dependencies {
 bukkit {
     name = "RinoAC"
     author = "Chest Solutions"
-    main = "ac.rino.rino.RinoAC"
+    main = "ac.rino.rinoac.RinoAC"
     apiVersion = "1.20.4"
     foliaSupported = true
 

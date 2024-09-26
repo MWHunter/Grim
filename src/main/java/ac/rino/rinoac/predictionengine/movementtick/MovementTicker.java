@@ -10,11 +10,11 @@ import ac.rino.rinoac.utils.data.packetentity.PacketEntity;
 import ac.rino.rinoac.utils.data.packetentity.PacketEntityStrider;
 import ac.rino.rinoac.utils.math.RinoMath;
 import ac.rino.rinoac.utils.nmsutil.*;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import ac.rino.rinoac.utils.team.EntityPredicates;
 import ac.rino.rinoac.utils.team.TeamHandler;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
+import com.github.retrooper.packetevents.protocol.attribute.Attributes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.potion.PotionTypes;
@@ -38,7 +38,7 @@ public class MovementTicker {
         if (player.getClientVersion().isOlderThan(ClientVersion.V_1_9)
                 // Check that ViaVersion disables all collisions on a 1.8 server for 1.9+ clients
                 || (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)
-                    && (!ViaVersionUtil.isAvailable() || Via.getConfig().isPreventCollision()))) return;
+                && (!ViaVersionUtil.isAvailable() || Via.getConfig().isPreventCollision()))) return;
 
         int possibleCollidingEntities = 0;
 

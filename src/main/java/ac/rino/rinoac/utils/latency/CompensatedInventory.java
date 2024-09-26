@@ -35,21 +35,21 @@ import java.util.Optional;
 
 // Updated to support modern 1.17 protocol
 public class CompensatedInventory extends Check implements PacketCheck {
+    private static final int PLAYER_INVENTORY_CASE = -1;
+    private static final int UNSUPPORTED_INVENTORY_CASE = -2;
     // "Temporarily" public for debugging
     public Inventory inventory;
     // "Temporarily" public for debugging
     public AbstractContainerMenu menu;
     // Not all inventories are supported due to complexity and version differences
     public boolean isPacketInventoryActive = true;
+    public boolean needResend = false;
+    public int stateID = 0; // Don't mess up the last sent state ID by changing it
+    int openWindowID = 0;
     // Special values:
     // Player inventory is -1
     // Unsupported inventory is -2
     private int packetSendingInventorySize = PLAYER_INVENTORY_CASE;
-    private static final int PLAYER_INVENTORY_CASE = -1;
-    private static final int UNSUPPORTED_INVENTORY_CASE = -2;
-    public boolean needResend = false;
-    int openWindowID = 0;
-    public int stateID = 0; // Don't mess up the last sent state ID by changing it
 
     public CompensatedInventory(RinoPlayer playerData) {
         super(playerData);
@@ -277,7 +277,7 @@ public class CompensatedInventory extends Check implements PacketCheck {
 
             boolean valid = action.getSlot() >= 1 &&
                     (PacketEvents.getAPI().getServerManager().getVersion().isNewerThan(ServerVersion.V_1_8) ?
-                    action.getSlot() <= 45 : action.getSlot() < 45);
+                            action.getSlot() <= 45 : action.getSlot() < 45);
 
             if (valid) {
                 player.getInventory().inventory.getSlot(action.getSlot()).set(action.getItemStack());

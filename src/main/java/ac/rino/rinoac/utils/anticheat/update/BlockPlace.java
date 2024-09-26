@@ -43,8 +43,10 @@ import java.util.List;
 
 public class BlockPlace {
     protected static final BlockFace[] UPDATE_SHAPE_ORDER = new BlockFace[]{BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.DOWN, BlockFace.UP};
-    private static final BlockFace[] BY_2D = new BlockFace[]{BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST};
     static final BlockFace[] BY_3D = new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
+    private static final BlockFace[] BY_2D = new BlockFace[]{BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST};
+    @Getter
+    private final boolean block;
     @Setter
     Vector3i blockPosition;
     @Getter
@@ -69,8 +71,6 @@ public class BlockPlace {
     @Getter
     @Setter
     Vector3f cursor;
-
-    @Getter private final boolean block;
 
     public BlockPlace(RinoPlayer player, InteractionHand hand, Vector3i blockPosition, int faceId, BlockFace face, ItemStack itemStack, HitData hitData) {
         this.player = player;
@@ -181,7 +181,8 @@ public class BlockPlace {
         if (state.getType() == StateTypes.VINE) {
             if (baseReplaceable) return true;
             if (heldItem != state.getType()) return false;
-            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13) && !state.isUp()) return true;
+            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13) && !state.isUp())
+                return true;
             if (state.getNorth() == North.FALSE) return true;
             if (state.getSouth() == South.FALSE) return true;
             if (state.getEast() == East.FALSE) return true;

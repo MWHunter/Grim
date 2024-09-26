@@ -45,13 +45,12 @@ import java.util.Objects;
 // TODO update for 1.20.2-
 public class PacketPlayerRespawn extends PacketListenerAbstract {
 
-    public PacketPlayerRespawn() {
-        super(PacketListenerPriority.HIGH);
-    }
-
     private static final byte KEEP_ATTRIBUTES = 1;
     private static final byte KEEP_TRACKED_DATA = 2;
     private static final byte KEEP_ALL = 3;
+    public PacketPlayerRespawn() {
+        super(PacketListenerPriority.HIGH);
+    }
 
     private boolean hasFlag(WrapperPlayServerRespawn respawn, byte flag) {
         // This packet was added in 1.16

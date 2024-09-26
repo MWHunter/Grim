@@ -14,11 +14,11 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 
 @CheckData(name = "BadPacketsX", experimental = true)
 public class BadPacketsX extends Check implements PacketCheck {
+    public final boolean noFireHitbox = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2);
+
     public BadPacketsX(RinoPlayer player) {
         super(player);
     }
-
-    public final boolean noFireHitbox = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2);
 
     public final void handle(PacketReceiveEvent event, WrapperPlayClientPlayerDigging dig, StateType block) {
         if (dig.getAction() != DiggingAction.START_DIGGING && dig.getAction() != DiggingAction.FINISHED_DIGGING)

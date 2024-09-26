@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Or copy (and debug) over around 5k lines of code to accomplish inventories
  * Grim uses a hybrid system for inventories - we lag compensate but rely on the server
  * for the ultimate source of truth, and resync if what we found is different from what the server sees
- *
+ * <p>
  * This also patches most desync's that happen with inventories on some versions like 1.8 or
  * other desync's introduced by mojang or viabackwards
  *
@@ -39,6 +39,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CorrectingPlayerInventoryStorage extends InventoryStorage {
 
+    // TODO: How the hell does creative mode work?
+    private static final Set<String> SUPPORTED_INVENTORIES = new HashSet<>(
+            Arrays.asList("CHEST", "DISPENSER", "DROPPER", "PLAYER", "ENDER_CHEST", "SHULKER_BOX", "BARREL", "CRAFTING", "CREATIVE")
+    );
     RinoPlayer player;
     // The key for this map is the inventory slot ID
     // The value for this map is the transaction that we care about
@@ -46,10 +50,6 @@ public class CorrectingPlayerInventoryStorage extends InventoryStorage {
     // A list of predictions the client has made for inventory changes
     // Remove if the server rejects these changes
     Map<Integer, Integer> pendingFinalizedSlot = new ConcurrentHashMap<>();
-    // TODO: How the hell does creative mode work?
-    private static final Set<String> SUPPORTED_INVENTORIES = new HashSet<>(
-            Arrays.asList("CHEST", "DISPENSER", "DROPPER", "PLAYER", "ENDER_CHEST", "SHULKER_BOX", "BARREL", "CRAFTING", "CREATIVE")
-    );
 
     public CorrectingPlayerInventoryStorage(RinoPlayer player, int size) {
         super(size);

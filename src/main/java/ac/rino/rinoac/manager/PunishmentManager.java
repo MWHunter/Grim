@@ -1,8 +1,8 @@
 package ac.rino.rinoac.manager;
 
-import ac.rino.rinoac.RinoAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.events.CommandExecuteEvent;
+import ac.rino.rinoac.RinoAPI;
 import ac.rino.rinoac.checks.Check;
 import ac.rino.rinoac.events.packets.ProxyAlertMessenger;
 import ac.rino.rinoac.player.RinoPlayer;

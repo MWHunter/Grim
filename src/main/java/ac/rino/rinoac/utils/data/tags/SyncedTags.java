@@ -19,12 +19,9 @@ import java.util.function.Function;
  */
 public final class SyncedTags {
 
-    private static final ServerVersion VERSION = PacketEvents.getAPI().getServerManager().getVersion();
-
-    private static final ResourceLocation BLOCK = VERSION.isNewerThanOrEquals(ServerVersion.V_1_21) ? ResourceLocation.minecraft("block") : ResourceLocation.minecraft("blocks");
-
     public static final ResourceLocation CLIMBABLE = ResourceLocation.minecraft("climbable");
-
+    private static final ServerVersion VERSION = PacketEvents.getAPI().getServerManager().getVersion();
+    private static final ResourceLocation BLOCK = VERSION.isNewerThanOrEquals(ServerVersion.V_1_21) ? ResourceLocation.minecraft("block") : ResourceLocation.minecraft("blocks");
     private final RinoPlayer player;
     private final Map<ResourceLocation, Map<ResourceLocation, SyncedTag<?>>> synced;
 

@@ -13,11 +13,11 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEn
 
 @CheckData(name = "NoSlowC", setback = 5, experimental = true)
 public class NoSlowC extends Check implements PostPredictionCheck, PacketCheck {
+    public boolean startedSprintingBeforeSlowMovement = false;
+
     public NoSlowC(RinoPlayer player) {
         super(player);
     }
-
-    public boolean startedSprintingBeforeSlowMovement = false;
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {

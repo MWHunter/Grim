@@ -17,8 +17,7 @@ public class RinoStopSpectating extends BaseCommand {
     @CommandCompletion("here")
     public void onStopSpectate(CommandSender sender, String[] args) {
         String string = args.length > 0 ? args[0] : null;
-        if (!(sender instanceof Player)) return;
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return;
         if (RinoAPI.INSTANCE.getSpectateManager().isSpectating(player.getUniqueId())) {
             boolean teleportBack = string == null || !string.equalsIgnoreCase("here");
             RinoAPI.INSTANCE.getSpectateManager().disable(player, teleportBack);

@@ -103,13 +103,13 @@ public class PacketWorldBorder extends Check implements PacketCheck {
         });
     }
 
+    public double getAbsoluteMaxSize() {
+        return absoluteMaxSize;
+    }
+
     private void setAbsoluteMaxSize(double absoluteMaxSize) {
         player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> {
             this.absoluteMaxSize = absoluteMaxSize;
         });
-    }
-
-    public double getAbsoluteMaxSize() {
-        return absoluteMaxSize;
     }
 }

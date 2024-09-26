@@ -15,20 +15,19 @@ public class PacketStateData {
     public InteractionHand eatingHand = InteractionHand.MAIN_HAND;
     public long lastRiptide = 0;
     public boolean tryingToRiptide = false;
-    @Getter
-    private boolean slowedByUsingItem;
-    @Getter
-    private int slowedByUsingItemSlot = Integer.MIN_VALUE;
     public int slowedByUsingItemTransaction = Integer.MIN_VALUE;
     public boolean receivedSteerVehicle = false;
     // This works on 1.8 only
     public boolean didLastLastMovementIncludePosition = false;
     public boolean didLastMovementIncludePosition = false;
     public Vector3d lastClaimedPosition = new Vector3d(0, 0, 0);
-
     public float lastHealth, lastSaturation;
     public int lastFood;
     public boolean lastServerTransWasValid = false;
+    @Getter
+    private boolean slowedByUsingItem;
+    @Getter
+    private int slowedByUsingItemSlot = Integer.MIN_VALUE;
 
     public void setSlowedByUsingItem(boolean slowedByUsingItem) {
         this.slowedByUsingItem = slowedByUsingItem;

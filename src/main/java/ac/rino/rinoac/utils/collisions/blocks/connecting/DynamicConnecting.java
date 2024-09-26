@@ -1,11 +1,7 @@
 package ac.rino.rinoac.utils.collisions.blocks.connecting;
 
 import ac.rino.rinoac.player.RinoPlayer;
-import ac.rino.rinoac.utils.collisions.datatypes.CollisionBox;
-import ac.rino.rinoac.utils.collisions.datatypes.ComplexCollisionBox;
-import ac.rino.rinoac.utils.collisions.datatypes.HexCollisionBox;
-import ac.rino.rinoac.utils.collisions.datatypes.NoCollisionBox;
-import ac.rino.rinoac.utils.collisions.datatypes.SimpleCollisionBox;
+import ac.rino.rinoac.utils.collisions.datatypes.*;
 import ac.rino.rinoac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
@@ -84,9 +80,12 @@ public class DynamicConnecting {
         }
     }
 
-    /** Some blocks override isFullBlock whilst actually having a full state */
+    /**
+     * Some blocks override isFullBlock whilst actually having a full state
+     */
     boolean isBlacklisted(StateType m, StateType fence, ClientVersion clientVersion) {
-        if (BlockTags.LEAVES.contains(m)) return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isGlassPane(fence);
+        if (BlockTags.LEAVES.contains(m))
+            return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isGlassPane(fence);
         if (BlockTags.SHULKER_BOXES.contains(m)) return true;
         if (BlockTags.TRAPDOORS.contains(m)) return true;
 

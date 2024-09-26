@@ -12,9 +12,12 @@ import java.util.Set;
 public final class EntityTeam {
 
     private final RinoPlayer player;
-    @Getter private final String name;
-    @Getter private final Set<String> entries = new HashSet<>();
-    @Getter private WrapperPlayServerTeams.CollisionRule collisionRule;
+    @Getter
+    private final String name;
+    @Getter
+    private final Set<String> entries = new HashSet<>();
+    @Getter
+    private WrapperPlayServerTeams.CollisionRule collisionRule;
 
     public EntityTeam(RinoPlayer player, String name) {
         this.player = player;

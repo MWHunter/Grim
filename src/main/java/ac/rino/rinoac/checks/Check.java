@@ -1,8 +1,8 @@
 package ac.rino.rinoac.checks;
 
-import ac.rino.rinoac.RinoAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.events.FlagEvent;
+import ac.rino.rinoac.RinoAPI;
 import ac.rino.rinoac.player.RinoPlayer;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
@@ -30,11 +30,6 @@ public class Check implements AbstractCheck {
     private boolean isEnabled;
     private boolean exempted;
 
-    @Override
-    public boolean isExperimental() {
-        return experimental;
-    }
-
     public Check(final RinoPlayer player) {
         this.player = player;
 
@@ -54,6 +49,11 @@ public class Check implements AbstractCheck {
         }
 
         reload();
+    }
+
+    @Override
+    public boolean isExperimental() {
+        return experimental;
     }
 
     public boolean shouldModifyPackets() {

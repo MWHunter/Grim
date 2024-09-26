@@ -8,11 +8,11 @@ import ac.rino.rinoac.utils.anticheat.update.RotationUpdate;
 
 @CheckData(name = "AimDuplicateLook")
 public class AimDuplicateLook extends Check implements RotationCheck {
+    boolean exempt = false;
+
     public AimDuplicateLook(RinoPlayer playerData) {
         super(playerData);
     }
-
-    boolean exempt = false;
 
     @Override
     public void process(final RotationUpdate rotationUpdate) {

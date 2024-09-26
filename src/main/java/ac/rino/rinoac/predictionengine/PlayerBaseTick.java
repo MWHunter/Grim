@@ -74,11 +74,11 @@ public class PlayerBaseTick {
         } else {
             player.isSlowMovement =
                     !player.wasFlying && !player.isSwimming && canEnterPose(player, Pose.CROUCHING, player.lastX, player.lastY, player.lastZ)
-                    && (player.wasSneaking || !player.isInBed && !canEnterPose(player, Pose.STANDING, player.lastX, player.lastY, player.lastZ)) ||
-                    // If the player is in the swimming pose
-                    // Or if the player is not gliding, and the player's pose is fall flying
-                    // and the player is not touching water (yes, this also can override the gliding slowness)
-                    ((player.pose == Pose.SWIMMING || (!player.isGliding && player.pose == Pose.FALL_FLYING)) && !player.wasTouchingWater);
+                            && (player.wasSneaking || !player.isInBed && !canEnterPose(player, Pose.STANDING, player.lastX, player.lastY, player.lastZ)) ||
+                            // If the player is in the swimming pose
+                            // Or if the player is not gliding, and the player's pose is fall flying
+                            // and the player is not touching water (yes, this also can override the gliding slowness)
+                            ((player.pose == Pose.SWIMMING || (!player.isGliding && player.pose == Pose.FALL_FLYING)) && !player.wasTouchingWater);
 
             // Mojang also accidentally left this in with 1.14-1.14.4
             if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14) && player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_14_4)) {
@@ -88,7 +88,8 @@ public class PlayerBaseTick {
 
         if (player.compensatedEntities.getSelf().inVehicle()) player.isSlowMovement = false;
 
-        if (wasSlowMovement != player.isSlowMovement) player.checkManager.getPostPredictionCheck(NoSlowC.class).startedSprintingBeforeSlowMovement = player.isSlowMovement && player.isSprinting;
+        if (wasSlowMovement != player.isSlowMovement)
+            player.checkManager.getPostPredictionCheck(NoSlowC.class).startedSprintingBeforeSlowMovement = player.isSlowMovement && player.isSprinting;
 
         // Players in boats don't care about being in blocks
         if (!player.compensatedEntities.getSelf().inVehicle()) {

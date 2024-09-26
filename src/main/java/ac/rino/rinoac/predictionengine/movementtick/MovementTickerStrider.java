@@ -17,6 +17,9 @@ import java.util.ArrayList;
 
 public class MovementTickerStrider extends MovementTickerRideable {
 
+    private static final WrapperPlayServerUpdateAttributes.PropertyModifier SUFFOCATING_MODIFIER = new WrapperPlayServerUpdateAttributes.PropertyModifier(
+            ResourceLocation.minecraft("suffocating"), -0.34F, WrapperPlayServerUpdateAttributes.PropertyModifier.Operation.MULTIPLY_BASE);
+
     public MovementTickerStrider(RinoPlayer player) {
         super(player);
         movementInput = new Vector(0, 0, 1);
@@ -45,12 +48,9 @@ public class MovementTickerStrider extends MovementTickerRideable {
 
         final PacketEntityStrider strider = (PacketEntityStrider) player.compensatedEntities.getSelf().getRiding();
         strider.isShaking = !BlockTags.STRIDER_WARM_BLOCKS.contains(posMaterial) &&
-                        !BlockTags.STRIDER_WARM_BLOCKS.contains(belowMaterial) &&
-                        !player.wasTouchingLava;
+                !BlockTags.STRIDER_WARM_BLOCKS.contains(belowMaterial) &&
+                !player.wasTouchingLava;
     }
-
-    private static final WrapperPlayServerUpdateAttributes.PropertyModifier SUFFOCATING_MODIFIER = new WrapperPlayServerUpdateAttributes.PropertyModifier(
-            ResourceLocation.minecraft("suffocating"), -0.34F, WrapperPlayServerUpdateAttributes.PropertyModifier.Operation.MULTIPLY_BASE);
 
     @Override
     public float getSteeringSpeed() {

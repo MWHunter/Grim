@@ -56,31 +56,42 @@ public class CompensatedWorld {
     private static final WrappedBlockState airData = WrappedBlockState.getByGlobalId(blockVersion, 0);
     public final RinoPlayer player;
     public final Map<Long, Column> chunks;
-    // Packet locations for blocks
-    public Set<PistonData> activePistons = new HashSet<>();
-    public Set<ShulkerData> openShulkerBoxes = new HashSet<>();
-    // 1.17 with datapacks, and 1.18, have negative world offset values
-    private int minHeight = 0;
-    private int maxHeight = 256;
-
     // When the player changes the blocks, they track what the server thinks the blocks are
     //
     // Pair of the block position and the owning list TO the actual block
     // The owning list is so that this info can be removed when the final list is processed
     private final Long2ObjectOpenHashMap<BlockPrediction> originalServerBlocks = new Long2ObjectOpenHashMap<>();
-    // Blocks the client changed while placing or breaking blocks
-    private List<Vector3i> currentlyChangedBlocks = new LinkedList<>();
     private final Map<Integer, List<Vector3i>> serverIsCurrentlyProcessingThesePredictions = new HashMap<>();
     private final Object2ObjectLinkedOpenHashMap<Pair<Vector3i, DiggingAction>, Vector3d> unackedActions = new Object2ObjectLinkedOpenHashMap<>();
-    private boolean isCurrentlyPredicting = false;
-    public boolean isRaining = false;
-
     private final boolean noNegativeBlocks;
+    // Packet locations for blocks
+    public Set<PistonData> activePistons = new HashSet<>();
+    public Set<ShulkerData> openShulkerBoxes = new HashSet<>();
+    public boolean isRaining = false;
+    // 1.17 with datapacks, and 1.18, have negative world offset values
+    private int minHeight = 0;
+    private int maxHeight = 256;
+    // Blocks the client changed while placing or breaking blocks
+    private List<Vector3i> currentlyChangedBlocks = new LinkedList<>();
+    private boolean isCurrentlyPredicting = false;
 
     public CompensatedWorld(RinoPlayer player) {
         this.player = player;
         chunks = new Long2ObjectOpenHashMap<>(81, 0.5f);
         noNegativeBlocks = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_16_4);
+    }
+
+    public static long chunkPositionToLong(int x, int z) {
+        return ((x & 0xFFFFFFFFL) << 32L) | (z & 0xFFFFFFFFL);
+    }
+
+    private static BaseChunk create() {
+        if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_18)) {
+            return new Chunk_v1_18();
+        } else if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_16)) {
+            return new Chunk_v1_9(0, DataPalette.createForChunk());
+        }
+        return new Chunk_v1_9(0, new DataPalette(new ListPalette(4), new LegacyFlexibleStorage(4, 4096), PaletteType.CHUNK));
     }
 
     public void startPredicting() {
@@ -117,7 +128,6 @@ public class CompensatedWorld {
             }
         });
     }
-
 
     private void applyBlockChanges(List<Vector3i> toApplyBlocks) {
         player.sendTransaction();
@@ -194,10 +204,6 @@ public class CompensatedWorld {
         }
     }
 
-    public static long chunkPositionToLong(int x, int z) {
-        return ((x & 0xFFFFFFFFL) << 32L) | (z & 0xFFFFFFFFL);
-    }
-
     public boolean isNearHardEntity(SimpleCollisionBox playerBox) {
         for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
             if ((entity.isBoat() || entity.getType() == EntityTypes.SHULKER) && player.compensatedEntities.getSelf().getRiding() != entity) {
@@ -226,15 +232,6 @@ public class CompensatedWorld {
         }
 
         return false;
-    }
-
-    private static BaseChunk create() {
-        if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_18)) {
-            return new Chunk_v1_18();
-        } else if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_16)) {
-            return new Chunk_v1_9(0, DataPalette.createForChunk());
-        }
-        return new Chunk_v1_9(0, new DataPalette(new ListPalette(4), new LegacyFlexibleStorage(4, 4096), PaletteType.CHUNK));
     }
 
     public void updateBlock(Vector3i pos, WrappedBlockState state) {
@@ -316,8 +313,8 @@ public class CompensatedWorld {
                 }
             }
         } else if ((player.getClientVersion().isOlderThan(ClientVersion.V_1_8) || type != StateTypes.IRON_TRAPDOOR) // 1.7 can open iron trapdoors.
-                    && BlockTags.TRAPDOORS.contains(type)
-                    || BlockTags.FENCE_GATES.contains(type)) {
+                && BlockTags.TRAPDOORS.contains(type)
+                || BlockTags.FENCE_GATES.contains(type)) {
             // Take 12 most significant bytes -> the material ID.  Combine them with the new block magic data.
             data.setOpen(!data.isOpen());
             player.compensatedWorld.updateBlock(blockX, blockY, blockZ, data.getGlobalId());

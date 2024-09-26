@@ -9,12 +9,12 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
 @CheckData(name = "NoSlowA (Prediction)", configName = "NoSlowA", setback = 5)
 public class NoSlowA extends Check implements PostPredictionCheck {
-    double offsetToFlag;
-    double bestOffset = 1;
     // The player sends that they switched items the next tick if they switch from an item that can be used
     // to another item that can be used.  What the fuck mojang.  Affects 1.8 (and most likely 1.7) clients.
     public boolean didSlotChangeLastTick = false;
     public boolean flaggedLastTick = false;
+    double offsetToFlag;
+    double bestOffset = 1;
 
     public NoSlowA(RinoPlayer player) {
         super(player);

@@ -1,7 +1,7 @@
 package ac.rino.rinoac.manager;
 
-import ac.rino.rinoac.RinoAPI;
 import ac.grim.grimac.api.alerts.AlertManager;
+import ac.rino.rinoac.RinoAPI;
 import ac.rino.rinoac.utils.anticheat.MessageUtil;
 import lombok.Getter;
 import org.bukkit.entity.Player;

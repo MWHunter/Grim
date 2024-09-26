@@ -11,11 +11,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 //
 // This class calculates the running mode of a list in best case o(1) worst case o(n) time.
 public class RunningMode {
+    private static final double threshold = 1e-3;
     Queue<Double> addList;
     Map<Double, Integer> popularityMap = new HashMap<>();
     int maxSize;
-
-    private static final double threshold = 1e-3;
 
     public RunningMode(int maxSize) {
         if (maxSize == 0) throw new IllegalArgumentException("There's no mode to a size 0 list!");

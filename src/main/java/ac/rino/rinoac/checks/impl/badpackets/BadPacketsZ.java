@@ -17,13 +17,12 @@ import static ac.rino.rinoac.utils.nmsutil.BlockBreakSpeed.getBlockDamage;
 
 @CheckData(name = "BadPacketsZ", experimental = true)
 public class BadPacketsZ extends Check implements PacketCheck {
+    private final int exemptedY = player.getClientVersion().isOlderThan(ClientVersion.V_1_8) ? 255 : (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_14) ? -1 : 4095);
+    private boolean lastBlockWasInstantBreak = false;
+    private Vector3i lastBlock, lastCancelledBlock, lastLastBlock = null;
     public BadPacketsZ(final RinoPlayer player) {
         super(player);
     }
-
-    private boolean lastBlockWasInstantBreak = false;
-    private Vector3i lastBlock, lastCancelledBlock, lastLastBlock = null;
-    private final int exemptedY = player.getClientVersion().isOlderThan(ClientVersion.V_1_8) ? 255 : (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_14) ? -1 : 4095);
 
     // The client sometimes sends a wierd cancel packet
     private boolean shouldExempt(final Vector3i pos) {

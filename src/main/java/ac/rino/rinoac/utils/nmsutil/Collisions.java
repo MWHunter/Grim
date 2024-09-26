@@ -38,11 +38,6 @@ public class Collisions {
     private static final double COLLISION_EPSILON = 1.0E-7;
 
     private static final boolean IS_FOURTEEN; // Optimization for chunks with empty block count
-
-    static {
-        IS_FOURTEEN = PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_14);
-    }
-
     private static final List<List<Axis>> allAxisCombinations = Arrays.asList(
             Arrays.asList(Axis.Y, Axis.X, Axis.Z),
             Arrays.asList(Axis.Y, Axis.Z, Axis.X),
@@ -52,10 +47,13 @@ public class Collisions {
 
             Arrays.asList(Axis.Z, Axis.X, Axis.Y),
             Arrays.asList(Axis.Z, Axis.Y, Axis.X));
-
     private static final List<List<Axis>> nonStupidityCombinations = Arrays.asList(
             Arrays.asList(Axis.Y, Axis.X, Axis.Z),
             Arrays.asList(Axis.Y, Axis.Z, Axis.X));
+
+    static {
+        IS_FOURTEEN = PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_14);
+    }
 
     public static boolean slowCouldPointThreeHitGround(RinoPlayer player, double x, double y, double z) {
         SimpleCollisionBox oldBB = player.boundingBox;

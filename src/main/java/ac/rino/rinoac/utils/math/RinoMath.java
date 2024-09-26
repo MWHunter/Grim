@@ -103,6 +103,6 @@ public class RinoMath {
     }
 
     public static boolean isNearlySame(double a, double b, double epoch) {
-        return Math.abs(a-b) < epoch;
+        return Math.abs(a - b) < epoch;
     }
 }

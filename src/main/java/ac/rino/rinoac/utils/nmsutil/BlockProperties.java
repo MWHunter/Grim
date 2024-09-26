@@ -29,13 +29,12 @@ public class BlockProperties {
                 return (float) (player.speed * 0.1f);
             }
 
-            if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityStrider) {
+            if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityStrider strider) {
                 // Unsure which version the speed changed in
                 if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20)) {
                     return (float) player.speed * 0.1f;
                 }
 
-                PacketEntityStrider strider = (PacketEntityStrider) player.compensatedEntities.getSelf().getRiding();
                 // Vanilla multiplies by 0.1 to calculate speed
                 return (float) strider.getAttributeValue(Attributes.GENERIC_MOVEMENT_SPEED) * (strider.isShaking ? 0.66F : 1.0F) * 0.1f;
             }
@@ -129,7 +128,7 @@ public class BlockProperties {
             StateType blockstate = player.compensatedWorld.getStateTypeAt(mainBlockPos.x, mainBlockPos.y, mainBlockPos.z);
 
             // I genuinely don't understand this code, or why fences are special
-            boolean shouldReturn = (!((double)searchBelowPlayer <= 0.5D) || !BlockTags.FENCES.contains(blockstate)) &&
+            boolean shouldReturn = (!((double) searchBelowPlayer <= 0.5D) || !BlockTags.FENCES.contains(blockstate)) &&
                     !BlockTags.WALLS.contains(blockstate) &&
                     !BlockTags.FENCE_GATES.contains(blockstate);
 
@@ -183,7 +182,8 @@ public class BlockProperties {
         }
 
         float speed = getBlockSpeedFactor(player, block);
-        if (speed != 1.0f || block == StateTypes.SOUL_SAND || block == StateTypes.WATER || block == StateTypes.BUBBLE_COLUMN) return speed;
+        if (speed != 1.0f || block == StateTypes.SOUL_SAND || block == StateTypes.WATER || block == StateTypes.BUBBLE_COLUMN)
+            return speed;
 
         StateType block2 = player.compensatedWorld.getStateTypeAt(pos.getX(), pos.getY() - 0.5000001, pos.getZ());
         return getBlockSpeedFactor(player, block2);

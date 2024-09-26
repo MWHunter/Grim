@@ -17,11 +17,12 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerDataManager {
-    private final ConcurrentHashMap<User, RinoPlayer> playerDataMap = new ConcurrentHashMap<>();
     public final Collection<User> exemptUsers = Collections.synchronizedCollection(new HashSet<>());
+    private final ConcurrentHashMap<User, RinoPlayer> playerDataMap = new ConcurrentHashMap<>();
 
     public RinoPlayer getPlayer(final Player player) {
-        if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_18) && MultiLibUtil.isExternalPlayer(player)) return null;
+        if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_18) && MultiLibUtil.isExternalPlayer(player))
+            return null;
 
         // Is it safe to interact with this, or is this internal PacketEvents code?
         User user = PacketEvents.getAPI().getPlayerManager().getUser(player);

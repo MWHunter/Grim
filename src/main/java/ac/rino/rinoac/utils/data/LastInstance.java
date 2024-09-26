@@ -3,11 +3,11 @@ package ac.rino.rinoac.utils.data;
 import ac.rino.rinoac.player.RinoPlayer;
 
 public class LastInstance {
+    int lastInstance = 100;
+
     public LastInstance(RinoPlayer player) {
         player.lastInstanceManager.addInstance(this);
     }
-
-    int lastInstance = 100;
 
     public boolean hasOccurredSince(int time) {
         return lastInstance <= time;

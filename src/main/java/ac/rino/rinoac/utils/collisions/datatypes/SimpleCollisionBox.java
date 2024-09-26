@@ -477,10 +477,10 @@ public class SimpleCollisionBox implements CollisionBox {
         if (!(min < -COLLISION_EPSILON) && !(max > 1.0000001)) {
             for (int i = 0; i <= 3; i++) {
                 int j = 1 << i;
-                double d = min * (double)j;
-                double e = max * (double)j;
-                boolean bl = Math.abs(d - (double)Math.round(d)) < COLLISION_EPSILON * (double)j;
-                boolean bl2 = Math.abs(e - (double)Math.round(e)) < COLLISION_EPSILON * (double)j;
+                double d = min * (double) j;
+                double e = max * (double) j;
+                boolean bl = Math.abs(d - (double) Math.round(d)) < COLLISION_EPSILON * (double) j;
+                boolean bl2 = Math.abs(e - (double) Math.round(e)) < COLLISION_EPSILON * (double) j;
                 if (bl && bl2) {
                     return i;
                 }

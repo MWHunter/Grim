@@ -32,36 +32,6 @@ public class ProxyAlertMessenger extends PacketListenerAbstract {
         }
     }
 
-    @Override
-    public void onPacketReceive(final PacketReceiveEvent event) {
-        if (event.getPacketType() != PacketType.Play.Client.PLUGIN_MESSAGE || !ProxyAlertMessenger.canReceiveAlerts())
-            return;
-
-        WrapperPlayClientPluginMessage wrapper = new WrapperPlayClientPluginMessage(event);
-
-        if (!wrapper.getChannelName().equals("BungeeCord") && !wrapper.getChannelName().equals("bungeecord:main"))
-            return;
-
-        ByteArrayDataInput in = ByteStreams.newDataInput(wrapper.getData());
-
-        if (!in.readUTF().equals("GRIMAC")) return;
-
-        final String alert;
-        byte[] messageBytes = new byte[in.readShort()];
-        in.readFully(messageBytes);
-
-        try {
-            alert = new DataInputStream(new ByteArrayInputStream(messageBytes)).readUTF();
-        } catch (IOException exception) {
-            LogUtil.error("Something went wrong whilst reading an alert forwarded from another server!");
-            exception.printStackTrace();
-            return;
-        }
-
-        for (Player bukkitPlayer : RinoAPI.INSTANCE.getAlertManager().getEnabledAlerts())
-            bukkitPlayer.sendMessage(alert);
-    }
-
     public static void sendPluginMessage(String message) {
         if (!canSendAlerts())
             return;
@@ -98,5 +68,35 @@ public class ProxyAlertMessenger extends PacketListenerAbstract {
         File file = new File(pathToFile);
         if (!file.exists()) return false;
         return YamlConfiguration.loadConfiguration(file).getBoolean(pathToValue);
+    }
+
+    @Override
+    public void onPacketReceive(final PacketReceiveEvent event) {
+        if (event.getPacketType() != PacketType.Play.Client.PLUGIN_MESSAGE || !ProxyAlertMessenger.canReceiveAlerts())
+            return;
+
+        WrapperPlayClientPluginMessage wrapper = new WrapperPlayClientPluginMessage(event);
+
+        if (!wrapper.getChannelName().equals("BungeeCord") && !wrapper.getChannelName().equals("bungeecord:main"))
+            return;
+
+        ByteArrayDataInput in = ByteStreams.newDataInput(wrapper.getData());
+
+        if (!in.readUTF().equals("GRIMAC")) return;
+
+        final String alert;
+        byte[] messageBytes = new byte[in.readShort()];
+        in.readFully(messageBytes);
+
+        try {
+            alert = new DataInputStream(new ByteArrayInputStream(messageBytes)).readUTF();
+        } catch (IOException exception) {
+            LogUtil.error("Something went wrong whilst reading an alert forwarded from another server!");
+            exception.printStackTrace();
+            return;
+        }
+
+        for (Player bukkitPlayer : RinoAPI.INSTANCE.getAlertManager().getEnabledAlerts())
+            bukkitPlayer.sendMessage(alert);
     }
 }
