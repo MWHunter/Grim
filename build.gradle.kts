@@ -10,9 +10,9 @@ plugins {
 
 group = "ac.grim.grimac"
 version = "2.3.68"
-description = "Libre simulation anticheat designed for 1.21 with 1.8-1.21 support, powered by PacketEvents 2.0."
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
+description = "Libre simulation anticheat designed for 1.21.1 with 1.20.4-1.21.1 support, powered by PacketEvents 2.0."
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 // Set to false for debug builds
 // You cannot live reload classes if the jar relocates dependencies
@@ -23,7 +23,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") // Spigot
     maven("https://jitpack.io/") { // Grim API
         content {
-            includeGroup("com.github.grimanticheat")
+            includeGroup("com.github.rinoanticheat")
         }
     }
     maven("https://repo.viaversion.com") // ViaVersion
@@ -56,10 +56,10 @@ dependencies {
 }
 
 bukkit {
-    name = "GrimAC"
-    author = "GrimAC"
-    main = "ac.grim.grimac.GrimAC"
-    apiVersion = "1.13"
+    name = "RinoAC"
+    author = "Chest Solutions"
+    main = "ac.rino.rino.RinoAC"
+    apiVersion = "1.20.4"
     foliaSupported = true
 
     softDepend = listOf(
@@ -75,47 +75,47 @@ bukkit {
     )
 
     permissions {
-        register("grim.alerts") {
+        register("rino.alerts") {
             description = "Receive alerts for violations"
             default = Permission.Default.OP
         }
 
-        register("grim.alerts.enable-on-join") {
+        register("rino.alerts.enable-on-join") {
             description = "Enable alerts on join"
             default = Permission.Default.OP
         }
 
-        register("grim.performance") {
+        register("rino.performance") {
             description = "Check performance metrics"
             default = Permission.Default.OP
         }
 
-        register("grim.profile") {
+        register("rino.profile") {
             description = "Check user profile"
             default = Permission.Default.OP
         }
 
-        register("grim.brand") {
+        register("rino.brand") {
             description = "Show client brands on join"
             default = Permission.Default.OP
         }
 
-        register("grim.sendalert") {
+        register("rino.sendalert") {
             description = "Send cheater alert"
             default = Permission.Default.OP
         }
 
-        register("grim.nosetback") {
+        register("rino.nosetback") {
             description = "Disable setback"
             default = Permission.Default.FALSE
         }
 
-        register("grim.nomodifypacket") {
+        register("rino.nomodifypacket") {
             description = "Disable modifying packets"
             default = Permission.Default.FALSE
         }
 
-        register("grim.exempt") {
+        register("rino.exempt") {
             description = "Exempt from all checks"
             default = Permission.Default.FALSE
         }
@@ -138,22 +138,22 @@ tasks.shadowJar {
     minimize()
     archiveFileName.set("${project.name}-${project.version}.jar")
     if (relocate) {
-        relocate("io.github.retrooper.packetevents", "ac.grim.grimac.shaded.io.github.retrooper.packetevents")
-        relocate("com.github.retrooper.packetevents", "ac.grim.grimac.shaded.com.github.retrooper.packetevents")
-        relocate("co.aikar.commands", "ac.grim.grimac.shaded.acf")
-        relocate("co.aikar.locale", "ac.grim.grimac.shaded.locale")
-        relocate("club.minnced", "ac.grim.grimac.shaded.discord-webhooks")
-        relocate("github.scarsz.configuralize", "ac.grim.grimac.shaded.configuralize")
-        relocate("com.github.puregero", "ac.grim.grimac.shaded.com.github.puregero")
-        relocate("com.google.code.gson", "ac.grim.grimac.shaded.gson")
-        relocate("alexh", "ac.grim.grimac.shaded.maps")
-        relocate("it.unimi.dsi.fastutil", "ac.grim.grimac.shaded.fastutil")
-        relocate("net.kyori", "ac.grim.grimac.shaded.kyori")
-        relocate("okhttp3", "ac.grim.grimac.shaded.okhttp3")
-        relocate("okio", "ac.grim.grimac.shaded.okio")
-        relocate("org.yaml.snakeyaml", "ac.grim.grimac.shaded.snakeyaml")
-        relocate("org.json", "ac.grim.grimac.shaded.json")
-        relocate("org.intellij", "ac.grim.grimac.shaded.intellij")
-        relocate("org.jetbrains", "ac.grim.grimac.shaded.jetbrains")
+        relocate("io.github.retrooper.packetevents", "ac.rino.rinoac.shaded.io.github.retrooper.packetevents")
+        relocate("com.github.retrooper.packetevents", "ac.rino.rinoac.shaded.com.github.retrooper.packetevents")
+        relocate("co.aikar.commands", "ac.rino.rinoac.shaded.acf")
+        relocate("co.aikar.locale", "ac.rino.rinoac.shaded.locale")
+        relocate("club.minnced", "ac.rino.rinoac.shaded.discord-webhooks")
+        relocate("github.scarsz.configuralize", "ac.rino.rinoac.shaded.configuralize")
+        relocate("com.github.puregero", "ac.rino.rinoac.shaded.com.github.puregero")
+        relocate("com.google.code.gson", "ac.rino.rinoac.shaded.gson")
+        relocate("alexh", "ac.rino.rinoac.shaded.maps")
+        relocate("it.unimi.dsi.fastutil", "ac.rino.rinoac.shaded.fastutil")
+        relocate("net.kyori", "ac.rino.rinoac.shaded.kyori")
+        relocate("okhttp3", "ac.rino.rinoac.shaded.okhttp3")
+        relocate("okio", "ac.rino.rinoac.shaded.okio")
+        relocate("org.yaml.snakeyaml", "ac.rino.rinoac.shaded.snakeyaml")
+        relocate("org.json", "ac.rino.rinoac.shaded.json")
+        relocate("org.intellij", "ac.rino.rinoac.shaded.intellij")
+        relocate("org.jetbrains", "ac.rino.rinoac.shaded.jetbrains")
     }
 }
