@@ -59,7 +59,8 @@ bukkit {
     name = "RinoAC"
     author = "Chest Solutions"
     main = "ac.rino.rinoac.RinoAC"
-    apiVersion = "1.20.4"
+    apiVersion = "1.20"
+    // Change "1.20.4" to "1.20" because of https://www.spigotmc.org/threads/607186/ (to work with 1.20.4 version)
     foliaSupported = true
 
     softDepend = listOf(
