@@ -29,10 +29,10 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@v3.5.0
       with:
         arguments: build
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
-        path: /home/runner/work/Rino/Rino/build/libs/**.jar
+        path: /home/runner/work/Rino-AC/Rino-AC/build/libs/**.jar
