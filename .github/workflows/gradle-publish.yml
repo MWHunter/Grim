@@ -31,7 +31,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
-        arguments: build
+        run: ./gradlew build
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
