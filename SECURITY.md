@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-Vulnerability must be reproducible on the latest grim commit.
+Vulnerability must be reproducible on the latest rino commit.
 
 ## Reporting a Vulnerability
 
-If there's a major bypass that would affect gameplay if reported publicly then join Grim's discord [here](https://discord.com/invite/kqQAhTmkUF) and reach out to staff.
+If there's a major bypass that would affect gameplay if reported publicly then join Rino's discord [here](https://discord.gg/aXWVKgQ4) and reach out to staff.
