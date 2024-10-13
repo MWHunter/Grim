@@ -42,6 +42,10 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
             }
 
             if (interact.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
+                if (player.isMitigateAutoBlock()) {
+                    player.resetBukkitItemUsage();
+                }
+
                 ItemStack heldItem = player.getInventory().getHeldItem();
                 PacketEntity entity = player.compensatedEntities.getEntity(interact.getEntityId());
 
