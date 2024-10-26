@@ -168,6 +168,8 @@ public class CheckManager {
                 .put(MultiBreak.class, new MultiBreak(player))
                 .put(FarBreak.class, new FarBreak(player))
                 .put(NoSwingBreak.class, new NoSwingBreak(player))
+                .put(NoBreakDelay.class, new NoBreakDelay(player))
+                .put(NoBreakDelayMitigation.class, new NoBreakDelayMitigation(player))
                 .put(FastBreakB.class, new FastBreakB(player))
                 .build();
 
