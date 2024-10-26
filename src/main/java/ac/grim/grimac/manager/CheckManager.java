@@ -5,6 +5,7 @@ import ac.grim.grimac.checks.impl.aim.AimDuplicateLook;
 import ac.grim.grimac.checks.impl.aim.AimModulo360;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
+import ac.grim.grimac.checks.impl.breaking.FastBreakA;
 import ac.grim.grimac.checks.impl.breaking.FastBreakB;
 import ac.grim.grimac.checks.impl.breaking.NoBreakDelay;
 import ac.grim.grimac.checks.impl.breaking.NoBreakDelayMitigation;
@@ -17,7 +18,6 @@ import ac.grim.grimac.checks.impl.exploit.ExploitB;
 import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFallA;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
-import ac.grim.grimac.checks.impl.misc.FastBreakA;
 import ac.grim.grimac.checks.impl.misc.GhostBlockMitigation;
 import ac.grim.grimac.checks.impl.misc.TransactionOrder;
 import ac.grim.grimac.checks.impl.movement.*;
@@ -107,7 +107,6 @@ public class CheckManager {
                 .put(BadPacketsX.class, new BadPacketsX(player))
                 .put(BadPacketsY.class, new BadPacketsY(player))
                 .put(BadPacketsZ.class, new BadPacketsZ(player))
-                .put(FastBreakA.class, new FastBreakA(player))
                 .put(TransactionOrder.class, new TransactionOrder(player))
                 .put(NoSlowB.class, new NoSlowB(player))
                 .put(SetbackBlocker.class, new SetbackBlocker(player)) // Must be last class otherwise we can't check while blocking packets
@@ -166,6 +165,7 @@ public class CheckManager {
         blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
                 .put(NoBreakDelay.class, new NoBreakDelay(player))
                 .put(NoBreakDelayMitigation.class, new NoBreakDelayMitigation(player))
+                .put(FastBreakA.class, new FastBreakA(player))
                 .put(FastBreakB.class, new FastBreakB(player))
                 .build();
 

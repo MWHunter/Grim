@@ -470,7 +470,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
                 if (blockBreak.isCancelled()) {
                     event.setCancelled(true);
                     player.onPacketCancel();
-                    resyncPosition(player, position);
+                    resyncPosition(player, position, dig.getSequence());
                 }
 
                 player.checkManager.getPacketCheck(BadPacketsX.class).handle(event, dig, block.getType());
