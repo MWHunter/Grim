@@ -507,7 +507,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
                         player.onPacketCancel();
                     }
 
-                    resyncPosition(player, position);
+                    resyncPosition(player, position, dig.getSequence());
                 } else {
                     player.queuedBreaks.add(blockBreak);
 
