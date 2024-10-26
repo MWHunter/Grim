@@ -163,6 +163,12 @@ exploit:
   allow-building-on-ghostblocks: true
   distance-to-check-if-ghostblocks: 2
 
+# The minimum tick delay allowed between block breaks.
+# this is usually 6, but releasing the block break key resets this
+# delay, thus there is no alert for break delays less than this.
+# Only affects pre-1.9 clients, and must be from 0 to 6.
+min-break-delay: 3
+
 # Включить запись в журнал плагинов, которые внедрились в netty при присоединении для отладки проблем совместимости
 debug-pipeline-on-join: false
 

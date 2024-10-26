@@ -6,6 +6,8 @@ import ac.grim.grimac.checks.impl.aim.AimModulo360;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
 import ac.grim.grimac.checks.impl.breaking.FastBreakB;
+import ac.grim.grimac.checks.impl.breaking.NoBreakDelay;
+import ac.grim.grimac.checks.impl.breaking.NoBreakDelayMitigation;
 import ac.grim.grimac.checks.impl.combat.MultiInteractA;
 import ac.grim.grimac.checks.impl.combat.MultiInteractB;
 import ac.grim.grimac.checks.impl.combat.Reach;
@@ -162,6 +164,8 @@ public class CheckManager {
                 .build();
 
         blockBreakChecks = new ImmutableClassToInstanceMap.Builder<BlockBreakCheck>()
+                .put(NoBreakDelay.class, new NoBreakDelay(player))
+                .put(NoBreakDelayMitigation.class, new NoBreakDelayMitigation(player))
                 .put(FastBreakB.class, new FastBreakB(player))
                 .build();
 
