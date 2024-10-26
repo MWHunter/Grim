@@ -164,6 +164,12 @@ exploit:
   # Ihr gültiger Bereich ist von 2 bis 4 begrenzt
   distance-to-check-if-ghostblocks: 2
 
+# The minimum tick delay allowed between block breaks.
+# this is usually 6, but releasing the block break key resets this
+# delay, thus there is no alert for break delays less than this.
+# Only affects pre-1.9 clients, and must be from 0 to 6.
+min-break-delay: 3
+
 # Aktivieren Sie die Protokollierung von Plugins, die in netty on join injiziert wurden, um Kompatibilitätsprobleme zu beheben.
 debug-pipeline-on-join: false
 
