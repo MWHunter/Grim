@@ -8,6 +8,7 @@ import ac.grim.grimac.utils.anticheat.update.BlockPlace;
 import ac.grim.grimac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
+import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
 
 @CheckData(name = "AirLiquidPlace")
@@ -18,12 +19,14 @@ public class AirLiquidPlace extends BlockPlaceCheck {
 
     @Override
     public void onBlockPlace(final BlockPlace place) {
+        if (place.getMaterial() == StateTypes.SAND) return; // false flag when place blocks in falling sand
+
         if (player.gamemode == GameMode.CREATIVE) return;
         Vector3i blockPos = place.getPlacedAgainstBlockLocation();
         StateType placeAgainst = player.compensatedWorld.getStateTypeAt(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
         if (placeAgainst.isAir() || Materials.isNoPlaceLiquid(placeAgainst)) { // fail
-            if (flagAndAlert() && shouldModifyPackets() && shouldCancel()) {
+            if (flagAndAlert("type=" + place.getMaterial().getName()) && shouldModifyPackets() && shouldCancel()) {
                 place.resync();
             }
         }
