@@ -1,8 +1,11 @@
 package ac.grim.grimac.manager.log;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.util.UUID;
 
+@Data
 public class Violation {
 
     private final UUID playerUUID;
@@ -10,14 +13,6 @@ public class Violation {
     private final String verbose;
     private final String vl;
     private final Date createdAt;
-
-    public Violation(UUID playerUUID, String checkName, String verbose, String vl, Date createdAt) {
-        this.playerUUID = playerUUID;
-        this.checkName = checkName;
-        this.verbose = verbose;
-        this.vl = vl;
-        this.createdAt = createdAt;
-    }
 
     public UUID getPlayerUUID() {
         return playerUUID;

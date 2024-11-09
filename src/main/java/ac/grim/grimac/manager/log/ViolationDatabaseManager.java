@@ -2,14 +2,15 @@ package ac.grim.grimac.manager.log;
 
 import ac.grim.grimac.manager.init.Initable;
 import ac.grim.grimac.player.GrimPlayer;
-import org.bukkit.Bukkit;
+import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class ViolationDatabaseManager implements Initable {
@@ -39,7 +40,7 @@ public class ViolationDatabaseManager implements Initable {
                                 "check_name TEXT NOT NULL, " +
                                 "verbose TEXT NOT NULL, " +
                                 "vl TEXT NOT NULL, " +
-                                "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                                "created_at BIGINT NOT NULL" +
                                 ")"
                 );
         ) {
@@ -55,23 +56,72 @@ public class ViolationDatabaseManager implements Initable {
     }
 
     public void logAlert(GrimPlayer player, String verbose, String checkName, String violations) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        FoliaScheduler.getAsyncScheduler().runNow(plugin, __ -> {
             try(
                     Connection connection = getConnection();
                     PreparedStatement insertLog = connection.prepareStatement(
-                            "INSERT INTO violations (uuid, check_name, verbose, vl) VALUES (?, ?, ?, ?)"
+                            "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
                     )
             ) {
                 insertLog.setString(1, player.getUniqueId().toString());
                 insertLog.setString(2, verbose);
                 insertLog.setString(3, checkName);
                 insertLog.setString(4, violations);
+                insertLog.setLong(5, System.currentTimeMillis());
 
                 insertLog.executeUpdate();
             } catch(SQLException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to insert violation:", ex);
             }
         });
+    }
+
+    public int getLogCount(UUID player) {
+        try(
+                Connection connection = getConnection();
+                PreparedStatement fetchLogs = connection.prepareStatement(
+                        "SELECT COUNT(*) FROM violations" +
+                                " WHERE uuid = ?"
+                )
+        ) {
+            fetchLogs.setString(1, player.toString());
+            ResultSet resultSet = fetchLogs.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch(SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to fetch number of violations:", ex);
+        }
+        return 0;
+    }
+
+    public List<Violation> getViolations(UUID player, int page, int limit) {
+        List<Violation> violations = new ArrayList<>();
+        try(
+                Connection connection = getConnection();
+                PreparedStatement fetchLogs = connection.prepareStatement(
+                        "SELECT check_name, verbose, vl, created_at FROM violations" +
+                        " WHERE uuid = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+                )
+        ) {
+            fetchLogs.setString(1, player.toString());
+            fetchLogs.setInt(2, limit);
+            fetchLogs.setInt(3, (page - 1) * limit);
+
+            ResultSet resultSet = fetchLogs.executeQuery();
+            while(resultSet.next()) {
+                String checkName = resultSet.getString("check_name");
+                String verbose = resultSet.getString("verbose");
+                String vl = resultSet.getString("vl");
+                Date createdAt = new Date(resultSet.getLong("created_at"));
+
+                violations.add(new Violation(UUID.randomUUID(), checkName, verbose, vl, createdAt));
+            }
+        } catch(SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to fetch violations:", ex);
+        }
+
+        return violations;
     }
 
 
