@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @CommandAlias("grim|grimac")
 public class GrimHistory extends BaseCommand {
 
-    @Subcommand("log|logs")
+    @Subcommand("history|hist")
     @CommandPermission("grim.history")
     @CommandAlias("gh")
     public void onLogs(CommandSender sender, OfflinePlayer target, @Optional Integer page) {
