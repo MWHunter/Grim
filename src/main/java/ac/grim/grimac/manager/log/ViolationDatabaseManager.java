@@ -50,30 +50,33 @@ public class ViolationDatabaseManager implements Initable {
                     "CREATE INDEX IF NOT EXISTS idx_violations_uuid ON violations(uuid)"
             );
             createIndex.execute();
+            createIndex.close();
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Failed to generate violations database:", ex);
         }
     }
 
     public void logAlert(GrimPlayer player, String verbose, String checkName, String violations) {
-        FoliaScheduler.getAsyncScheduler().runNow(plugin, __ -> {
-            try (
-                    Connection connection = getConnection();
-                    PreparedStatement insertLog = connection.prepareStatement(
-                            "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
-                    )
-            ) {
-                insertLog.setString(1, player.getUniqueId().toString());
-                insertLog.setString(2, verbose);
-                insertLog.setString(3, checkName);
-                insertLog.setString(4, violations);
-                insertLog.setLong(5, System.currentTimeMillis());
+        FoliaScheduler.getAsyncScheduler().runNow(plugin, __ -> logAlertSync(player, verbose, checkName, violations));
+    }
 
-                insertLog.executeUpdate();
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Failed to insert violation:", ex);
-            }
-        });
+    public synchronized void logAlertSync(GrimPlayer player, String verbose, String checkName, String violations) {
+        try (
+                Connection connection = getConnection();
+                PreparedStatement insertLog = connection.prepareStatement(
+                        "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
+                )
+        ) {
+            insertLog.setString(1, player.getUniqueId().toString());
+            insertLog.setString(2, verbose);
+            insertLog.setString(3, checkName);
+            insertLog.setString(4, violations);
+            insertLog.setLong(5, System.currentTimeMillis());
+
+            insertLog.executeUpdate();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to insert violation:", ex);
+        }
     }
 
     public int getLogCount(UUID player) {
@@ -124,7 +127,7 @@ public class ViolationDatabaseManager implements Initable {
     }
 
 
-    protected Connection getConnection() throws SQLException {
+    protected synchronized Connection getConnection() throws SQLException {
         if (openConnection == null || openConnection.isClosed()) {
             openConnection = openConnection();
         }
