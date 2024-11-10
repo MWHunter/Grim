@@ -13,25 +13,5 @@ public class Violation {
     private final String verbose;
     private final String vl;
     private final Date createdAt;
-
-    public UUID getPlayerUUID() {
-        return playerUUID;
-    }
-
-    public String getCheckName() {
-        return checkName;
-    }
-
-    public String getVerbose() {
-        return verbose;
-    }
-
-    public String getVl() {
-        return vl;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
+    
 }
