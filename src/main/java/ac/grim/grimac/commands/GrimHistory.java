@@ -43,7 +43,7 @@ public class GrimHistory extends BaseCommand {
                     .replace("%maxPages%", String.valueOf(maxPages))
             ));
 
-            for(int i = logs.size() - 1; i >= 0; i--) {
+            for (int i = logs.size() - 1; i >= 0; i--) {
                 Violation log = logs.get(i);
                 sender.sendMessage(MessageUtil.format(logFormat
                         .replace("%player%", target.getName())
@@ -79,6 +79,5 @@ public class GrimHistory extends BaseCommand {
 
         return result.toString().trim();
     }
-
 
 }

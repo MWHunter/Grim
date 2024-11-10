@@ -150,7 +150,7 @@ public class PunishmentManager implements ConfigReloadable {
                             if (command.command.equals("[webhook]")) {
                                 String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
                                 GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, verbose, check.getDisplayName(), vl);
-                            } else if(command.command.equals("[log]")) {
+                            } else if (command.command.equals("[log]")) {
                                 String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
                                 String verboseWithoutGl = verbose.replaceAll(" /gl .*", "");
                                 GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, check.getDisplayName(), verboseWithoutGl, vl);

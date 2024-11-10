@@ -26,12 +26,12 @@ public class ViolationDatabaseManager implements Initable {
     @Override
     public void start() {
         try {
-            //Init sqlite
+            // Init sqlite
             Class.forName("org.sqlite.JDBC");
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not load SQLite driver", e);
         }
-        try(
+        try (
                 Connection connection = getConnection();
                 PreparedStatement createTable = connection.prepareStatement(
                         "CREATE TABLE IF NOT EXISTS violations(" +
@@ -50,14 +50,14 @@ public class ViolationDatabaseManager implements Initable {
                     "CREATE INDEX IF NOT EXISTS idx_violations_uuid ON violations(uuid)"
             );
             createIndex.execute();
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Failed to generate violations database:", ex);
         }
     }
 
     public void logAlert(GrimPlayer player, String verbose, String checkName, String violations) {
         FoliaScheduler.getAsyncScheduler().runNow(plugin, __ -> {
-            try(
+            try (
                     Connection connection = getConnection();
                     PreparedStatement insertLog = connection.prepareStatement(
                             "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
@@ -70,26 +70,25 @@ public class ViolationDatabaseManager implements Initable {
                 insertLog.setLong(5, System.currentTimeMillis());
 
                 insertLog.executeUpdate();
-            } catch(SQLException ex) {
+            } catch (SQLException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to insert violation:", ex);
             }
         });
     }
 
     public int getLogCount(UUID player) {
-        try(
+        try (
                 Connection connection = getConnection();
                 PreparedStatement fetchLogs = connection.prepareStatement(
-                        "SELECT COUNT(*) FROM violations" +
-                                " WHERE uuid = ?"
+                        "SELECT COUNT(*) FROM violations WHERE uuid = ?"
                 )
         ) {
             fetchLogs.setString(1, player.toString());
             ResultSet resultSet = fetchLogs.executeQuery();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Failed to fetch number of violations:", ex);
         }
         return 0;
@@ -97,7 +96,7 @@ public class ViolationDatabaseManager implements Initable {
 
     public List<Violation> getViolations(UUID player, int page, int limit) {
         List<Violation> violations = new ArrayList<>();
-        try(
+        try (
                 Connection connection = getConnection();
                 PreparedStatement fetchLogs = connection.prepareStatement(
                         "SELECT check_name, verbose, vl, created_at FROM violations" +
@@ -109,7 +108,7 @@ public class ViolationDatabaseManager implements Initable {
             fetchLogs.setInt(3, (page - 1) * limit);
 
             ResultSet resultSet = fetchLogs.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 String checkName = resultSet.getString("check_name");
                 String verbose = resultSet.getString("verbose");
                 String vl = resultSet.getString("vl");
@@ -117,7 +116,7 @@ public class ViolationDatabaseManager implements Initable {
 
                 violations.add(new Violation(UUID.randomUUID(), checkName, verbose, vl, createdAt));
             }
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Failed to fetch violations:", ex);
         }
 
@@ -126,7 +125,7 @@ public class ViolationDatabaseManager implements Initable {
 
 
     protected Connection getConnection() throws SQLException {
-        if(openConnection == null || openConnection.isClosed()) {
+        if (openConnection == null || openConnection.isClosed()) {
             openConnection = openConnection();
         }
         return openConnection;
