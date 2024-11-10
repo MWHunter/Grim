@@ -25,8 +25,8 @@ public class GrimHistory extends BaseCommand {
     @CommandAlias("gh")
     public void onLogs(CommandSender sender, OfflinePlayer target, @Optional Integer page) {
         String header = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-header",
-                "%prefix% §bShowing logs for §f%player% (§f%page%§b/§f%maxPages%§b)");
-        String logFormat = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-log",
+                "%prefix% §bShowing logs for §f%player% (§f%page%§b/§f%maxPages%§f)");
+        String logFormat = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-entry",
                 "%prefix% §bFailed §f%check% (x§c%vl%§f) §7%verbose% (§b%timeago% ago§7)");
 
         FoliaScheduler.getAsyncScheduler().runNow(GrimAPI.INSTANCE.getPlugin(), __ -> {
