@@ -24,6 +24,9 @@ public class GrimHistory extends BaseCommand {
     @CommandPermission("grim.history")
     @CommandAlias("gh")
     public void onLogs(CommandSender sender, OfflinePlayer target, @Optional Integer page) {
+        int entriesPerPage = GrimAPI.INSTANCE.getConfigManager().getConfig().getIntElse("grim-history-entries-per-page",
+                15);
+
         String header = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-header",
                 "%prefix% §bShowing logs for §f%player% (§f%page%§b/§f%maxPages%§f)");
         String logFormat = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-entry",
@@ -34,9 +37,9 @@ public class GrimHistory extends BaseCommand {
 
             ViolationDatabaseManager violations = GrimAPI.INSTANCE.getViolationDatabaseManager();
             int logCount = violations.getLogCount(target.getUniqueId());
-            List<Violation> logs = violations.getViolations(target.getUniqueId(), notNullPage, 15);
+            List<Violation> logs = violations.getViolations(target.getUniqueId(), notNullPage, entriesPerPage);
 
-            int maxPages = (int) Math.ceil((float) logCount / 15);
+            int maxPages = (int) Math.ceil((float) logCount / entriesPerPage);
             sender.sendMessage(MessageUtil.format(header
                     .replace("%player%", target.getName())
                     .replace("%page%", String.valueOf(notNullPage))
