@@ -2,7 +2,7 @@ package ac.grim.grimac;
 
 import ac.grim.grimac.manager.*;
 import ac.grim.grimac.manager.config.BaseConfigManager;
-import ac.grim.grimac.manager.log.ViolationDatabaseManager;
+import ac.grim.grimac.manager.violationdatabase.ViolationDatabaseManager;
 import ac.grim.grimac.utils.anticheat.PlayerDataManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;

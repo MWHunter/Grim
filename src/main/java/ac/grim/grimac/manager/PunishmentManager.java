@@ -151,9 +151,10 @@ public class PunishmentManager implements ConfigReloadable {
                                 String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
                                 GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, verbose, check.getDisplayName(), vl);
                             } else if (command.command.equals("[log]")) {
-                                String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
+                                int vls = (int) group.violations.values().stream().filter((e) -> e == check).count();
                                 String verboseWithoutGl = verbose.replaceAll(" /gl .*", "");
-                                GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, check.getDisplayName(), verboseWithoutGl, vl);
+                                for(int i = 0; i < 100; i++) {
+                                GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, verboseWithoutGl, check.getDisplayName(), vls);}
                             } else if (command.command.equals("[proxy]")) {
                                 ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.getCommand(), group, check, proxyAlertString, verbose));
                             } else {

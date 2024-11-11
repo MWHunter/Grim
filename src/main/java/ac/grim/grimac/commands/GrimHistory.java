@@ -1,8 +1,8 @@
 package ac.grim.grimac.commands;
 
 import ac.grim.grimac.GrimAPI;
-import ac.grim.grimac.manager.log.Violation;
-import ac.grim.grimac.manager.log.ViolationDatabaseManager;
+import ac.grim.grimac.manager.violationdatabase.Violation;
+import ac.grim.grimac.manager.violationdatabase.ViolationDatabaseManager;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
@@ -52,7 +52,7 @@ public class GrimHistory extends BaseCommand {
                         .replace("%player%", target.getName())
                         .replace("%check%", log.getCheckName())
                         .replace("%verbose%", log.getVerbose())
-                        .replace("%vl%", log.getVl())
+                        .replace("%vl%", String.valueOf(log.getVl()))
                         .replace("%timeago%", getTimeAgo(log.getCreatedAt()))
                 ));
             }
