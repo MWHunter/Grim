@@ -29,9 +29,7 @@ public class SQLiteViolationDatabase implements ViolationDatabase {
         } catch (ClassNotFoundException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not load SQLite driver", e);
         }
-        try (
-                Connection connection = getConnection();
-        ) {
+        try (Connection connection = getConnection()) {
             connection.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS violations(" +
                             "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +

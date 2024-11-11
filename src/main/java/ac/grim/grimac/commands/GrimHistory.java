@@ -27,9 +27,9 @@ public class GrimHistory extends BaseCommand {
         int entriesPerPage = GrimAPI.INSTANCE.getConfigManager().getConfig().getIntElse("history.entries-per-page", 15);
 
         String header = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-header",
-                "%prefix% §bShowing logs for §f%player% (§f%page%§b/§f%maxPages%§f)");
+                "%prefix% &bShowing logs for &f%player% (&f%page%&b/&f%maxPages%&f)");
         String logFormat = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-entry",
-                "%prefix% §bFailed §f%check% (x§c%vl%§f) §7%verbose% (§b%timeago% ago§7)");
+                "%prefix% &bFailed &f%check% (x&c%vl%&f) &7%verbose% (&b%timeago% ago&7)");
 
         FoliaScheduler.getAsyncScheduler().runNow(GrimAPI.INSTANCE.getPlugin(), __ -> {
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(target);
