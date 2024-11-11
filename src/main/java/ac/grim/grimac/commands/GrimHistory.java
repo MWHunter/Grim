@@ -10,11 +10,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @CommandAlias("grim|grimac")
@@ -23,7 +25,7 @@ public class GrimHistory extends BaseCommand {
     @Subcommand("history|hist")
     @CommandPermission("grim.history")
     @CommandAlias("gh")
-    public void onLogs(CommandSender sender, OfflinePlayer target, @Optional Integer page) {
+    public void onLogs(CommandSender sender, String target, @Optional Integer page) {
         int entriesPerPage = GrimAPI.INSTANCE.getConfigManager().getConfig().getIntElse("history.entries-per-page", 15);
 
         String header = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-header",
@@ -32,15 +34,16 @@ public class GrimHistory extends BaseCommand {
                 "%prefix% §bFailed §f%check% (x§c%vl%§f) §7%verbose% (§b%timeago% ago§7)");
 
         FoliaScheduler.getAsyncScheduler().runNow(GrimAPI.INSTANCE.getPlugin(), __ -> {
+            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(target);
             int notNullPage = page == null ? 1 : page;
 
             ViolationDatabaseManager violations = GrimAPI.INSTANCE.getViolationDatabaseManager();
-            int logCount = violations.getLogCount(target.getUniqueId());
-            List<Violation> logs = violations.getViolations(target.getUniqueId(), notNullPage, entriesPerPage);
+            int logCount = violations.getLogCount(targetPlayer.getUniqueId());
+            List<Violation> logs = violations.getViolations(targetPlayer.getUniqueId(), notNullPage, entriesPerPage);
 
             int maxPages = (int) Math.ceil((float) logCount / entriesPerPage);
             sender.sendMessage(MessageUtil.format(header
-                    .replace("%player%", target.getName())
+                    .replace("%player%", targetPlayer.getName())
                     .replace("%page%", String.valueOf(notNullPage))
                     .replace("%maxPages%", String.valueOf(maxPages))
             ));
@@ -48,7 +51,7 @@ public class GrimHistory extends BaseCommand {
             for (int i = logs.size() - 1; i >= 0; i--) {
                 Violation log = logs.get(i);
                 sender.sendMessage(MessageUtil.format(logFormat
-                        .replace("%player%", target.getName())
+                        .replace("%player%", targetPlayer.getName())
                         .replace("%check%", log.getCheckName())
                         .replace("%verbose%", log.getVerbose())
                         .replace("%vl%", String.valueOf(log.getVl()))
