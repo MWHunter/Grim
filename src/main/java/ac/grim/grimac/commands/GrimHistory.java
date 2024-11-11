@@ -5,10 +5,7 @@ import ac.grim.grimac.manager.violationdatabase.Violation;
 import ac.grim.grimac.manager.violationdatabase.ViolationDatabaseManager;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -25,6 +22,7 @@ public class GrimHistory extends BaseCommand {
     @Subcommand("history|hist")
     @CommandPermission("grim.history")
     @CommandAlias("gh")
+    @CommandCompletion("@players")
     public void onLogs(CommandSender sender, String target, @Optional Integer page) {
         int entriesPerPage = GrimAPI.INSTANCE.getConfigManager().getConfig().getIntElse("history.entries-per-page", 15);
 
