@@ -41,6 +41,7 @@ help:
   - "/grim spectate <giocatore> &f- &7Osserva un giocatore"
   - "/grim verbose &f- &7Mostra ogni segnalazione a te, senza buffer"
   - "/grim log [0-255] &f- &7Carica un registro di debug per le segnalazioni di previsione"
+  - "/grim history <player> [page] §f- §7Shows previous alerts for the player"
   - "&7======================"
 
 # Valid placeholders:

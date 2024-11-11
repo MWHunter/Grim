@@ -47,6 +47,7 @@ help:
   - "/grim spectate <player> &f- &7Especta um jogador."
   - "/grim verbose &f- &7Esconde as informações extra."
   - "/grim log [0-255] &f- &7Envia o registro da simulação."
+  - "/grim history <player> [page] §f- §7Shows previous alerts for the player"
   - "&7======================"
 
 # Valid placeholders:
