@@ -50,7 +50,7 @@ help:
   - "/grim spectate <player> &f- &7观看玩家"
   - "/grim verbose &f- &7显示无缓冲区的每个拉回"
   - "/grim log [1-999] &f- &7预测标志的调试日志"
-  - "/grim history <player> [page] §f- §7Shows previous alerts for the player"
+  - "/grim history <player> [page] &f- &7Shows previous alerts for the player"
   - "&7======================"
 
 # Valid placeholders:
@@ -58,11 +58,11 @@ help:
 # %player%
 # %page%
 # %maxPages%
-grim-history-header: "%prefix% §bShowing logs for §f%player% (§f%page%§b/§f%maxPages%§f)"
+grim-history-header: "%prefix% &bShowing logs for &f%player% (&f%page%&b/&f%maxPages%&f)"
 # Valid placeholders:
 # %prefix%
 # %check%
 # %vl%
 # %verbose%
 # %timeago%
-grim-history-entry: "%prefix% §bFailed §f%check% (x§c%vl%§f) §7%verbose% (§b%timeago% ago§7)"
+grim-history-entry: "%prefix% &bFailed &f%check% (x&c%vl%&f) &7%verbose% (&b%timeago% ago&7)"
