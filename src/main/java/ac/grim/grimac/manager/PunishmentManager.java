@@ -153,8 +153,7 @@ public class PunishmentManager implements ConfigReloadable {
                             } else if (command.command.equals("[log]")) {
                                 int vls = (int) group.violations.values().stream().filter((e) -> e == check).count();
                                 String verboseWithoutGl = verbose.replaceAll(" /gl .*", "");
-                                for(int i = 0; i < 100; i++) {
-                                GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, verboseWithoutGl, check.getDisplayName(), vls);}
+                                GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, verboseWithoutGl, check.getDisplayName(), vls);
                             } else if (command.command.equals("[proxy]")) {
                                 ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.getCommand(), group, check, proxyAlertString, verbose));
                             } else {
