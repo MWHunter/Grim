@@ -1,5 +1,6 @@
 package ac.grim.grimac.manager.violationdatabase;
 
+import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ public class SQLiteViolationDatabase implements ViolationDatabase {
             connection.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS violations(" +
                             "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "server VARCHAR(255) NOT NULL, " +
                             "uuid CHARACTER(36) NOT NULL, " +
                             "check_name TEXT NOT NULL, " +
                             "verbose TEXT NOT NULL, " +
@@ -54,14 +56,15 @@ public class SQLiteViolationDatabase implements ViolationDatabase {
         try (
                 Connection connection = getConnection();
                 PreparedStatement insertLog = connection.prepareStatement(
-                        "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
+                        "INSERT INTO violations (server, uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?, ?)"
                 )
         ) {
-            insertLog.setString(1, player.getUniqueId().toString());
-            insertLog.setString(2, verbose);
-            insertLog.setString(3, checkName);
-            insertLog.setInt(4, vls);
-            insertLog.setLong(5, System.currentTimeMillis());
+            insertLog.setString(1, GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("history.server-name", "Prison"));
+            insertLog.setString(2, player.getUniqueId().toString());
+            insertLog.setString(3, verbose);
+            insertLog.setString(4, checkName);
+            insertLog.setInt(5, vls);
+            insertLog.setLong(6, System.currentTimeMillis());
 
             insertLog.executeUpdate();
         } catch (SQLException ex) {
@@ -93,7 +96,7 @@ public class SQLiteViolationDatabase implements ViolationDatabase {
         try (
                 Connection connection = getConnection();
                 PreparedStatement fetchLogs = connection.prepareStatement(
-                        "SELECT uuid, check_name, verbose, vl, created_at FROM violations" +
+                        "SELECT server, uuid, check_name, verbose, vl, created_at FROM violations" +
                         " WHERE uuid = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
                 )
         ) {

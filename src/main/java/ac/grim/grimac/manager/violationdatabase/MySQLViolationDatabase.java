@@ -1,5 +1,6 @@
 package ac.grim.grimac.manager.violationdatabase;
 
+import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -39,6 +40,7 @@ public class MySQLViolationDatabase implements ViolationDatabase {
             connection.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS violations(" +
                             "id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, " +
+                            "server VARCHAR(255) NOT NULL, " +
                             "uuid CHAR(36) NOT NULL, " +
                             "check_name TEXT NOT NULL, " +
                             "verbose TEXT NOT NULL, " +
@@ -59,14 +61,15 @@ public class MySQLViolationDatabase implements ViolationDatabase {
     public synchronized void logAlert(GrimPlayer player, String verbose, String checkName, int vls) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement insertAlert = connection.prepareStatement(
-                     "INSERT INTO violations (uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?)"
+                     "INSERT INTO violations (server, uuid, check_name, verbose, vl, created_at) VALUES (?, ?, ?, ?, ?, ?)"
              )
         ) {
-            insertAlert.setString(1, player.getUniqueId().toString());
-            insertAlert.setString(2, checkName);
-            insertAlert.setString(3, verbose);
-            insertAlert.setInt(4, vls);
-            insertAlert.setLong(5, System.currentTimeMillis());
+            insertAlert.setString(1, GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("history.server-name", "Prison"));
+            insertAlert.setString(2, player.getUniqueId().toString());
+            insertAlert.setString(3, checkName);
+            insertAlert.setString(4, verbose);
+            insertAlert.setInt(5, vls);
+            insertAlert.setLong(6, System.currentTimeMillis());
             insertAlert.execute();
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Failed to log alert", ex);
@@ -95,7 +98,7 @@ public class MySQLViolationDatabase implements ViolationDatabase {
     public synchronized List<Violation> getViolations(UUID player, int page, int limit) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement fetchLogs = connection.prepareStatement(
-                     "SELECT uuid, check_name, verbose, vl, created_at FROM violations" +
+                     "SELECT server, uuid, check_name, verbose, vl, created_at FROM violations" +
                              " WHERE uuid = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
              )
         ) {

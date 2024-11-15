@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 public class Violation {
 
+    private final String serverName;
     private final UUID playerUUID;
     private final String checkName;
     private final String verbose;
@@ -21,13 +22,14 @@ public class Violation {
     public static List<Violation> fromResultSet(ResultSet resultSet) throws SQLException {
         List<Violation> violations = new ArrayList<>();
         while(resultSet.next()) {
+            String server = resultSet.getString("server");
             UUID player = UUID.fromString(resultSet.getString("uuid"));
             String checkName = resultSet.getString("check_name");
             String verbose = resultSet.getString("verbose");
             int vl = resultSet.getInt("vl");
             Date createdAt = new Date(resultSet.getLong("created_at"));
 
-            violations.add(new Violation(player, checkName, verbose, vl, createdAt));
+            violations.add(new Violation(server, player, checkName, verbose, vl, createdAt));
         }
 
         return violations;

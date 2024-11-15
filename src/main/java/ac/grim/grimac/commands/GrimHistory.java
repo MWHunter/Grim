@@ -29,7 +29,7 @@ public class GrimHistory extends BaseCommand {
         String header = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-header",
                 "%prefix% &bShowing logs for &f%player% (&f%page%&b/&f%maxPages%&f)");
         String logFormat = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("grim-history-entry",
-                "%prefix% &bFailed &f%check% (x&c%vl%&f) &7%verbose% (&b%timeago% ago&7)");
+                "%prefix% &8[&f%server%&8] &bFailed &f%check% (x&c%vl%&f) &7%verbose% (&b%timeago% ago&7)");
 
         FoliaScheduler.getAsyncScheduler().runNow(GrimAPI.INSTANCE.getPlugin(), __ -> {
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(target);
@@ -43,8 +43,8 @@ public class GrimHistory extends BaseCommand {
             sender.sendMessage(MessageUtil.format(header
                     .replace("%player%", targetPlayer.getName())
                     .replace("%page%", String.valueOf(notNullPage))
-                    .replace("%maxPages%", String.valueOf(maxPages))
-            ));
+                    .replace("%maxPages%", String.valueOf(maxPages)))
+            );
 
             for (int i = logs.size() - 1; i >= 0; i--) {
                 Violation log = logs.get(i);
@@ -54,6 +54,7 @@ public class GrimHistory extends BaseCommand {
                         .replace("%verbose%", log.getVerbose())
                         .replace("%vl%", String.valueOf(log.getVl()))
                         .replace("%timeago%", getTimeAgo(log.getCreatedAt()))
+                        .replace("%server%", log.getServerName())
                 ));
             }
         });
