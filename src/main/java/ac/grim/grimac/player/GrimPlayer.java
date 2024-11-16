@@ -41,6 +41,7 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.protocol.world.dimension.DimensionType;
 import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.server.*;
 import com.viaversion.viaversion.api.Via;
@@ -706,21 +707,6 @@ public class GrimPlayer implements GrimUser {
     }
 
     @Override
-    public GrimUserBlockResyncHandler getBlockResyncHandler() {
-        return this.blockResyncHandler;
-    }
-
-    @Override
-    public void setBlockResyncHandler(GrimUserBlockResyncHandler blockResyncHandler) {
-        this.blockResyncHandler = blockResyncHandler;
-    }
-
-    @Override
-    public void resetBlockResyncHandler() {
-        this.blockResyncHandler = new BukkitBlockResyncHandler(this);
-    }
-
-    @Override
     public String getName() {
         return user.getName();
     }
@@ -786,5 +772,33 @@ public class GrimPlayer implements GrimUser {
     @Override
     public void reload() {
         reload(GrimAPI.INSTANCE.getConfigManager().getConfig());
+    }
+
+    @Override
+    public GrimUserBlockResyncHandler getBlockResyncHandler() {
+        return this.blockResyncHandler;
+    }
+
+    @Override
+    public void setBlockResyncHandler(GrimUserBlockResyncHandler blockResyncHandler) {
+        this.blockResyncHandler = blockResyncHandler;
+    }
+
+    @Override
+    public void resetBlockResyncHandler() {
+        this.blockResyncHandler = new BukkitBlockResyncHandler(this);
+    }
+
+    public void resyncBlock(Vector3i pos) {
+        resyncBlocks(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public void resyncBlocksIn(SimpleCollisionBox box) {
+        resyncBlocks(GrimMath.floor(box.minX), GrimMath.floor(box.minY), GrimMath.floor(box.minZ),
+                GrimMath.ceil(box.maxX), GrimMath.ceil(box.maxY), GrimMath.ceil(box.maxZ));
+    }
+
+    public void resyncBlocks(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        this.blockResyncHandler.resync(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

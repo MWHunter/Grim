@@ -3,7 +3,6 @@ package ac.grim.grimac.events.packets;
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.impl.badpackets.BadPacketsX;
 import ac.grim.grimac.checks.impl.badpackets.BadPacketsZ;
-import ac.grim.grimac.events.packets.patch.ResyncWorldUtil;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.*;
 import ac.grim.grimac.utils.blockplace.BlockPlaceResult;
@@ -542,8 +541,8 @@ public class CheckManagerListener extends PacketListenerAbstract {
                     if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_19) && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_19)) {
                         player.user.sendPacket(new WrapperPlayServerAcknowledgeBlockChanges(packet.getSequence()));
                     } else { // The client isn't smart enough to revert changes
-                        ResyncWorldUtil.resyncPosition(player, packet.getBlockPosition());
-                        ResyncWorldUtil.resyncPosition(player, facePos);
+                        player.resyncBlock(packet.getBlockPosition());
+                        player.resyncBlock(facePos);
                     }
 
                     // Stop inventory desync from cancelling place

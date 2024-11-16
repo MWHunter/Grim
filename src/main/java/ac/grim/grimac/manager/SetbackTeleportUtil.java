@@ -4,7 +4,6 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.impl.badpackets.BadPacketsN;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
-import ac.grim.grimac.events.packets.patch.ResyncWorldUtil;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.predictionengine.predictions.PredictionEngine;
 import ac.grim.grimac.predictionengine.predictions.PredictionEngineElytra;
@@ -143,7 +142,7 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
 
         // Only let us full resync once every five seconds to prevent unneeded bukkit load
         if (System.currentTimeMillis() - lastWorldResync > 5 * 1000) {
-            ResyncWorldUtil.resyncPositions(player, player.boundingBox.copy().expand(1));
+            player.resyncBlocksIn(player.boundingBox.copy().expand(1));
             lastWorldResync = System.currentTimeMillis();
         }
 
