@@ -4,6 +4,7 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.GrimUser;
 import ac.grim.grimac.api.config.ConfigManager;
+import ac.grim.grimac.api.resync.GrimUserBlockResyncHandler;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
@@ -13,6 +14,7 @@ import ac.grim.grimac.manager.*;
 import ac.grim.grimac.predictionengine.MovementCheckRunner;
 import ac.grim.grimac.predictionengine.PointThreeEstimator;
 import ac.grim.grimac.predictionengine.UncertaintyHandler;
+import ac.grim.grimac.resync.BukkitBlockResyncHandler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.*;
@@ -203,6 +205,7 @@ public class GrimPlayer implements GrimUser {
     public MainSupportingBlockData mainSupportingBlockData = new MainSupportingBlockData(null, false);
     // possibleEyeHeights[0] = Standing eye heights, [1] = Sneaking. [2] = Elytra, Swimming, and Riptide Trident which only exists in 1.9+
     public double[][] possibleEyeHeights = new double[3][];
+    public GrimUserBlockResyncHandler blockResyncHandler = new BukkitBlockResyncHandler(this);
 
     public void onPacketCancel() {
         if (spamThreshold != -1 && cancelledPackets.incrementAndGet() > spamThreshold) {
@@ -700,6 +703,21 @@ public class GrimPlayer implements GrimUser {
     @Override
     public void runSafely(Runnable runnable) {
         ChannelHelper.runInEventLoop(this.user.getChannel(), runnable);
+    }
+
+    @Override
+    public GrimUserBlockResyncHandler getBlockResyncHandler() {
+        return this.blockResyncHandler;
+    }
+
+    @Override
+    public void setBlockResyncHandler(GrimUserBlockResyncHandler blockResyncHandler) {
+        this.blockResyncHandler = blockResyncHandler;
+    }
+
+    @Override
+    public void resetBlockResyncHandler() {
+        this.blockResyncHandler = new BukkitBlockResyncHandler(this);
     }
 
     @Override
