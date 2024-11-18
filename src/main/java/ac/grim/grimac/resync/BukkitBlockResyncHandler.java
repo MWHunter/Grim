@@ -1,9 +1,8 @@
-package ac.grim.grimac.events.packets.patch;
+package ac.grim.grimac.resync;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.api.resync.GrimUserBlockResyncHandler;
 import ac.grim.grimac.player.GrimPlayer;
-import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
-import ac.grim.grimac.utils.math.GrimMath;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
@@ -15,21 +14,19 @@ import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class ResyncWorldUtil {
-    static HashMap<BlockData, Integer> blockDataToId = new HashMap<>();
+public class BukkitBlockResyncHandler implements GrimUserBlockResyncHandler {
+    private final GrimPlayer player;
+    private static final Map<BlockData, Integer> blockDataToId = new ConcurrentHashMap<>();
 
-    public static void resyncPosition(GrimPlayer player, Vector3i pos) {
-        resyncPositions(player, pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+    public BukkitBlockResyncHandler(GrimPlayer player) {
+        this.player = player;
     }
 
-    public static void resyncPositions(GrimPlayer player, SimpleCollisionBox box) {
-        resyncPositions(player, GrimMath.floor(box.minX), GrimMath.floor(box.minY), GrimMath.floor(box.minZ),
-                GrimMath.ceil(box.maxX), GrimMath.ceil(box.maxY), GrimMath.ceil(box.maxZ));
-    }
-
-    public static void resyncPositions(GrimPlayer player, int minBlockX, int mY, int minBlockZ, int maxBlockX, int mxY, int maxBlockZ) {
+    @Override
+    public void resync(int minBlockX, int mY, int minBlockZ, int maxBlockX, int mxY, int maxBlockZ) {
         // Check the 4 corners of the player world for loaded chunks before calling event
         if (!player.compensatedWorld.isChunkLoaded(minBlockX >> 4, minBlockZ >> 4) || !player.compensatedWorld.isChunkLoaded(minBlockX >> 4, maxBlockZ >> 4)
                 || !player.compensatedWorld.isChunkLoaded(maxBlockX >> 4, minBlockZ >> 4) || !player.compensatedWorld.isChunkLoaded(maxBlockX >> 4, maxBlockZ >> 4))

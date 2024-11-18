@@ -13,7 +13,6 @@ import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 
-import static ac.grim.grimac.events.packets.patch.ResyncWorldUtil.resyncPosition;
 import static ac.grim.grimac.utils.nmsutil.BlockBreakSpeed.getBlockDamage;
 
 @CheckData(name = "BadPacketsZ", experimental = true)
@@ -67,7 +66,7 @@ public class BadPacketsZ extends Check implements PacketCheck {
                         if (shouldModifyPackets()) {
                             event.setCancelled(true);
                             player.onPacketCancel();
-                            resyncPosition(player, pos);
+                            player.resyncBlock(pos);
                         }
                     }
                 }
@@ -88,7 +87,7 @@ public class BadPacketsZ extends Check implements PacketCheck {
                     if (shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
-                        resyncPosition(player, pos);
+                        player.resyncBlock(pos);
                     }
                 }
             }
