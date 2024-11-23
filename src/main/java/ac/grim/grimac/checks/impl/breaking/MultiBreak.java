@@ -61,7 +61,7 @@ public class MultiBreak extends Check implements BlockBreakCheck {
 
     @Override
     public void onPredictionComplete(PredictionComplete predictionComplete) {
-        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3)) {
+        if (player.getClientVersion().isNewerThan(ClientVersion.V_1_8) && player.isTickingReliablyFor(3) && !player.uncertaintyHandler.lastVehicleSwitch.hasOccurredSince(0)) {
             for (String verbose : flags) {
                 flagAndAlert(verbose);
             }
