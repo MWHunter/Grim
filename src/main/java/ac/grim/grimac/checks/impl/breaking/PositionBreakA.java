@@ -48,27 +48,15 @@ public class PositionBreakA extends Check implements BlockBreakCheck {
 
         // So now we have the player's possible eye positions
         // So then look at the face that the player has clicked
-        boolean flag = false;
-        switch (blockBreak.face) {
-            case NORTH: // Z- face
-                flag = eyePositions.minZ > combined.minZ;
-                break;
-            case SOUTH: // Z+ face
-                flag = eyePositions.maxZ < combined.maxZ;
-                break;
-            case EAST: // X+ face
-                flag = eyePositions.maxX < combined.maxX;
-                break;
-            case WEST: // X- face
-                flag = eyePositions.minX > combined.minX;
-                break;
-            case UP: // Y+ face
-                flag = eyePositions.maxY < combined.maxY;
-                break;
-            case DOWN: // Y- face
-                flag = eyePositions.minY > combined.minY;
-                break;
-        }
+        boolean flag = switch (blockBreak.face) {
+            case NORTH -> eyePositions.minZ > combined.minZ; // Z- face
+            case SOUTH -> eyePositions.maxZ < combined.maxZ; // Z+ face
+            case EAST -> eyePositions.maxX < combined.maxX; // X+ face
+            case WEST -> eyePositions.minX > combined.minX; // X- face
+            case UP -> eyePositions.maxY < combined.maxY; // Y+ face
+            case DOWN -> eyePositions.minY > combined.minY; // Y- face
+            default -> false;
+        };
 
         if (flag && flagAndAlert("action=" + blockBreak.action) && shouldModifyPackets()) {
             blockBreak.cancel();

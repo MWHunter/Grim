@@ -35,10 +35,8 @@ public class FarBreak extends Check implements BlockBreakCheck {
         double threshold = player.getMovementThreshold();
         maxReach += Math.hypot(threshold, threshold);
 
-        if (min > maxReach * maxReach) {
-            if (flagAndAlert("distance=" + Math.sqrt(min)) && shouldModifyPackets()) {
-                blockBreak.cancel();
-            }
+        if (min > maxReach * maxReach && flagAndAlert(String.format("distance=%.2f", Math.sqrt(min))) && shouldModifyPackets()) {
+            blockBreak.cancel();
         }
     }
 }

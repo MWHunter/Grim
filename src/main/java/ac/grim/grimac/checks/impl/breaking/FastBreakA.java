@@ -104,9 +104,7 @@ public class FastBreakA extends Check implements BlockBreakCheck {
                 player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9)
                         ? event.getPacketType() == PacketType.Play.Client.ANIMATION
                         : WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())
-        )) {
-            maximumBlockDamage = Math.max(maximumBlockDamage, BlockBreakSpeed.getBlockDamage(player, targetBlock));
-        }
+        )) maximumBlockDamage = Math.max(maximumBlockDamage, BlockBreakSpeed.getBlockDamage(player, targetBlock));
     }
 
     private void clampBalance() {
