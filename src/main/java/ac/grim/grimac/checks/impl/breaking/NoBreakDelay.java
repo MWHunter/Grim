@@ -48,7 +48,7 @@ public class NoBreakDelay extends Check implements BlockBreakCheck {
 
     @Override
     public void onPredictionComplete(PredictionComplete predictionComplete) {
-        if (!player.skippedTickInActualMovement) {
+        if (player.isTickingReliablyFor(3) && !player.uncertaintyHandler.lastVehicleSwitch.hasOccurredSince(0)) {
             for (; flags > 0; flags--) {
                 flagAndAlert();
             }
