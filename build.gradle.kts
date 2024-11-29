@@ -109,6 +109,11 @@ bukkit {
             default = Permission.Default.OP
         }
 
+        register("grim.verbose") {
+            description = "Receive all alerts for violations"
+            default = Permission.Default.OP
+        }
+
         register("grim.performance") {
             description = "Check performance metrics"
             default = Permission.Default.OP
