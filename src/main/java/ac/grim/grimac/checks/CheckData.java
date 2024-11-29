@@ -12,8 +12,6 @@ public @interface CheckData {
 
     String alternativeName() default "UNKNOWN";
 
-    String configName() default "DEFAULT";
-
     String description() default "No description provided";
 
     double decay() default 0.05;

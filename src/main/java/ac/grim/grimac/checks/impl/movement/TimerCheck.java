@@ -9,7 +9,7 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 
-@CheckData(name = "Timer", configName = "TimerA", setback = 10)
+@CheckData(name = "Timer", setback = 10)
 public class TimerCheck extends Check implements PacketCheck {
     long timerBalanceRealTime = 0;
 
@@ -111,7 +111,7 @@ public class TimerCheck extends Check implements PacketCheck {
 
     @Override
     public void onReload(ConfigManager config) {
-        clockDrift = (long) (config.getDoubleElse(getConfigName() + ".drift", 120.0) * 1e6);
-        limitAbuseOverPing = (long) (config.getDoubleElse(getConfigName() + ".ping-abuse-limit-threshold", 1000) * 1e6);
+        clockDrift = (long) (config.getDoubleElse(getCheckName() + ".drift", 120.0) * 1e6);
+        limitAbuseOverPing = (long) (config.getDoubleElse(getCheckName() + ".ping-abuse-limit-threshold", 1000) * 1e6);
     }
 }

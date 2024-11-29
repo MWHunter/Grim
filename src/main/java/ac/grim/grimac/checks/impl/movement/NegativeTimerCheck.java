@@ -37,6 +37,6 @@ public class NegativeTimerCheck extends TimerCheck implements PostPredictionChec
 
     @Override
     public void onReload(ConfigManager config) {
-        clockDrift = (long) (config.getDoubleElse(getConfigName() + ".drift", 1200.0) * 1e6);
+        clockDrift = (long) (config.getDoubleElse(getCheckName() + ".drift", 1200.0) * 1e6);
     }
 }

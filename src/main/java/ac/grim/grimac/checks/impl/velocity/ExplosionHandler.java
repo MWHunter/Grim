@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Deque;
 import java.util.LinkedList;
 
-@CheckData(name = "AntiExplosion", configName = "Explosion", setback = 10)
+@CheckData(name = "AntiExplosion", setback = 10)
 public class ExplosionHandler extends Check implements PostPredictionCheck {
     Deque<VelocityData> firstBreadMap = new LinkedList<>();
 

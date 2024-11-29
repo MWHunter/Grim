@@ -97,7 +97,7 @@ NoSlowA:
   # 当玩家使用一个物品并被它减慢时衰减多少VL
   decay: 0.05
 
-Knockback:
+AntiKB:
   # 当玩家合法时，我们应该将总优势乘以多少
   setback-decay-multiplier: 0.999
   # 我们应该为玩家的移动创建多大的偏移量？
@@ -112,12 +112,11 @@ Knockback:
   # 这是为了防止玩家收集过多的违规行为，并且永远无法清除所有的违规行为
   max-ceiling: 4
 
-
-Explosion:
+AntiExplosion:
   threshold: 0.001
   setbackvl: 3
 
-TimerA:
+Timer:
   setbackvl: 10
   # 玩家卡顿时可以累积以供以后使用的毫秒数
   # 如果设置得太高，可能会允许 1.8 快速使用/快速治疗/快速弓箭绕过，120 毫秒似乎是一个很好的平衡
@@ -131,8 +130,8 @@ NegativeTimer:
   # 在开始检查玩家时，玩家的移动丢失了多少毫秒数
   drift: 1200
 
-# 与 TimerA 相同的检查方法，但适用于坐骑
-TimerVehicle:
+# 与 Timer 相同的检查方法，但适用于坐骑
+VehicleTimer:
   # 实体1.0005 检查
   setbackvl: 10
 

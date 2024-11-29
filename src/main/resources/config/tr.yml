@@ -97,7 +97,7 @@ NoSlowA:
   # Oyuncu bir eşya kullandığında VE onun tarafından yavaşlatıldığında beklenilen zaman
   decay: 0.05
 
-Knockback:
+AntiKB:
   # Oyuncu legit olduğunda toplam avantajı ne kadarla çarpmalıyız
   setback-decay-multiplier: 0.999
   # Oyuncunun hızından ne kadar büyük bir sapma ihlal oluşturmalıyız?
@@ -112,11 +112,11 @@ Knockback:
   # Bu, oyuncunun çok fazla ihlal toplamasını ve asla hepsini temizleyememesini engellemek içindir
   max-ceiling: 4
 
-Explosion:
+AntiExplosion:
   threshold: 0.001
   setbackvl: 3
 
-TimerA:
+Timer:
   setbackvl: 10
   # Oyuncunun geri kaldığında biriktirebileceği milisaniye miktarı
   # Çok yüksek ayarlandığında 1.8 hızlı kullanma/hızlı iyileşme/hızlı yay atlama durumlarına izin verebilir, 120 ms iyi bir denge gibi görünüyor
@@ -130,8 +130,8 @@ NegativeTimer:
   # Uyarı vermeye başlamadan önce hareket halindeyken kaybedilen milisaniye sayısı
   drift: 1200
 
-  # TimerA ile aynı kontrol yöntemi, ancak araçlar için
-TimerVehicle:
+  # Timer ile aynı kontrol yöntemi, ancak araçlar için
+VehicleTimer:
   # Hedef 1.005 timer
   setbackvl: 10
 
