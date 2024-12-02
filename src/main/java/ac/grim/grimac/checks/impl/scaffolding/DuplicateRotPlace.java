@@ -7,7 +7,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.BlockPlace;
 import ac.grim.grimac.utils.anticheat.update.RotationUpdate;
 
-@CheckData(name = "DuplicateRotPlace", experimental = true, checkType = CheckType.WORLD)
+@CheckData(name = "DuplicateRotPlace", experimental = true, checkType = CheckType.ROTATION)
 public class DuplicateRotPlace extends BlockPlaceCheck {
 
     public DuplicateRotPlace(GrimPlayer player) {

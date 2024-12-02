@@ -33,7 +33,7 @@ public class Check implements AbstractCheck, ConfigReloadObserver {
     private boolean isEnabled;
     private boolean exempted;
 
-    private CheckType type = CheckType.OTHER;
+    private CheckType type;
 
     @Override
     public boolean isExperimental() {

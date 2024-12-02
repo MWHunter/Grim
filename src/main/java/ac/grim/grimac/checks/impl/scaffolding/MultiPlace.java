@@ -1,6 +1,7 @@
 package ac.grim.grimac.checks.impl.scaffolding;
 
 import ac.grim.grimac.checks.CheckData;
+import ac.grim.grimac.checks.CheckType;
 import ac.grim.grimac.checks.type.BlockPlaceCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
@@ -16,7 +17,7 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPl
 import java.util.ArrayList;
 import java.util.List;
 
-@CheckData(name = "MultiPlace", experimental = true)
+@CheckData(name = "MultiPlace", experimental = true, checkType = CheckType.WORLD)
 public class MultiPlace extends BlockPlaceCheck {
     public MultiPlace(GrimPlayer player) {
         super(player);

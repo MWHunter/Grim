@@ -22,6 +22,6 @@ public @interface CheckData {
 
     boolean experimental() default false;
 
-    CheckType checkType();
+    CheckType checkType() default CheckType.OTHER;
 
 }
