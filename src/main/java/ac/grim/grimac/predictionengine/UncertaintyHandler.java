@@ -303,8 +303,7 @@ public class UncertaintyHandler {
         // This is the end of that section.
 
         // I can't figure out how the client exactly tracks boost time
-        if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityRideable) {
-            PacketEntityRideable vehicle = (PacketEntityRideable) player.compensatedEntities.getSelf().getRiding();
+        if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityRideable vehicle) {
             if (vehicle.currentBoostTime < vehicle.boostTimeMax + 20)
                 offset -= 0.01;
         }
@@ -339,10 +338,9 @@ public class UncertaintyHandler {
     private boolean striderCollision(SimpleCollisionBox expandedBB) {
         // Stiders can walk on top of other striders
         if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityStrider) {
-            for (Map.Entry<Integer, PacketEntity> entityPair : player.compensatedEntities.entityMap.int2ObjectEntrySet()) {
-                PacketEntity entity = entityPair.getValue();
-                if (entity.getType() == EntityTypes.STRIDER && entity != player.compensatedEntities.getSelf().getRiding() && !entity.hasPassenger(entityPair.getValue())
-                        && entity.getPossibleCollisionBoxes().isIntersected(expandedBB)) {
+            for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
+                if (entity.getType() == EntityTypes.STRIDER && entity != player.compensatedEntities.getSelf().getRiding()
+                        && !entity.hasPassenger(entity) && entity.getPossibleCollisionBoxes().isIntersected(expandedBB)) {
                     return true;
                 }
             }
@@ -356,9 +354,9 @@ public class UncertaintyHandler {
         final PacketEntity riding = player.compensatedEntities.getSelf().getRiding();
         if (riding == null || !riding.isBoat()) return false;
 
-        for (Map.Entry<Integer, PacketEntity> entityPair : player.compensatedEntities.entityMap.int2ObjectEntrySet()) {
-            PacketEntity entity = entityPair.getValue();
-            if (entity != riding && entity.isPushable() && !riding.hasPassenger(entityPair.getValue()) && entity.getPossibleCollisionBoxes().isIntersected(expandedBB)) {
+        for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
+            if (entity != riding && entity.isPushable() && !riding.hasPassenger(entity)
+                    && entity.getPossibleCollisionBoxes().isIntersected(expandedBB)) {
                 return true;
             }
         }

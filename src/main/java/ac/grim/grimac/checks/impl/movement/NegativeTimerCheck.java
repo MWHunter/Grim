@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.movement;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.CheckType;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
@@ -7,7 +8,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 
-@CheckData(name = "NegativeTimer", configName = "NegativeTimer", setback = 10, experimental = true, checkType = CheckType.PACKETS)
+@CheckData(name = "NegativeTimer", configName = "NegativeTimer", setback = -1, experimental = true, checkType = CheckType.PACKETS)
 public class NegativeTimerCheck extends TimerCheck implements PostPredictionCheck {
 
     public NegativeTimerCheck(GrimPlayer player) {
@@ -24,7 +25,7 @@ public class NegativeTimerCheck extends TimerCheck implements PostPredictionChec
 
         if (timerBalanceRealTime < lastMovementPlayerClock - clockDrift) {
             int lostMS = (int) ((System.nanoTime() - timerBalanceRealTime) / 1e6);
-            flagAndAlert("-" + lostMS);
+            if (flagAndAlert("-" + lostMS)) setbackIfAboveSetbackVL();
             timerBalanceRealTime += 50e6;
         }
     }
@@ -36,8 +37,7 @@ public class NegativeTimerCheck extends TimerCheck implements PostPredictionChec
     }
 
     @Override
-    public void reload() {
-        super.reload();
-        clockDrift = (long) (getConfig().getDoubleElse(getConfigName() + ".drift", 1200.0) * 1e6);
+    public void onReload(ConfigManager config) {
+        clockDrift = (long) (config.getDoubleElse(getConfigName() + ".drift", 1200.0) * 1e6);
     }
 }

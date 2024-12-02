@@ -40,7 +40,7 @@ public class BadPacketsO extends Check implements PacketCheck {
             boolean hasID = false;
 
             for (Pair<Long, Long> iterator : keepaliveMap) {
-                if (iterator.getFirst() == id) {
+                if (iterator.first() == id) {
                     hasID = true;
                     break;
                 }
@@ -56,7 +56,7 @@ public class BadPacketsO extends Check implements PacketCheck {
                 do {
                     data = keepaliveMap.poll();
                     if (data == null) break;
-                } while (data.getFirst() != id);
+                } while (data.first() != id);
             }
         }
     }

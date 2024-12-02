@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.movement;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.CheckType;
@@ -18,11 +19,11 @@ public class TimerCheck extends Check implements PacketCheck {
     long knownPlayerClockTime = (long) (System.nanoTime() - 6e10);
     long lastMovementPlayerClock = (long) (System.nanoTime() - 6e10);
 
-    // How long should the player be able to fall back behind their ping?
+    // How long should the player be able to fall back behind their ping? (nanos)
     // Default: 120 milliseconds
-    long clockDrift = (long) 120e6;
-
-    long limitAbuseOverPing = 1000;
+    long clockDrift;
+    // At what ping should we start to limit the balance advantage? (nanos)
+    long limitAbuseOverPing;
 
     boolean hasGottenMovementAfterTransaction = false;
 
@@ -73,35 +74,31 @@ public class TimerCheck extends Check implements PacketCheck {
         doCheck(event);
     }
 
-
     public void doCheck(final PacketReceiveEvent event) {
-        final double transactionPing = player.getTransactionPing();
-        // Limit using transaction ping if over 1000ms (default)
-        final boolean needsAdjustment = limitAbuseOverPing != -1 && transactionPing >= limitAbuseOverPing;
-        final boolean wouldFailNormal = timerBalanceRealTime > System.nanoTime();
-        final boolean failsAdjusted = needsAdjustment && (timerBalanceRealTime + ((transactionPing * 1e6) - clockDrift - 50e6)) > System.nanoTime();
-        if (wouldFailNormal || failsAdjusted) {
+        if (timerBalanceRealTime > System.nanoTime()) {
             if (flag()) {
                 // Cancel the packet
                 // Only cancel if not an adjustment setback
-                if (wouldFailNormal && shouldModifyPackets()) {
+                if (shouldModifyPackets()) {
                     event.setCancelled(true);
                     player.onPacketCancel();
                 }
 
                 if (isAboveSetbackVl()) player.getSetbackTeleportUtil().executeNonSimulatingSetback();
 
-                if (wouldFailNormal) {
-                    // Only alert if we would fail without adjusted limit
-                    alert("");
-                }
+                alert("");
             }
 
             // Reset the violation by 1 movement
             timerBalanceRealTime -= 50e6;
         }
 
-        timerBalanceRealTime = Math.max(timerBalanceRealTime, lastMovementPlayerClock - clockDrift);
+        // Limit using transaction ping if over 1000ms (default)
+        long playerClock = lastMovementPlayerClock;
+        if (System.nanoTime() - playerClock > limitAbuseOverPing) {
+            playerClock = System.nanoTime() - limitAbuseOverPing;
+        }
+        timerBalanceRealTime = Math.max(timerBalanceRealTime, playerClock - clockDrift);
     }
 
     public boolean checkForTransaction(PacketTypeCommon packetType) {
@@ -116,9 +113,8 @@ public class TimerCheck extends Check implements PacketCheck {
     }
 
     @Override
-    public void reload() {
-        super.reload();
-        clockDrift = (long) (getConfig().getDoubleElse(getConfigName() + ".drift", 120.0) * 1e6);
-        limitAbuseOverPing = (long) (getConfig().getDoubleElse(getConfigName() + ".ping-abuse-limit-threshold", 1000));
+    public void onReload(ConfigManager config) {
+        clockDrift = (long) (config.getDoubleElse(getConfigName() + ".drift", 120.0) * 1e6);
+        limitAbuseOverPing = (long) (config.getDoubleElse(getConfigName() + ".ping-abuse-limit-threshold", 1000) * 1e6);
     }
 }

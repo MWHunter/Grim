@@ -15,12 +15,15 @@ import com.github.retrooper.packetevents.protocol.world.states.enums.South;
 import com.github.retrooper.packetevents.protocol.world.states.enums.West;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 
-public class DynamicWall extends DynamicConnecting implements CollisionFactory {
-    public static final CollisionBox[] BOXES = makeShapes(4.0F, 3.0F, 16.0F, 0.0F, 16.0F, false);
+public class DynamicCollisionWall extends DynamicConnecting implements CollisionFactory {
     // https://bugs.mojang.com/browse/MC-9565
     // https://bugs.mojang.com/browse/MC-94016
-    private static final CollisionBox[] COLLISION_BOXES = makeShapes(4.0F, 3.0F, 24.0F, 0.0F, 24.0F, false);
+    private static final CollisionBox[] COLLISION_BOXES = makeShapes(4.0F, 3.0F, 24.0F, 0.0F, 24.0F, false, 1);
 
+    /**
+     * @deprecated use DynamicHitboxWall
+     */
+    @Deprecated
     public CollisionBox fetchRegularBox(GrimPlayer player, WrappedBlockState state, ClientVersion version, int x, int y, int z) {
         int north, south, west, east, up;
         north = south = west = east = up = 0;
@@ -49,12 +52,11 @@ public class DynamicWall extends DynamicConnecting implements CollisionFactory {
 
         // On 1.13+ clients the bounding box is much more complicated
         if (version.isNewerThanOrEquals(ClientVersion.V_1_13)) {
-            ComplexCollisionBox box = new ComplexCollisionBox();
+            ComplexCollisionBox box = new ComplexCollisionBox(5);
 
             // Proper and faster way would be to compute all this beforehand
             if (up == 1) {
                 box.add(new HexCollisionBox(4, 0, 4, 12, 16, 12));
-                return box;
             }
 
             if (north == 1) {
@@ -77,6 +79,7 @@ public class DynamicWall extends DynamicConnecting implements CollisionFactory {
             } else if (east == 2) {
                 box.add(new HexCollisionBox(5, 0, 5, 16, 16, 11));
             }
+            return box;
         }
 
         // Magic 1.8 code for walls that I copied over, 1.12 below uses this mess
@@ -139,9 +142,7 @@ public class DynamicWall extends DynamicConnecting implements CollisionFactory {
         if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13)) {
             // Proper and faster way would be to compute all this beforehand
             if (up) {
-                ComplexCollisionBox box = new ComplexCollisionBox(COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy());
-                box.add(new HexCollisionBox(4, 0, 4, 12, 24, 12));
-                return box;
+                return COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy().union(new HexCollisionBox(4, 0, 4, 12, 24, 12));
             }
 
             return COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy();

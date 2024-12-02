@@ -110,10 +110,11 @@ public class BlockBreakSpeed {
         if (tool.getType().hasAttribute(ItemTypes.ItemAttribute.SWORD)) {
             if (block.getType() == StateTypes.COBWEB) {
                 speedMultiplier = 15.0f;
-            } else if (block.getType().getMaterialType() == MaterialType.PLANT ||
-                    BlockTags.LEAVES.contains(block.getType()) ||
-                    block.getType() == StateTypes.PUMPKIN ||
-                    block.getType() == StateTypes.MELON) {
+            } else if (block.getType().getMaterialType() == MaterialType.PLANT
+                    || BlockTags.LEAVES.contains(block.getType())
+                    || block.getType() == StateTypes.VINE
+                    || block.getType() == StateTypes.PUMPKIN
+                    || block.getType() == StateTypes.MELON) {
                 speedMultiplier = 1.5f;
             }
 
@@ -135,7 +136,7 @@ public class BlockBreakSpeed {
         OptionalInt conduit = player.compensatedEntities.getPotionLevelForPlayer(PotionTypes.CONDUIT_POWER);
 
         if (digSpeed.isPresent() || conduit.isPresent()) {
-            int hasteLevel = Math.max(!digSpeed.isPresent() ? 0 : digSpeed.getAsInt(), !conduit.isPresent() ? 0 : conduit.getAsInt());
+            int hasteLevel = Math.max(digSpeed.isEmpty() ? 0 : digSpeed.getAsInt(), !conduit.isPresent() ? 0 : conduit.getAsInt());
             speedMultiplier *= (float) (1 + (0.2 * (hasteLevel + 1)));
         }
 

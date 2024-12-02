@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.scaffolding;
 
+import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.CheckType;
 import ac.grim.grimac.checks.type.BlockPlaceCheck;
@@ -30,8 +31,7 @@ public class AirLiquidPlace extends BlockPlaceCheck {
     }
 
     @Override
-    public void reload() {
-        super.reload();
-        this.cancelVL = getConfig().getIntElse(getConfigName() + ".cancelVL", 0);
+    public void onReload(ConfigManager config) {
+        this.cancelVL = config.getIntElse(getConfigName() + ".cancelVL", 0);
     }
 }

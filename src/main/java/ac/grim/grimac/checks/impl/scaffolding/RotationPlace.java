@@ -72,13 +72,19 @@ public class RotationPlace extends BlockPlaceCheck {
         SimpleCollisionBox box = new SimpleCollisionBox(place.getPlacedAgainstBlockLocation());
 
         List<Vector3f> possibleLookDirs = new ArrayList<>(Arrays.asList(
-                new Vector3f(player.lastXRot, player.yRot, 0),
-                new Vector3f(player.xRot, player.yRot, 0)
+                new Vector3f(player.xRot, player.yRot, 0),
+                new Vector3f(player.lastXRot, player.yRot, 0)
         ));
 
+        final double[] possibleEyeHeights = player.getPossibleEyeHeights();
+
         // Start checking if player is in the block
-        double minEyeHeight = Collections.min(player.getPossibleEyeHeights());
-        double maxEyeHeight = Collections.max(player.getPossibleEyeHeights());
+        double minEyeHeight = Double.MAX_VALUE;
+        double maxEyeHeight = Double.MIN_VALUE;
+        for (double height : possibleEyeHeights) {
+            minEyeHeight = Math.min(minEyeHeight, height);
+            maxEyeHeight = Math.max(maxEyeHeight, height);
+        }
 
         SimpleCollisionBox eyePositions = new SimpleCollisionBox(player.x, player.y + minEyeHeight, player.z, player.x, player.y + maxEyeHeight, player.z);
         eyePositions.expand(player.getMovementThreshold());
@@ -100,7 +106,7 @@ public class RotationPlace extends BlockPlaceCheck {
         }
 
         final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
-        for (double d : player.getPossibleEyeHeights()) {
+        for (double d : possibleEyeHeights) {
             for (Vector3f lookDir : possibleLookDirs) {
                 // x, y, z are correct for the block placement even after post tick because of code elsewhere
                 Vector3d starting = new Vector3d(player.x, player.y + d, player.z);
@@ -108,7 +114,7 @@ public class RotationPlace extends BlockPlaceCheck {
                 Ray trace = new Ray(player, starting.getX(), starting.getY(), starting.getZ(), lookDir.getX(), lookDir.getY());
                 Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));
 
-                if (intercept.getFirst() != null) return true;
+                if (intercept.first() != null) return true;
             }
         }
 
