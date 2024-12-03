@@ -26,7 +26,7 @@ public class AirLiquidPlace extends BlockPlaceCheck {
         if (placeAgainst.isAir() || Materials.isNoPlaceLiquid(placeAgainst)) { // fail
             double distance = NumberConversions.square(blockPos.getX() - player.x) + NumberConversions.square(blockPos.getY() - player.y) + NumberConversions.square(blockPos.getZ() - player.z);
 
-            if (flagAndAlert("against=" + placeAgainst + " type=" + place.getMaterial() + " dist=" + Math.sqrt(distance))
+            if (flagAndAlert("against=" + placeAgainst + ", type=" + place.getMaterial() + ", dist=" + Math.sqrt(distance))
                     && shouldModifyPackets() && shouldCancel()) {
                 place.resync();
             }
