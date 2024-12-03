@@ -100,15 +100,19 @@ public class PunishmentManager implements ConfigReloadable {
     }
 
     private String replaceAlertPlaceholders(String original, PunishGroup group, Check check, String alertString, String verbose) {
-        // Streams are slow but this isn't a hot path... it's fine.
-        String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
+        int vl = 0;
+        for (Check violationCheck : group.violations.values()) {
+            if (violationCheck == check) {
+                vl++;
+            }
+        }
 
         original = MessageUtil.format(original
                 .replace("[alert]", alertString)
                 .replace("[proxy]", alertString)
                 .replace("%check_name%", check.getDisplayName())
                 .replace("%experimental%", check.isExperimental() ? experimentalSymbol : "")
-                .replace("%vl%", vl)
+                .replace("%vl%", Integer.toString(vl))
                 .replace("%verbose%", verbose)
                 .replace("%description%", check.getDescription())
         );
