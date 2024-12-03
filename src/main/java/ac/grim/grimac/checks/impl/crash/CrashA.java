@@ -29,7 +29,7 @@ public class CrashA extends Check implements PacketCheck {
 
             // Y technically is uncapped, but no player will reach these values legit
             if (Math.abs(x) > HARD_CODED_BORDER || Math.abs(z) > HARD_CODED_BORDER || Math.abs(y) > Integer.MAX_VALUE) {
-                flagAndAlert("x=" + x + " y=" + y + " z=" + z); // Ban
+                flagAndAlert("x=" + x + ", y=" + y + ", z=" + z); // Ban
                 player.getSetbackTeleportUtil().executeViolationSetback();
                 event.setCancelled(true);
                 player.onPacketCancel();
