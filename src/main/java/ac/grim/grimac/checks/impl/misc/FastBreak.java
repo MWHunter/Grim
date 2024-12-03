@@ -141,8 +141,8 @@ public class FastBreak extends Check implements PacketCheck {
                         }
                     }, null, 0);
 
-                    if (flagAndAlert("diff=" + diff + " balance=" + blockBreakBalance
-                            + " maxBlockDamage=" + maximumBlockDamage + " type=" + targetType) && shouldModifyPackets()) {
+                    if (flagAndAlert("diff=" + diff + ", balance=" + blockBreakBalance
+                            + ", maxBlockDamage=" + maximumBlockDamage + ", type=" + targetType) && shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
                     }
