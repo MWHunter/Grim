@@ -14,6 +14,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
+import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
@@ -37,6 +38,9 @@ public class FastBreak extends Check implements PacketCheck {
 
     // The block the player is currently breaking
     Vector3i targetBlock = null;
+    // The material of block the player is currently breaking
+    StateType targetType = null;
+
     // The maximum amount of damage the player deals to the block
     //
     double maximumBlockDamage = 0;
@@ -71,6 +75,7 @@ public class FastBreak extends Check implements PacketCheck {
 
                 startBreak = System.currentTimeMillis() - (targetBlock == null ? 50 : 0); // ???
                 targetBlock = blockPosition;
+                targetType = block.getType();
 
                 maximumBlockDamage = BlockBreakSpeed.getBlockDamage(player, targetBlock);
 
@@ -83,7 +88,7 @@ public class FastBreak extends Check implements PacketCheck {
                 }
 
                 if (blockDelayBalance > 1000) { // If more than a second of advantage
-                    flagAndAlert("Delay=" + breakDelay);
+                    flagAndAlert("delay=" + breakDelay + " type=" + block.getType());
                     if (shouldModifyPackets()) {
                         event.setCancelled(true); // Cancelling start digging will cause server to reject block break
                         player.onPacketCancel();
@@ -136,7 +141,8 @@ public class FastBreak extends Check implements PacketCheck {
                         }
                     }, null, 0);
 
-                    if (flagAndAlert("Diff=" + diff + ",Balance=" + blockBreakBalance) && shouldModifyPackets()) {
+                    if (flagAndAlert("diff=" + diff + " balance=" + blockBreakBalance
+                            + " maxBlockDamage=" + maximumBlockDamage + " type=" + targetType) && shouldModifyPackets()) {
                         event.setCancelled(true);
                         player.onPacketCancel();
                     }
