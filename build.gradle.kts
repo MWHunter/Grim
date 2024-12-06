@@ -30,7 +30,7 @@ version = "2.3.68"
 description = "Libre simulation anticheat designed for 1.21 with 1.8-1.21 support, powered by PacketEvents 2.0."
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(18))
 }
 
 // Set to false for debug builds
@@ -59,6 +59,13 @@ repositories {
     // FastUtil, Discord-Webhooks
 }
 
+// Add JMH configuration
+configurations {
+    create("jmh")
+    create("jmhAnnotationProcessor")
+}
+
+
 dependencies {
     implementation("com.github.retrooper:packetevents-spigot:2.6.1-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
@@ -76,6 +83,12 @@ dependencies {
     compileOnly("com.viaversion:viaversion-api:5.0.4-SNAPSHOT")
     //
     compileOnly("io.netty:netty-all:4.1.85.Final")
+
+    // Replace jmhImplementation with the new configuration
+    "jmh"("org.openjdk.jmh:jmh-core:1.37")
+    "jmhAnnotationProcessor"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+
+    implementation(files("./nalim.jar"))
 }
 
 bukkit {
@@ -169,6 +182,71 @@ publishing.publications.create<MavenPublication>("maven") {
     artifact(tasks["shadowJar"])
 }
 
+java {
+    sourceSets {
+        create("java18") {
+            java {
+                srcDirs("src/main/java18")
+            }
+            compileClasspath += main.get().output
+            runtimeClasspath += main.get().output
+            dependencies {
+                implementation(files("./nalim.jar")) // Add nalim.jar to java18 source set
+            }
+        }
+        create("jmh") {
+            java {
+                srcDir("src/jmh/java")
+            }
+            compileClasspath += sourceSets.main.get().output +
+                    sourceSets.getByName("java18").output +
+                    configurations["jmh"]
+            runtimeClasspath += sourceSets.main.get().output +
+                    sourceSets.getByName("java18").output +
+                    configurations["jmh"]
+        }
+    }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(18))
+    }
+}
+
+tasks.withType<JavaCompile> {
+    if (name == "compileJava") {
+        options.compilerArgs.addAll(listOf("--add-exports","java.base/jdk.internal=ALL-UNNAMED",
+            "--add-exports", "java.base/jdk.internal.vm.annotation=ALL-UNNAMED"))
+    }
+    if (name == "compileJava18Java") {
+        options.compilerArgs.addAll(listOf("--add-modules", "jdk.incubator.vector", "-Xlint:unchecked"))
+        sourceCompatibility = "18"
+        targetCompatibility = "18"
+    }
+    if (name == "compileJava21Java") {
+        options.compilerArgs.addAll(listOf("--enable-preview", "--add-modules", "jdk.incubator.vector", "-Xlint:unchecked"))
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
+    }
+    if (name == "compileJmhJava") {
+        options.compilerArgs.addAll(listOf("--add-modules", "jdk.incubator.vector"))
+        sourceCompatibility = "18"
+        targetCompatibility = "18"
+    }
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes("Multi-Release" to "true")
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE // Important for multi-release JARs
+    from(sourceSets.main.get().output)
+    from(sourceSets.getByName("java18").output) {
+        into("META-INF/versions/18")
+    }
+}
+
 tasks.shadowJar {
     minimize()
     archiveFileName.set("${project.name}-${project.version}.jar")
@@ -191,4 +269,82 @@ tasks.shadowJar {
         relocate("org.intellij", "ac.grim.grimac.shaded.intellij")
         relocate("org.jetbrains", "ac.grim.grimac.shaded.jetbrains")
     }
+}
+
+tasks.register<Jar>("jmhJar") {
+    dependsOn("compileGeneratedJmh")
+
+    from(sourceSets["main"].output)
+    from(sourceSets["java18"].output)
+    from(sourceSets["jmh"].output)
+    from("${buildDir}/classes/java/jmh")
+    from(configurations["jmh"].map { if (it.isDirectory) it else zipTree(it) })
+
+    manifest {
+        attributes(
+            "Main-Class" to "org.openjdk.jmh.Main",
+            "Add-Opens" to "java.base/java.lang java.base/java.io java.base/java.util java.base/java.util.concurrent java.base/java.net",
+            "Add-Modules" to "jdk.incubator.vector"
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set("benchmarks")
+}
+
+
+tasks.register<JavaCompile>("compileGeneratedJmh") {
+    dependsOn("compileJmhJava")
+
+    source = fileTree("${buildDir}/generated-sources/jmh")
+
+    classpath = sourceSets["jmh"].compileClasspath +
+            sourceSets["java18"].output +
+            sourceSets["java18"].compileClasspath +
+            sourceSets.main.get().output +
+            sourceSets.main.get().compileClasspath +
+            files("${buildDir}/classes/java/jmh")
+
+    destinationDirectory.set(file("${buildDir}/classes/java/jmh"))
+
+    sourceCompatibility = "18"
+    targetCompatibility = "18"
+    options.compilerArgs.addAll(listOf("--add-modules", "jdk.incubator.vector"))
+}
+
+tasks.register("jmh") {
+    dependsOn("jmhJar")
+    doLast {
+        val includes = System.getProperty("includes", "")
+
+        javaexec {
+            classpath = files(tasks.named("jmhJar").get().outputs.files)
+            mainClass.set("org.openjdk.jmh.Main")
+            jvmArgs = listOf("--enable-preview", "--add-modules", "jdk.incubator.vector", "-XX:+UnlockExperimentalVMOptions", "-XX:+EnableJVMCI", "-javaagent:nalim.jar")
+
+            // Initialize the args list with default settings
+            args = mutableListOf<String>().apply {
+                // Add any default arguments here if needed
+                if (includes.isNotEmpty()) {
+                    addAll(listOf(includes))
+                }
+            }
+        }
+    }
+}
+
+tasks.named<JavaCompile>("compileJmhJava") {
+    source = fileTree("src/jmh/java")
+    classpath = sourceSets["jmh"].compileClasspath +
+            sourceSets.main.get().output +
+            sourceSets["java18"].output
+    destinationDirectory.set(file("${buildDir}/classes/java/jmh"))
+
+    sourceCompatibility = "18"
+    targetCompatibility = "18"
+    options.compilerArgs.addAll(listOf("--add-modules", "jdk.incubator.vector"))
+}
+
+tasks.named("jmhJar") {
+    dependsOn("compileJmhJava")
 }
