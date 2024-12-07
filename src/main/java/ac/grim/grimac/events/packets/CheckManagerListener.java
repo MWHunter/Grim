@@ -46,7 +46,9 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.client.*;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAcknowledgeBlockChanges;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot;
+import com.viaversion.viaversion.api.Via;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -319,7 +321,13 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
     private boolean isMojangStupid(GrimPlayer player, WrapperPlayClientPlayerFlying flying) {
         // Mojang has become less stupid!
-        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21)) return false;
+        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21)) {
+            // but viaversion has a setting to keep this stupid mechanic
+            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_21)
+                    || !ViaVersionUtil.isAvailable() || !Via.getConfig().fix1_21PlacementRotation()) {
+                return false;
+            }
+        }
 
         final Location location = flying.getLocation();
         final double threshold = player.getMovementThreshold();
