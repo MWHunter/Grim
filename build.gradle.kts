@@ -6,17 +6,39 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.freefair.lombok") version "8.6"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("com.diffplug.spotless") version "6.25.0"
+}
+
+spotless {
+    java {
+        endWithNewline()
+        indentWithSpaces(4)
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        targetExclude("build/generated/**/*")
+    }
+
+    kotlinGradle {
+        endWithNewline()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+    }
 }
 
 group = "ac.grim.grimac"
 version = "2.3.68"
 description = "Libre simulation anticheat designed for 1.21 with 1.8-1.21 support, powered by PacketEvents 2.0."
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_17
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
 
 // Set to false for debug builds
 // You cannot live reload classes if the jar relocates dependencies
-var relocate = true;
+// Checks Project properties -> environment variable -> defaults true
+val relocate: Boolean = project.findProperty("relocate")?.toString()?.toBoolean()
+    ?: System.getenv("RELOCATE_JAR")?.toBoolean()
+    ?: true
 
 repositories {
     mavenLocal()
@@ -33,15 +55,16 @@ repositories {
     maven("https://repo.opencollab.dev/maven-releases/") // Cumulus (for Floodgate)
     maven("https://repo.codemc.io/repository/maven-releases/") // PacketEvents
     maven("https://repo.codemc.io/repository/maven-snapshots/")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     mavenCentral()
     // FastUtil, Discord-Webhooks
 }
 
 dependencies {
-    implementation("com.github.retrooper:packetevents-spigot:2.5.1-SNAPSHOT")
+    implementation("com.github.retrooper:packetevents-spigot:2.7.0-SNAPSHOT")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("club.minnced:discord-webhooks:0.8.0") // Newer versions include kotlin-stdlib, which leads to incompatibility with plugins that use Kotlin
-    implementation("it.unimi.dsi:fastutil:8.5.13")
+    implementation("it.unimi.dsi:fastutil:8.5.15")
     implementation("github.scarsz:configuralize:1.4.0")
     implementation("com.zaxxer:HikariCP:4.0.3")
 
@@ -122,11 +145,22 @@ bukkit {
             description = "Exempt from all checks"
             default = Permission.Default.FALSE
         }
+
+        register("grim.verbose") {
+            description = "Receive verbose alerts for violations. Requires grim.alerts"
+            default = Permission.Default.OP
+        }
+
+        register("grim.verbose.enable-on-join") {
+            description = "Enable verbose alerts on join. Requires grim.alerts and grim.alerts.enable-on-join"
+            default = Permission.Default.FALSE
+        }
     }
 }
 
 tasks.build {
     dependsOn(tasks.shadowJar)
+    dependsOn(tasks.spotlessApply)
 }
 
 tasks.withType<JavaCompile> {

@@ -22,7 +22,6 @@ import com.github.retrooper.packetevents.protocol.world.states.defaulttags.Block
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3d;
-import org.bukkit.Bukkit;
 import com.viaversion.viaversion.api.Via;
 import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import org.bukkit.util.Vector;
@@ -42,6 +41,7 @@ public class MovementTicker {
                     && (!ViaVersionUtil.isAvailable() || Via.getConfig().isPreventCollision()))) return;
 
         int possibleCollidingEntities = 0;
+        int possibleRiptideEntities = 0;
 
         // Players in vehicles do not have collisions
         if (!player.compensatedEntities.getSelf().inVehicle()) {
@@ -53,16 +53,23 @@ public class MovementTicker {
             final TeamHandler teamHandler = player.checkManager.getPacketCheck(TeamHandler.class);
 
             for (PacketEntity entity : player.compensatedEntities.entityMap.values()) {
-                if (!entity.isPushable())
-                    continue;
+                // TODO actually handle entity collisions instead of this awfulness
+                SimpleCollisionBox entityBox = entity.getPossibleCollisionBoxes();
 
-                // 1.9+ player on 1.8- server with ViaVersion prevent-collision disabled.
+                boolean isCollided = playerBox.isCollided(entityBox);
+                if (isCollided) {
+                    possibleRiptideEntities++;
+                }
+
+                // Filters out entities that can't be pushed/collided because of team collision rules
+                // Also handles 1.9+ player on 1.8- server with ViaVersion prevent-collision disabled.
                 if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
                         && !EntityPredicates.canBePushedBy(player, entity, teamHandler).test(player)) continue;
 
-                SimpleCollisionBox entityBox = entity.getPossibleCollisionBoxes();
+                if (!entity.isPushable())
+                    continue;
 
-                if (playerBox.isCollided(entityBox)) {
+                if (isCollided) {
                     possibleCollidingEntities++;
                 }
             }
@@ -75,6 +82,7 @@ public class MovementTicker {
             player.uncertaintyHandler.yPositiveUncertainty += 0.05;
         }
 
+        player.uncertaintyHandler.riptideEntities.add(possibleRiptideEntities);
         player.uncertaintyHandler.collidingEntities.add(possibleCollidingEntities);
     }
 
@@ -327,8 +335,8 @@ public class MovementTicker {
 
     public void livingEntityTravel() {
         double playerGravity = player.compensatedEntities.getSelf().getRiding() == null
-                ? player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_GRAVITY)
-                : player.compensatedEntities.getSelf().getRiding().getAttributeValue(Attributes.GENERIC_GRAVITY);
+                ? player.compensatedEntities.getSelf().getAttributeValue(Attributes.GRAVITY)
+                : player.compensatedEntities.getSelf().getRiding().getAttributeValue(Attributes.GRAVITY);
 
         boolean isFalling = player.actualMovement.getY() <= 0.0;
         if (isFalling && player.compensatedEntities.getSlowFallingAmplifier().isPresent()) {

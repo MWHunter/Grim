@@ -1,6 +1,5 @@
 package ac.grim.grimac.predictionengine;
 
-import ac.grim.grimac.checks.impl.movement.NoSlowC;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.attribute.ValuedAttribute;
@@ -32,7 +31,7 @@ public class PlayerBaseTick {
     }
 
     protected static SimpleCollisionBox getBoundingBoxForPose(GrimPlayer player, Pose pose, double x, double y, double z) {
-        final float scale = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_SCALE);
+        final float scale = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.SCALE);
         final float width = pose.width * scale;
         final float height = pose.height * scale;
         float radius = width / 2.0F;
@@ -87,8 +86,6 @@ public class PlayerBaseTick {
         }
 
         if (player.compensatedEntities.getSelf().inVehicle()) player.isSlowMovement = false;
-
-        if (wasSlowMovement != player.isSlowMovement) player.checkManager.getPostPredictionCheck(NoSlowC.class).startedSprintingBeforeSlowMovement = player.isSlowMovement && player.isSprinting;
 
         // Players in boats don't care about being in blocks
         if (!player.compensatedEntities.getSelf().inVehicle()) {
@@ -150,11 +147,11 @@ public class PlayerBaseTick {
         // Pre-1.17 clients don't have powder snow and therefore don't desync
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_16_4)) return;
 
-        final ValuedAttribute playerSpeed = player.compensatedEntities.getSelf().getAttribute(Attributes.GENERIC_MOVEMENT_SPEED).get();
+        final ValuedAttribute playerSpeed = player.compensatedEntities.getSelf().getAttribute(Attributes.MOVEMENT_SPEED).get();
 
         // Might be null after respawn?
         final Optional<WrapperPlayServerUpdateAttributes.Property> property = playerSpeed.property();
-        if (!property.isPresent()) return;
+        if (property.isEmpty()) return;
 
         // The client first desync's this attribute
         property.get().getModifiers().removeIf(modifier -> modifier.getUUID().equals(CompensatedEntities.SNOW_MODIFIER_UUID) || modifier.getName().getKey().equals("powder_snow"));
@@ -271,13 +268,14 @@ public class PlayerBaseTick {
 
 
     private void moveTowardsClosestSpace(double xPosition, double zPosition) {
-        player.boundingBox = player.boundingBox.expand(0.03, 0, 0.03); // 0.03... thanks mojang!
+        double movementThreshold = player.getMovementThreshold();
+        player.boundingBox = player.boundingBox.expand(movementThreshold, 0, movementThreshold); // 0.03... thanks mojang!
         if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14)) {
             moveTowardsClosestSpaceModern(xPosition, zPosition);
         } else {
             moveTowardsClosestSpaceLegacy(xPosition, zPosition);
         }
-        player.boundingBox = player.boundingBox.expand(-0.03, 0, -0.03);
+        player.boundingBox = player.boundingBox.expand(-movementThreshold, 0, -movementThreshold);
     }
 
     // Mojang is incompetent and this will push the player out a lot when using elytras
@@ -363,22 +361,12 @@ public class PlayerBaseTick {
             double d7 = direction2 == BlockFace.WEST || direction2 == BlockFace.EAST ? relativeXMovement : relativeZMovement;
             d6 = direction2 == BlockFace.EAST || direction2 == BlockFace.SOUTH ? 1.0 - d7 : d7;
             // d7 and d6 flip the movement direction based on desired movement direction
-            boolean doesSuffocate;
-            switch (direction2) {
-                case EAST:
-                    doesSuffocate = this.suffocatesAt(blockX + 1, blockZ);
-                    break;
-                case WEST:
-                    doesSuffocate = this.suffocatesAt(blockX - 1, blockZ);
-                    break;
-                case NORTH:
-                    doesSuffocate = this.suffocatesAt(blockX, blockZ - 1);
-                    break;
-                default:
-                case SOUTH:
-                    doesSuffocate = this.suffocatesAt(blockX, blockZ + 1);
-                    break;
-            }
+            boolean doesSuffocate = switch (direction2) {
+                case EAST -> this.suffocatesAt(blockX + 1, blockZ);
+                case WEST -> this.suffocatesAt(blockX - 1, blockZ);
+                case NORTH -> this.suffocatesAt(blockX, blockZ - 1);
+                default -> this.suffocatesAt(blockX, blockZ + 1);
+            };
 
             if (d6 >= lowestValue || doesSuffocate) continue;
             lowestValue = d6;

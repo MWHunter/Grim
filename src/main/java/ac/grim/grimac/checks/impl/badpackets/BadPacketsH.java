@@ -10,7 +10,6 @@ import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 @CheckData(name = "BadPacketsH")
 public class BadPacketsH extends Check implements PacketCheck {
@@ -44,7 +43,7 @@ public class BadPacketsH extends Check implements PacketCheck {
             if (player.getClientVersion().isOlderThan(ClientVersion.V_1_9)
                     && PacketEvents.getAPI().getServerManager().getVersion().isNewerThan(ServerVersion.V_1_8)) return;
 
-            if (!sentAnimation && flagAndAlert()) {
+            if (!sentAnimation && flagAndAlert() && shouldModifyPackets()) {
                 event.setCancelled(true);
                 player.onPacketCancel();
             }

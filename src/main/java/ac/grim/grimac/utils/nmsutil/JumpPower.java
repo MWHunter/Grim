@@ -20,16 +20,16 @@ public class JumpPower {
 
         if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20_5) && jumpPower <= 1.0E-5F) return;
 
-        vector.setY(jumpPower);
+        vector.setY(player.getClientVersion().isOlderThan(ClientVersion.V_1_21_2) ? jumpPower : Math.max(jumpPower, vector.getY()));
 
         if (player.isSprinting) {
-            float radRotation = player.xRot * ((float) Math.PI / 180F);
-            vector.add(new Vector(-player.trigHandler.sin(radRotation) * 0.2f, 0.0, player.trigHandler.cos(radRotation) * 0.2f));
+            float radRotation = player.xRot * ((float) Math.PI / 180);
+            vector.add(new Vector(-player.trigHandler.sin(radRotation) * 0.2, 0.0, player.trigHandler.cos(radRotation) * 0.2));
         }
     }
 
     public static float getJumpPower(GrimPlayer player) {
-        return (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_JUMP_STRENGTH) * getPlayerJumpFactor(player);
+        return (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.JUMP_STRENGTH) * getPlayerJumpFactor(player);
     }
 
     public static float getPlayerJumpFactor(GrimPlayer player) {

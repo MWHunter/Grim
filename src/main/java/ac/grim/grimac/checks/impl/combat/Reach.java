@@ -33,7 +33,8 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -43,7 +44,7 @@ import java.util.*;
 public class Reach extends Check implements PacketCheck {
     // Only one flag per reach attack, per entity, per tick.
     // We store position because lastX isn't reliable on teleports.
-    private final Map<Integer, Vector3d> playerAttackQueue = new HashMap<>();
+    private final Int2ObjectMap<Vector3d> playerAttackQueue = new Int2ObjectOpenHashMap<>();
     private static final List<EntityType> blacklisted = Arrays.asList(
             EntityTypes.BOAT,
             EntityTypes.CHEST_BOAT,
@@ -81,7 +82,7 @@ public class Reach extends Check implements PacketCheck {
                 }
                 return;
             }
-            
+
             // Dead entities cause false flags (https://github.com/GrimAnticheat/Grim/issues/546)
             if (entity.isDead) return;
 
@@ -106,9 +107,7 @@ public class Reach extends Check implements PacketCheck {
         }
 
         // If the player set their look, or we know they have a new tick
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType()) ||
-                event.getPacketType() == PacketType.Play.Client.PONG ||
-                event.getPacketType() == PacketType.Play.Client.WINDOW_CONFIRMATION) {
+        if (isUpdate(event.getPacketType())) {
             tickBetterReachCheckWithAngle();
         }
     }
@@ -142,8 +141,8 @@ public class Reach extends Check implements PacketCheck {
     }
 
     private void tickBetterReachCheckWithAngle() {
-        for (Map.Entry<Integer, Vector3d> attack : playerAttackQueue.entrySet()) {
-            PacketEntity reachEntity = player.compensatedEntities.entityMap.get(attack.getKey().intValue());
+        for (Int2ObjectMap.Entry<Vector3d> attack : playerAttackQueue.int2ObjectEntrySet()) {
+            PacketEntity reachEntity = player.compensatedEntities.entityMap.get(attack.getIntKey());
             if (reachEntity != null) {
                 String result = checkReach(reachEntity, attack.getValue(), false);
                 if (result != null) {
@@ -208,7 +207,7 @@ public class Reach extends Check implements PacketCheck {
                 Vector eyePos = new Vector(from.getX(), from.getY() + eye, from.getZ());
                 Vector endReachPos = eyePos.clone().add(new Vector(lookVec.getX() * distance, lookVec.getY() * distance, lookVec.getZ() * distance));
 
-                Vector intercept = ReachUtils.calculateIntercept(targetBox, eyePos, endReachPos).getFirst();
+                Vector intercept = ReachUtils.calculateIntercept(targetBox, eyePos, endReachPos).first();
 
                 if (ReachUtils.isVecInside(targetBox, eyePos)) {
                     minDistance = 0;

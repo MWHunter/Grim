@@ -29,15 +29,14 @@ public class BlockProperties {
                 return (float) (player.speed * 0.1f);
             }
 
-            if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityStrider) {
+            if (player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityStrider strider) {
                 // Unsure which version the speed changed in
                 if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_20)) {
                     return (float) player.speed * 0.1f;
                 }
 
-                PacketEntityStrider strider = (PacketEntityStrider) player.compensatedEntities.getSelf().getRiding();
                 // Vanilla multiplies by 0.1 to calculate speed
-                return (float) strider.getAttributeValue(Attributes.GENERIC_MOVEMENT_SPEED) * (strider.isShaking ? 0.66F : 1.0F) * 0.1f;
+                return (float) strider.getAttributeValue(Attributes.MOVEMENT_SPEED) * (strider.isShaking ? 0.66F : 1.0F) * 0.1f;
             }
         }
 
@@ -46,8 +45,8 @@ public class BlockProperties {
         }
 
         // In 1.19.4, air sprinting is based on current sprinting, not last sprinting
-        if (player.getClientVersion().getProtocolVersion() > ClientVersion.V_1_19_3.getProtocolVersion()) {
-            return player.isSprinting ? (float) ((double) 0.02f + 0.005999999865889549D) : 0.02f;
+        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_19_4)) {
+            return player.isSprinting ? 0.025999999F : 0.02f;
         }
 
         return player.lastSprintingForSpeed ? (float) ((double) 0.02f + 0.005999999865889549D) : 0.02f;
@@ -206,6 +205,6 @@ public class BlockProperties {
 
     private static float getModernVelocityMultiplier(GrimPlayer player, float blockSpeedFactor) {
         if (player.getClientVersion().isOlderThan(ClientVersion.V_1_21)) return blockSpeedFactor;
-        return (float) GrimMath.lerp((float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_MOVEMENT_EFFICIENCY), blockSpeedFactor, 1.0F);
+        return (float) GrimMath.lerp((float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.MOVEMENT_EFFICIENCY), blockSpeedFactor, 1.0F);
     }
 }

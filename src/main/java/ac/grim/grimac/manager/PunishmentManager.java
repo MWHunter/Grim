@@ -98,16 +98,14 @@ public class PunishmentManager implements ConfigReloadable {
         }
     }
 
-    private String replaceAlertPlaceholders(String original, PunishGroup group, Check check, String alertString, String verbose) {
-        // Streams are slow but this isn't a hot path... it's fine.
-        String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
+    private String replaceAlertPlaceholders(String original, int vl, PunishGroup group, Check check, String alertString, String verbose) {
 
         original = MessageUtil.format(original
                 .replace("[alert]", alertString)
                 .replace("[proxy]", alertString)
                 .replace("%check_name%", check.getDisplayName())
                 .replace("%experimental%", check.isExperimental() ? experimentalSymbol : "")
-                .replace("%vl%", vl)
+                .replace("%vl%", Integer.toString(vl))
                 .replace("%verbose%", verbose)
                 .replace("%description%", check.getDescription())
         );
@@ -123,12 +121,13 @@ public class PunishmentManager implements ConfigReloadable {
         // Check commands
         for (PunishGroup group : groups) {
             if (group.getChecks().contains(check)) {
-                int violationCount = group.getViolations().size();
+                final int vl = getViolations(group, check);
+                final int violationCount = group.getViolations().size();
                 for (ParsedCommand command : group.getCommands()) {
-                    String cmd = replaceAlertPlaceholders(command.getCommand(), group, check, alertString, verbose);
+                    String cmd = replaceAlertPlaceholders(command.getCommand(), vl, group, check, alertString, verbose);
 
                     // Verbose that prints all flags
-                    if (GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose().size() > 0 && command.command.equals("[alert]")) {
+                    if (!GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose().isEmpty() && command.command.equals("[alert]")) {
                         sentDebug = true;
                         for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose()) {
                             bukkitPlayer.sendMessage(cmd);
@@ -148,14 +147,13 @@ public class PunishmentManager implements ConfigReloadable {
                             if (executeEvent.isCancelled()) continue;
 
                             if (command.command.equals("[webhook]")) {
-                                String vl = group.violations.values().stream().filter((e) -> e == check).count() + "";
                                 GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, verbose, check.getDisplayName(), vl);
                             } else if (command.command.equals("[log]")) {
                                 int vls = (int) group.violations.values().stream().filter((e) -> e == check).count();
                                 String verboseWithoutGl = verbose.replaceAll(" /gl .*", "");
                                 GrimAPI.INSTANCE.getViolationDatabaseManager().logAlert(player, verboseWithoutGl, check.getDisplayName(), vls);
                             } else if (command.command.equals("[proxy]")) {
-                                ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.getCommand(), group, check, proxyAlertString, verbose));
+                                ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.getCommand(), vl, group, check, proxyAlertString, verbose));
                             } else {
                                 if (command.command.equals("[alert]")) {
                                     sentDebug = true;
@@ -191,6 +189,15 @@ public class PunishmentManager implements ConfigReloadable {
             }
         }
     }
+
+    private int getViolations(PunishGroup group, Check check) {
+        int vl = 0;
+        for (Check value : group.violations.values()) {
+            if (value == check) vl++;
+        }
+        return vl;
+    }
+
 }
 
 class PunishGroup {
@@ -199,7 +206,7 @@ class PunishGroup {
     @Getter
     List<ParsedCommand> commands;
     @Getter
-    HashMap<Long, Check> violations = new HashMap<>();
+    public Map<Long, Check> violations = new HashMap<>();
     @Getter
     int removeViolationsAfter;
 

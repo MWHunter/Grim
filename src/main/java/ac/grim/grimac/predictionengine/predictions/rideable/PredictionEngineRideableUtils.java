@@ -17,9 +17,7 @@ import java.util.Set;
 
 public class PredictionEngineRideableUtils {
     public static Set<VectorData> handleJumps(GrimPlayer player, Set<VectorData> possibleVectors) {
-        if (!(player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityHorse)) return possibleVectors;
-
-        PacketEntityHorse horse = (PacketEntityHorse) player.compensatedEntities.getSelf().getRiding();
+        if (!(player.compensatedEntities.getSelf().getRiding() instanceof PacketEntityHorse horse)) return possibleVectors;
 
         // Setup player inputs
         float f = player.vehicleData.vehicleHorizontal * 0.5F;
@@ -34,7 +32,7 @@ public class PredictionEngineRideableUtils {
         //
         // There's a float/double error causing 1e-8 imprecision if anyone wants to debug it
         if (player.vehicleData.horseJump > 0.0F && !player.vehicleData.horseJumping && player.lastOnGround) {
-            double d0 = horse.getAttributeValue(Attributes.GENERIC_JUMP_STRENGTH) * player.vehicleData.horseJump * JumpPower.getPlayerJumpFactor(player);
+            double d0 = horse.getAttributeValue(Attributes.JUMP_STRENGTH) * player.vehicleData.horseJump * JumpPower.getPlayerJumpFactor(player);
             double d1;
 
             // This doesn't even work because vehicle jump boost has (likely) been
