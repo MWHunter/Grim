@@ -39,7 +39,7 @@ public class FarPlace extends BlockPlaceCheck {
         maxReach += Math.hypot(threshold, threshold);
 
         if (min > maxReach * maxReach) { // fail
-            if (flagAndAlert("dist=" + Math.sqrt(min)) && shouldModifyPackets() && shouldCancel()) {
+            if (flagAndAlert("distance=" + Math.sqrt(min)) && shouldModifyPackets() && shouldCancel()) {
                 place.resync();
             }
         }
