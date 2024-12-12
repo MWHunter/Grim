@@ -20,12 +20,14 @@ public class NoSlowD extends Check implements PostPredictionCheck {
         if (!predictionComplete.isChecked()) return;
 
         if (player.packetStateData.isSlowedByUsingItem()) {
+            ClientVersion client = player.getClientVersion();
+
             // https://bugs.mojang.com/browse/MC-152728
-            if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14_2)) {
+            if (client.isNewerThanOrEquals(ClientVersion.V_1_14_2) && client.isOlderThan(ClientVersion.V_1_21_4)) {
                 return;
             }
 
-            if (player.isSprinting) {
+            if (player.isSprinting && (!player.isSwimming || client.isOlderThan(ClientVersion.V_1_21_4))) {
                 if (flaggedLastTick && flagWithSetback()) alert("");
                 flaggedLastTick = true;
             } else {

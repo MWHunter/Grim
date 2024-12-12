@@ -21,7 +21,6 @@ import com.github.retrooper.packetevents.protocol.potion.PotionType;
 import com.github.retrooper.packetevents.protocol.potion.PotionTypes;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.protocol.world.Direction;
-import com.github.retrooper.packetevents.protocol.world.PaintingType;
 import com.github.retrooper.packetevents.resources.ResourceLocation;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
@@ -106,7 +105,7 @@ public class CompensatedEntities {
             // Check for sprinting attribute. Note that this value can desync: https://bugs.mojang.com/browse/MC-69459
             for (WrapperPlayServerUpdateAttributes.Property snapshotWrapper : objects) {
                 final Attribute attribute = snapshotWrapper.getAttribute();
-                if (attribute != Attributes.GENERIC_MOVEMENT_SPEED) continue;
+                if (attribute != Attributes.MOVEMENT_SPEED) continue;
 
                 boolean found = false;
                 List<WrapperPlayServerUpdateAttributes.PropertyModifier> modifiers = snapshotWrapper.getModifiers();
@@ -133,7 +132,7 @@ public class CompensatedEntities {
 
             // Rewrite horse.jumpStrength -> modern equivalent
             if (attribute == Attributes.HORSE_JUMP_STRENGTH) {
-                attribute = Attributes.GENERIC_JUMP_STRENGTH;
+                attribute = Attributes.JUMP_STRENGTH;
             }
 
             final Optional<ValuedAttribute> valuedAttribute = entity.getAttribute(attribute);
@@ -182,8 +181,8 @@ public class CompensatedEntities {
             packetEntity = new PacketEntityHook(player, uuid, entityType, position.getX(), position.getY(), position.getZ(), data);
         } else if (EntityTypes.ENDER_DRAGON.equals(entityType)) {
             packetEntity = new PacketEntityEnderDragon(player, uuid, entityID, position.getX(), position.getY(), position.getZ());
-        } else if (entityType == EntityTypes.PAINTING) {
-            packetEntity = new PacketEntityPainting(player, uuid, position.x, position.y, position.z, data == -1 ? null : PaintingType.getById(data), Direction.getByHorizontalIndex((int) xRot));
+        } else if (EntityTypes.PAINTING.equals(entityType)) {
+            packetEntity = new PacketEntityPainting(player, uuid, position.x, position.y, position.z, Direction.getByHorizontalIndex(data));
         } else {
             packetEntity = new PacketEntity(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
         }

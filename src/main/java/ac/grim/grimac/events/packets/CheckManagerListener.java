@@ -1,8 +1,6 @@
 package ac.grim.grimac.events.packets;
 
 import ac.grim.grimac.GrimAPI;
-import ac.grim.grimac.checks.impl.badpackets.BadPacketsX;
-import ac.grim.grimac.checks.impl.badpackets.BadPacketsZ;
 import ac.grim.grimac.events.packets.patch.ResyncWorldUtil;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.*;
@@ -453,42 +451,42 @@ public class CheckManagerListener extends PacketListenerAbstract {
         }
 
         if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
-            final var packet = new WrapperPlayClientPlayerDigging(event);
-            final var blockBreak = new BlockBreak(packet, player);
+            final WrapperPlayClientPlayerDigging packet = new WrapperPlayClientPlayerDigging(event);
+            final DiggingAction action = packet.getAction();
 
-            player.checkManager.getPacketCheck(BadPacketsX.class).handle(blockBreak);
-            player.checkManager.getPacketCheck(BadPacketsZ.class).handle(blockBreak);
+            if (action == DiggingAction.START_DIGGING || action == DiggingAction.FINISHED_DIGGING || action == DiggingAction.CANCELLED_DIGGING) {
+                final BlockBreak blockBreak = new BlockBreak(packet.getBlockPosition(), packet.getBlockFace(), action, player.compensatedWorld.getWrappedBlockStateAt(packet.getBlockPosition()));
 
-            if (blockBreak.isCancelled()) {
-                event.setCancelled(true);
-                player.onPacketCancel();
-            }
+                player.checkManager.onBlockBreak(blockBreak);
 
-            if (!event.isCancelled()) {
-                if (blockBreak.action == DiggingAction.FINISHED_DIGGING && BREAKABLE.apply(blockBreak.block.getType())) {
-                    player.compensatedWorld.startPredicting();
-                    player.compensatedWorld.updateBlock(blockBreak.position.x, blockBreak.position.y, blockBreak.position.z, 0);
-                    player.compensatedWorld.stopPredicting(packet);
-                }
-
-                if (blockBreak.action == DiggingAction.START_DIGGING) {
-                    double damage = BlockBreakSpeed.getBlockDamage(player, blockBreak.position);
-
-                    // Instant breaking, no damage means it is unbreakable by creative players (with swords)
-                    if (damage >= 1) {
+                if (blockBreak.isCancelled()) {
+                    event.setCancelled(true);
+                    player.onPacketCancel();
+                    ResyncWorldUtil.resyncPosition(player, blockBreak.position, packet.getSequence());
+                } else {
+                    if (action == DiggingAction.FINISHED_DIGGING && BREAKABLE.apply(blockBreak.block.getType())) {
                         player.compensatedWorld.startPredicting();
-                        if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) && Materials.isWaterSource(player.getClientVersion(), blockBreak.block)) {
-                            // Vanilla uses a method to grab water flowing, but as you can't break flowing water
-                            // We can simply treat all waterlogged blocks or source blocks as source blocks
-                            player.compensatedWorld.updateBlock(blockBreak.position, StateTypes.WATER.createBlockState(CompensatedWorld.blockVersion));
-                        } else {
-                            player.compensatedWorld.updateBlock(blockBreak.position.x, blockBreak.position.y, blockBreak.position.z, 0);
-                        }
+                        player.compensatedWorld.updateBlock(blockBreak.position.x, blockBreak.position.y, blockBreak.position.z, 0);
                         player.compensatedWorld.stopPredicting(packet);
                     }
-                }
 
-                if (blockBreak.action == DiggingAction.START_DIGGING || blockBreak.action == DiggingAction.FINISHED_DIGGING || blockBreak.action == DiggingAction.CANCELLED_DIGGING) {
+                    if (action == DiggingAction.START_DIGGING) {
+                        double damage = BlockBreakSpeed.getBlockDamage(player, blockBreak.position);
+
+                        // Instant breaking, no damage means it is unbreakable by creative players (with swords)
+                        if (damage >= 1) {
+                            player.compensatedWorld.startPredicting();
+                            if (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_13) && Materials.isWaterSource(player.getClientVersion(), blockBreak.block)) {
+                                // Vanilla uses a method to grab water flowing, but as you can't break flowing water
+                                // We can simply treat all waterlogged blocks or source blocks as source blocks
+                                player.compensatedWorld.updateBlock(blockBreak.position, StateTypes.WATER.createBlockState(CompensatedWorld.blockVersion));
+                            } else {
+                                player.compensatedWorld.updateBlock(blockBreak.position.x, blockBreak.position.y, blockBreak.position.z, 0);
+                            }
+                            player.compensatedWorld.stopPredicting(packet);
+                        }
+                    }
+
                     player.compensatedWorld.handleBlockBreakPrediction(packet);
                 }
             }
@@ -574,6 +572,15 @@ public class CheckManagerListener extends PacketListenerAbstract {
         if (player.packetStateData.cancelDuplicatePacket) {
             event.setCancelled(true);
             player.packetStateData.cancelDuplicatePacket = false;
+        }
+
+        if (event.getPacketType() == PacketType.Play.Client.CLIENT_TICK_END) {
+            if (!player.packetStateData.didSendMovementBeforeTickEnd) {
+                // The player didn't send a movement packet, so we can predict this like we had idle tick on 1.8
+                player.packetStateData.didLastLastMovementIncludePosition = player.packetStateData.didLastMovementIncludePosition;
+                player.packetStateData.didLastMovementIncludePosition = false;
+            }
+            player.packetStateData.didSendMovementBeforeTickEnd = false;
         }
 
         // Finally, remove the packet state variables on this packet
@@ -745,6 +752,10 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
         player.packetStateData.didLastLastMovementIncludePosition = player.packetStateData.didLastMovementIncludePosition;
         player.packetStateData.didLastMovementIncludePosition = hasPosition;
+
+        if (!player.packetStateData.lastPacketWasTeleport) {
+            player.packetStateData.didSendMovementBeforeTickEnd = true;
+        }
     }
 
     private static void placeLilypad(GrimPlayer player, InteractionHand hand) {
@@ -782,7 +793,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
         Vector3d startingPos = new Vector3d(player.x, player.y + player.getEyeHeight(), player.z);
         Vector startingVec = new Vector(startingPos.getX(), startingPos.getY(), startingPos.getZ());
         Ray trace = new Ray(player, startingPos.getX(), startingPos.getY(), startingPos.getZ(), player.xRot, player.yRot);
-        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_BLOCK_INTERACTION_RANGE);
+        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
         Vector endVec = trace.getPointAtDistance(distance);
         Vector3d endPos = new Vector3d(endVec.getX(), endVec.getY(), endVec.getZ());
 

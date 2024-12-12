@@ -242,10 +242,11 @@ public class GrimPlayer implements GrimUser {
 
         packetStateData = new PacketStateData();
 
+        uncertaintyHandler.riptideEntities.add(0);
         uncertaintyHandler.collidingEntities.add(0);
 
         if (getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14)) {
-            final float scale = (float) compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_SCALE);
+            final float scale = (float) compensatedEntities.getSelf().getAttributeValue(Attributes.SCALE);
             possibleEyeHeights[2] = new double[]{0.4 * scale, 1.62 * scale, 1.27 * scale}; // Elytra, standing, sneaking (1.14)
             possibleEyeHeights[1] = new double[]{1.27 * scale, 1.62 * scale, 0.4 * scale}; // sneaking (1.14), standing, Elytra
             possibleEyeHeights[0] = new double[]{1.62 * scale, 1.27 * scale, 0.4 * scale}; // standing, sneaking (1.14), Elytra
@@ -292,7 +293,7 @@ public class GrimPlayer implements GrimUser {
         // If the player has that client sided riptide thing and has colliding with an entity
         // This was determined in the previous tick but whatever just include the 2 ticks around it
         // for a bit of safety as I doubt people will try to bypass this, it would be a very useless cheat
-        if (riptideSpinAttackTicks >= 0 && Collections.max(uncertaintyHandler.collidingEntities) > 0) {
+        if (riptideSpinAttackTicks >= 0 && Collections.max(uncertaintyHandler.riptideEntities) > 0) {
             possibleMovements.add(new VectorData(clientVelocity.clone().multiply(-0.2), VectorData.VectorType.Trident));
         }
 
@@ -375,14 +376,14 @@ public class GrimPlayer implements GrimUser {
     public float getMaxUpStep() {
         final PacketEntitySelf self = compensatedEntities.getSelf();
         final PacketEntity riding = self.getRiding();
-        if (riding == null) return (float) self.getAttributeValue(Attributes.GENERIC_STEP_HEIGHT);
+        if (riding == null) return (float) self.getAttributeValue(Attributes.STEP_HEIGHT);
 
         if (riding.isBoat()) {
             return 0f;
         }
 
         // Pigs, horses, striders, and other vehicles all have 1 stepping height by default
-        return (float) riding.getAttributeValue(Attributes.GENERIC_STEP_HEIGHT);
+        return (float) riding.getAttributeValue(Attributes.STEP_HEIGHT);
     }
 
     public void sendTransaction() {
@@ -565,9 +566,16 @@ public class GrimPlayer implements GrimUser {
     //     - 3 ticks is a magic value, but it should buffer out incorrect predictions somewhat.
     // 2. The player is in a vehicle
     public boolean isTickingReliablyFor(int ticks) {
-        return (getClientVersion().isOlderThan(ClientVersion.V_1_9)
-                || !uncertaintyHandler.lastPointThree.hasOccurredSince(ticks))
+        // 1.21.2+: Tick end packet, on servers 1.21.2+
+        // 1.8-: Flying packet
+        return supportsEndTick()
+                || getClientVersion().isOlderThan(ClientVersion.V_1_9)
+                || !uncertaintyHandler.lastPointThree.hasOccurredSince(ticks)
                 || compensatedEntities.getSelf().inVehicle();
+    }
+
+    public boolean inVehicle() {
+        return compensatedEntities.getSelf().inVehicle();
     }
 
     public boolean canThePlayerBeCloseToZeroMovement(int ticks) {
@@ -584,17 +592,14 @@ public class GrimPlayer implements GrimUser {
             return this.isSneaking ? this.possibleEyeHeights[1] : this.possibleEyeHeights[0];
         } else {
             // 1.8 players just have their pose set to standing all the time
-            switch (pose) {
-                case FALL_FLYING: // Elytra gliding
-                case SPIN_ATTACK: // Riptide trident
-                case SWIMMING: // Swimming (includes crawling in 1.14+)
-                    return this.possibleEyeHeights[2]; // [swimming/gliding/riptide height, standing height, sneaking height]
-                case NINE_CROUCHING:
-                case CROUCHING:
-                    return this.possibleEyeHeights[1]; // [sneaking height, standing height, swimming/gliding/riptide height]
-                default:
-                    return this.possibleEyeHeights[0]; // [standing height, sneaking height, swimming/gliding/riptide height]
-            }
+            return switch (pose) {
+                case FALL_FLYING, // Elytra gliding
+                     SPIN_ATTACK, // Riptide trident
+                     SWIMMING -> // Swimming (includes crawling in 1.14+)
+                        this.possibleEyeHeights[2]; // [swimming/gliding/riptide height, standing height, sneaking height]
+                case NINE_CROUCHING, CROUCHING -> this.possibleEyeHeights[1]; // [sneaking height, standing height, swimming/gliding/riptide height]
+                default -> this.possibleEyeHeights[0]; // [standing height, sneaking height, swimming/gliding/riptide height]
+            };
         }
     }
 
@@ -697,6 +702,11 @@ public class GrimPlayer implements GrimUser {
         return getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_10) || (gamemode == GameMode.CREATIVE && compensatedEntities.getSelf().getOpLevel() >= 2);
     }
 
+    public boolean supportsEndTick() {
+        // TODO: Bypass viaversion
+        return getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21_2) && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_21_2);
+    }
+
     @Override
     public void runSafely(Runnable runnable) {
         ChannelHelper.runInEventLoop(this.user.getChannel(), runnable);
@@ -751,6 +761,7 @@ public class GrimPlayer implements GrimUser {
     @Getter private boolean ignoreDuplicatePacketRotation = false;
     @Getter private boolean experimentalChecks = false;
     @Getter private boolean cancelDuplicatePacket = true;
+    @Getter private boolean exemptElytra = false;
 
     @Override
     public void reload(ConfigManager config) {
@@ -759,6 +770,7 @@ public class GrimPlayer implements GrimUser {
         experimentalChecks = config.getBooleanElse("experimental-checks", false);
         ignoreDuplicatePacketRotation = config.getBooleanElse("ignore-duplicate-packet-rotation", false);
         cancelDuplicatePacket = config.getBooleanElse("cancel-duplicate-packet", true);
+        exemptElytra = config.getBooleanElse("exempt-elytra", false);
         // reload all checks
         for (AbstractCheck value : checkManager.allChecks.values()) value.reload(config);
         // reload punishment manager

@@ -1,15 +1,13 @@
 package ac.grim.grimac.checks.impl.misc;
 
-import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
-import ac.grim.grimac.checks.type.PacketCheck;
+import ac.grim.grimac.checks.type.BlockBreakCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.anticheat.update.BlockBreak;
 import ac.grim.grimac.utils.math.GrimMath;
 import ac.grim.grimac.utils.nmsutil.BlockBreakSpeed;
-import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
@@ -17,21 +15,13 @@ import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAcknowledgeBlockChanges;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockChange;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 // Based loosely off of Hawk BlockBreakSpeedSurvival
 // Also based loosely off of NoCheatPlus FastBreak
 // Also based off minecraft wiki: https://minecraft.wiki/w/Breaking#Instant_breaking
-@CheckData(name = "FastBreak", experimental = false)
-public class FastBreak extends Check implements PacketCheck {
+@CheckData(name = "FastBreak")
+public class FastBreak extends Check implements BlockBreakCheck {
     public FastBreak(GrimPlayer playerData) {
         super(playerData);
     }
@@ -52,6 +42,62 @@ public class FastBreak extends Check implements PacketCheck {
     // The buffer to this check
     double blockBreakBalance = 0;
     double blockDelayBalance = 0;
+
+    @Override
+    public void onBlockBreak(BlockBreak blockBreak) {
+        if (blockBreak.action == DiggingAction.START_DIGGING) {
+            WrappedBlockState block = blockBreak.block;
+
+            // Exempt all blocks that do not exist in the player version
+            if (WrappedBlockState.getDefaultState(player.getClientVersion(), block.getType()).getType() == StateTypes.AIR) {
+                return;
+            }
+
+            startBreak = System.currentTimeMillis() - (targetBlock == null ? 50 : 0); // ???
+            targetBlock = blockBreak.position;
+
+            maximumBlockDamage = BlockBreakSpeed.getBlockDamage(player, targetBlock);
+
+            double breakDelay = System.currentTimeMillis() - lastFinishBreak;
+
+            if (breakDelay >= 275) { // Reduce buffer if "close enough"
+                blockDelayBalance *= 0.9;
+            } else { // Otherwise, increase buffer
+                blockDelayBalance += 300 - breakDelay;
+            }
+
+            if (blockDelayBalance > 1000) { // If more than a second of advantage
+                flagAndAlert("Delay=" + breakDelay);
+                if (shouldModifyPackets()) {
+                    blockBreak.cancel();
+                }
+            }
+
+            clampBalance();
+        }
+
+        if (blockBreak.action == DiggingAction.FINISHED_DIGGING && targetBlock != null) {
+            double predictedTime = Math.ceil(1 / maximumBlockDamage) * 50;
+            double realTime = System.currentTimeMillis() - startBreak;
+            double diff = predictedTime - realTime;
+
+            clampBalance();
+
+            if (diff < 25) {  // Reduce buffer if "close enough"
+                blockBreakBalance *= 0.9;
+            } else { // Otherwise, increase buffer
+                blockBreakBalance += diff;
+            }
+
+            if (blockBreakBalance > 1000) { // If more than a second of advantage
+                if (flagAndAlert("Diff=" + diff + ",Balance=" + blockBreakBalance) && shouldModifyPackets()) {
+                    blockBreak.cancel();
+                }
+            }
+
+            lastFinishBreak = System.currentTimeMillis();
+        }
+    }
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {

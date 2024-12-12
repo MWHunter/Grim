@@ -15,7 +15,6 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityAnimation;
 
 import java.util.ArrayDeque;
@@ -25,7 +24,7 @@ import java.util.Locale;
 import static com.github.retrooper.packetevents.protocol.packettype.PacketType.Play.Client.*;
 
 @CheckData(name = "Post")
-public class PostCheck extends Check implements PacketCheck, PostPredictionCheck {
+public class Post extends Check implements PacketCheck, PostPredictionCheck {
     private final ArrayDeque<PacketTypeCommon> post = new ArrayDeque<>();
     // Due to 1.9+ missing the idle packet, we must queue flags
     // 1.8 clients will have the same logic for simplicity, although it's not needed
@@ -33,7 +32,7 @@ public class PostCheck extends Check implements PacketCheck, PostPredictionCheck
     private boolean sentFlying = false;
     private int isExemptFromSwingingCheck = Integer.MIN_VALUE;
 
-    public PostCheck(GrimPlayer playerData) {
+    public Post(GrimPlayer playerData) {
         super(playerData);
     }
 
@@ -68,12 +67,7 @@ public class PostCheck extends Check implements PacketCheck, PostPredictionCheck
 
     @Override
     public void onPacketReceive(final PacketReceiveEvent event) {
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())) {
-            // Don't count teleports or duplicates as movements
-            if (player.packetStateData.lastPacketWasTeleport || player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
-                return;
-            }
-
+        if (isTickPacket(event.getPacketType())) { // Don't count teleports or duplicates as movements
             post.clear();
             sentFlying = true;
         } else {

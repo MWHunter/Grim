@@ -33,7 +33,6 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.util.Vector;
@@ -108,9 +107,7 @@ public class Reach extends Check implements PacketCheck {
         }
 
         // If the player set their look, or we know they have a new tick
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType()) ||
-                event.getPacketType() == PacketType.Play.Client.PONG ||
-                event.getPacketType() == PacketType.Play.Client.WINDOW_CONFIRMATION) {
+        if (isUpdate(event.getPacketType())) {
             tickBetterReachCheckWithAngle();
         }
     }
@@ -139,7 +136,7 @@ public class Reach extends Check implements PacketCheck {
             if (reachEntity.getType() == EntityTypes.END_CRYSTAL) {
                 targetBox = new SimpleCollisionBox(reachEntity.trackedServerPosition.getPos().subtract(1, 0, 1), reachEntity.trackedServerPosition.getPos().add(1, 2, 1));
             }
-            return ReachUtils.getMinReachToBox(player, targetBox) > player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_ENTITY_INTERACTION_RANGE);
+            return ReachUtils.getMinReachToBox(player, targetBox) > player.compensatedEntities.getSelf().getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE);
         }
     }
 
@@ -203,7 +200,7 @@ public class Reach extends Check implements PacketCheck {
         }
 
         // +3 would be 3 + 3 = 6, which is the pre-1.20.5 behaviour, preventing "Missed Hitbox"
-        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_ENTITY_INTERACTION_RANGE) + 3;
+        final double distance = player.compensatedEntities.getSelf().getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) + 3;
         final double[] possibleEyeHeights = player.getPossibleEyeHeights();
         for (Vector lookVec : possibleLookDirs) {
             for (double eye : possibleEyeHeights) {
@@ -228,7 +225,7 @@ public class Reach extends Check implements PacketCheck {
             if (minDistance == Double.MAX_VALUE) {
                 cancelBuffer = 1;
                 return "Missed hitbox";
-            } else if (minDistance > player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_ENTITY_INTERACTION_RANGE)) {
+            } else if (minDistance > player.compensatedEntities.getSelf().getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)) {
                 cancelBuffer = 1;
                 return String.format("%.5f", minDistance) + " blocks";
             } else {

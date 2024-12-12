@@ -3,7 +3,7 @@ package ac.grim.grimac.checks.impl.badpackets;
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
-import ac.grim.grimac.checks.type.PacketCheck;
+import ac.grim.grimac.checks.type.BlockBreakCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.BlockBreak;
 import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
@@ -14,7 +14,7 @@ import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
 
 @CheckData(name = "BadPacketsX")
-public class BadPacketsX extends Check implements PacketCheck {
+public class BadPacketsX extends Check implements BlockBreakCheck {
     public BadPacketsX(GrimPlayer player) {
         super(player);
     }
@@ -26,11 +26,12 @@ public class BadPacketsX extends Check implements PacketCheck {
 
     public final boolean noFireHitbox = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2);
 
-    public final void handle(BlockBreak blockBreak) {
+    @Override
+    public void onBlockBreak(BlockBreak blockBreak) {
         if (blockBreak.action != DiggingAction.START_DIGGING && blockBreak.action != DiggingAction.FINISHED_DIGGING)
             return;
 
-        final var block = blockBreak.block.getType();
+        final StateType block = blockBreak.block.getType();
 
         // Fixes false from breaking kelp underwater
         // The client sends two start digging packets to the server both in the same tick. BadPacketsX gets called twice, doesn't false the first time, but falses the second

@@ -188,7 +188,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
                 SimpleCollisionBox interTruePositions = riding.getPossibleCollisionBoxes();
 
                 // We shrink the expanded bounding box to what the packet positions can be, for a smaller box
-                final float scale = (float) riding.getAttributeValue(Attributes.GENERIC_SCALE);
+                final float scale = (float) riding.getAttributeValue(Attributes.SCALE);
                 float width = BoundingBoxSize.getWidth(player, riding) * scale;
                 float height = BoundingBoxSize.getHeight(player, riding) * scale;
                 interTruePositions.expand(-width, 0, -width);
@@ -236,7 +236,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         if (player.isInBed) return;
 
         if (!player.compensatedEntities.getSelf().inVehicle()) {
-            player.speed = player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_MOVEMENT_SPEED);
+            player.speed = player.compensatedEntities.getSelf().getAttributeValue(Attributes.MOVEMENT_SPEED);
             if (player.hasGravity != player.playerEntityHasGravity) {
                 player.pointThreeEstimator.updatePlayerGravity();
             }
@@ -428,7 +428,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             // Dead players can't cheat, if you find a way how they could, open an issue
             player.predictedVelocity = new VectorData(new Vector(), VectorData.VectorType.Dead);
             player.clientVelocity = new Vector();
-        } else if (player.disableGrim || (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_8) && player.gamemode == GameMode.SPECTATOR) || player.isFlying) {
+        } else if (player.disableGrim || (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_8) && player.gamemode == GameMode.SPECTATOR) || player.isFlying || (player.isExemptElytra() && player.isGliding)) {
             // We could technically check spectator but what's the point...
             // Added complexity to analyze a gamemode used mainly by moderators
             //
@@ -441,8 +441,8 @@ public class MovementCheckRunner extends Check implements PositionCheck {
         } else if (riding == null) {
             wasChecked = true;
 
-            player.depthStriderLevel = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.GENERIC_WATER_MOVEMENT_EFFICIENCY);
-            player.sneakingSpeedMultiplier = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.PLAYER_SNEAKING_SPEED);
+            player.depthStriderLevel = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.WATER_MOVEMENT_EFFICIENCY);
+            player.sneakingSpeedMultiplier = (float) player.compensatedEntities.getSelf().getAttributeValue(Attributes.SNEAKING_SPEED);
 
             // This is wrong and the engine was not designed around stuff like this
             player.verticalCollision = false;
@@ -638,5 +638,4 @@ public class MovementCheckRunner extends Check implements PositionCheck {
     public void onReload(ConfigManager config) {
         allowSprintJumpingWithElytra = config.getBooleanElse("exploit.allow-sprint-jumping-when-using-elytra", true);
     }
-
 }
