@@ -1,5 +1,6 @@
 package ac.grim.grimac.checks.impl.misc;
 
+import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.BlockBreakCheck;
@@ -7,7 +8,9 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.BlockBreak;
 import ac.grim.grimac.utils.math.GrimMath;
 import ac.grim.grimac.utils.nmsutil.BlockBreakSpeed;
+import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
@@ -15,7 +18,14 @@ import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerAcknowledgeBlockChanges;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockChange;
+import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import org.bukkit.Chunk;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 // Based loosely off of Hawk BlockBreakSpeedSurvival
 // Also based loosely off of NoCheatPlus FastBreak
@@ -55,6 +65,7 @@ public class FastBreak extends Check implements BlockBreakCheck {
 
             startBreak = System.currentTimeMillis() - (targetBlock == null ? 50 : 0); // ???
             targetBlock = blockBreak.position;
+            targetType = block.getType();
 
             maximumBlockDamage = BlockBreakSpeed.getBlockDamage(player, targetBlock);
 
@@ -67,7 +78,7 @@ public class FastBreak extends Check implements BlockBreakCheck {
             }
 
             if (blockDelayBalance > 1000) { // If more than a second of advantage
-                flagAndAlert("Delay=" + breakDelay);
+                flagAndAlert("delay=" + breakDelay + ", type=" + targetType);
                 if (shouldModifyPackets()) {
                     blockBreak.cancel();
                 }
@@ -90,7 +101,8 @@ public class FastBreak extends Check implements BlockBreakCheck {
             }
 
             if (blockBreakBalance > 1000) { // If more than a second of advantage
-                if (flagAndAlert("Diff=" + diff + ",Balance=" + blockBreakBalance) && shouldModifyPackets()) {
+                if (flagAndAlert("diff=" + diff + ", balance=" + blockBreakBalance
+                        + ", maxBlockDamage=" + maximumBlockDamage + ", type=" + targetType) && shouldModifyPackets()) {
                     blockBreak.cancel();
                 }
             }
