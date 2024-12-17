@@ -12,15 +12,12 @@ import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.util.Vector3i;
 
-
-
 @CheckData(name = "AirLiquidPlace")
 public class AirLiquidPlace extends BlockPlaceCheck {
 
     public AirLiquidPlace(GrimPlayer player) {
         super(player);
     }
-
     /*
      * This check has been plagued by falses for ages, and I've finally figured it out.
      * When breaking and placing on the same tick in the same tick, I believe the vanilla client always sends DIGGING ACTION packets first

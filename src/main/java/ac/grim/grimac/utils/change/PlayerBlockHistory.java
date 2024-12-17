@@ -1,35 +1,45 @@
 package ac.grim.grimac.utils.change;
 
-
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Predicate;
 
+/**
+ * Tracks block modifications made by a player over time.
+ */
 public class PlayerBlockHistory {
     private final ConcurrentLinkedDeque<BlockModification> blockHistory = new ConcurrentLinkedDeque<>();
 
-    // Add a new block modification to the history.
+    /**
+     * Adds a new block modification to the history.
+     * @param modification The block modification to add
+     */
     public void add(BlockModification modification) {
         blockHistory.add(modification);
     }
 
-    // Get all recent modifications (optionally filtered by a condition).
+    /**
+     * Retrieves recent modifications that match the given filter.
+     * @param filter Predicate to filter modifications
+     * @return Filtered list of block modifications
+     */
     public Iterable<BlockModification> getRecentModifications(Predicate<BlockModification> filter) {
-        return blockHistory.stream().filter(filter).toList(); // Java 8+ compatible
+        return blockHistory.stream().filter(filter).toList();
     }
 
-    // Remove old modifications older than maxTick
+    /**
+     * Removes modifications older than the specified tick.
+     * @param maxTick The maximum tick age to keep
+     */
     public void cleanup(int maxTick) {
         while (!blockHistory.isEmpty() && maxTick - blockHistory.peekFirst().getTick() > 0) {
             blockHistory.removeFirst();
         }
     }
 
-    // Get the size of the block history
     public int size() {
         return blockHistory.size();
     }
 
-    // Clear all block modifications
     public void clear() {
         blockHistory.clear();
     }
