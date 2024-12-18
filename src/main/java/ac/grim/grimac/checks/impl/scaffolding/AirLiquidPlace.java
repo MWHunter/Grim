@@ -14,10 +14,10 @@ import com.github.retrooper.packetevents.util.Vector3i;
 
 @CheckData(name = "AirLiquidPlace")
 public class AirLiquidPlace extends BlockPlaceCheck {
-
     public AirLiquidPlace(GrimPlayer player) {
         super(player);
     }
+
     /*
      * This check has been plagued by falses for ages, and I've finally figured it out.
      * When breaking and placing on the same tick in the same tick, I believe the vanilla client always sends DIGGING ACTION packets first
@@ -72,7 +72,7 @@ public class AirLiquidPlace extends BlockPlaceCheck {
         // There should only be one block here for legit clients
         for (BlockModification blockModification : blockModifications) {
             StateType stateType = blockModification.getOldBlockContents().getType();
-            if (!(stateType.isAir() || Materials.isNoPlaceLiquid(stateType))) {
+            if (!stateType.isAir() && !Materials.isNoPlaceLiquid(stateType)) {
                 return;
             }
         }
