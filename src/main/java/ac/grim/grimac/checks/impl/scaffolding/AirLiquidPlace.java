@@ -11,6 +11,7 @@ import ac.grim.grimac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.util.Vector3i;
+import org.bukkit.util.NumberConversions;
 
 @CheckData(name = "AirLiquidPlace")
 public class AirLiquidPlace extends BlockPlaceCheck {
@@ -78,7 +79,10 @@ public class AirLiquidPlace extends BlockPlaceCheck {
         }
 
         if (placeAgainst.isAir() || Materials.isNoPlaceLiquid(placeAgainst)) { // fail
-            if (flagAndAlert() && shouldModifyPackets() && shouldCancel()) {
+            double distance = NumberConversions.square(blockPos.getX() - player.x) + NumberConversions.square(blockPos.getY() - player.y) + NumberConversions.square(blockPos.getZ() - player.z);
+
+            if (flagAndAlert("against=" + placeAgainst + ", type=" + place.getMaterial() + ", dist=" + Math.sqrt(distance))
+                    && shouldModifyPackets() && shouldCancel()) {
                 place.resync();
             }
         }
