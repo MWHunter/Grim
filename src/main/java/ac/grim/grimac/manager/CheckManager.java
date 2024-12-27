@@ -3,6 +3,7 @@ package ac.grim.grimac.manager;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.checks.impl.aim.AimDuplicateLook;
 import ac.grim.grimac.checks.impl.aim.AimModulo360;
+import ac.grim.grimac.checks.impl.aim.AimRounded;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.badpackets.*;
 import ac.grim.grimac.checks.impl.combat.MultiInteractA;
@@ -118,6 +119,7 @@ public class CheckManager {
         rotationCheck = new ImmutableClassToInstanceMap.Builder<RotationCheck>()
                 .put(AimProcessor.class, new AimProcessor(player))
                 .put(AimModulo360.class, new AimModulo360(player))
+                .put(AimRounded.class, new AimRounded(player))
                 .put(AimDuplicateLook.class, new AimDuplicateLook(player))
 //                .put(Baritone.class, new Baritone(player))
                 .build();
