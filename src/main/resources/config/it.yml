@@ -90,7 +90,7 @@ NoSlowA:
   # Decadimento per l'uso scorretto dell'oggetto
   decay: 0.05
 
-Knockback:
+AntiKB:
   # Riduce gradualmente l'avanzamento totale del giocatore quando è legittimo
   setback-decay-multiplier: 0.999
   # Limite per creare una violazione rispetto alla velocità del giocatore
@@ -102,13 +102,13 @@ Knockback:
   # Limite massimo di vantaggio accumulabile prima di arretrare il giocatore
   max-ceiling: 4
 
-Explosion:
+AntiExplosion:
   # Limite per rilevare l'esplosione
   threshold: 0.001
   # Livello di violazione per l'esplosione
   setbackvl: 3
 
-TimerA:
+Timer:
   # Livello di violazione per il timer
   setbackvl: 10
   # Millisecondi accumulabili per il timer
@@ -120,7 +120,7 @@ NegativeTimer:
   # Millisecondi persi prima di rilevare il timer negativo
   drift: 1200
 
-TimerVehicle:
+VehicleTimer:
   # Livello di violazione per il timer dei veicoli
   setbackvl: 10
 

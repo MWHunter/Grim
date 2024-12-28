@@ -37,7 +37,7 @@ public class BlockPlaceCheck extends Check implements RotationCheck, PostPredict
 
     @Override
     public void onReload(ConfigManager config) {
-        this.cancelVL = config.getIntElse(getConfigName() + ".cancelVL", 5);
+        this.cancelVL = config.getIntElse(getCheckName() + ".cancelVL", 5);
     }
 
     protected boolean shouldCancel() {

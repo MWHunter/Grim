@@ -97,7 +97,7 @@ NoSlowA:
   # Verfall ist, wenn der Spieler einen Gegenstand benutzt UND dadurch verlangsamt wird
   decay: 0.05
 
-Knockback:
+AntiKB:
   # Mit wie viel soll der Gesamtvorteil multipliziert werden, wenn der Spieler legitim ist.
   setback-decay-multiplier: 0.999
   # Wie groß sollte der Abstand zur Bewegung des Spielers sein, um eine Verletzung zu erzeugen?
@@ -112,7 +112,7 @@ Knockback:
   # Dies soll verhindern, dass der Spieler zu viele Verstöße sammelt und nie in der Lage ist, sie alle zu beseitigen.
   max-ceiling: 4
 
-Explosion:
+AntiExplosion:
   threshold: 0.001
   setbackvl: 3
 

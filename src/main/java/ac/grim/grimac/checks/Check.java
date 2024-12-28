@@ -24,7 +24,6 @@ public class Check extends GrimProcessor implements AbstractCheck {
     private double setbackVL;
 
     private String checkName;
-    private String configName;
     private String alternativeName;
     private String displayName;
     private String description;
@@ -34,11 +33,6 @@ public class Check extends GrimProcessor implements AbstractCheck {
     private boolean isEnabled;
     private boolean exempted;
 
-    @Override
-    public boolean isExperimental() {
-        return experimental;
-    }
-
     public Check(final GrimPlayer player) {
         this.player = player;
 
@@ -47,9 +41,6 @@ public class Check extends GrimProcessor implements AbstractCheck {
         if (checkClass.isAnnotationPresent(CheckData.class)) {
             final CheckData checkData = checkClass.getAnnotation(CheckData.class);
             this.checkName = checkData.name();
-            this.configName = checkData.configName();
-            // Fall back to check name
-            if (this.configName.equals("DEFAULT")) this.configName = this.checkName;
             this.decay = checkData.decay();
             this.setbackVL = checkData.setback();
             this.alternativeName = checkData.alternativeName();
@@ -57,7 +48,7 @@ public class Check extends GrimProcessor implements AbstractCheck {
             this.description = checkData.description();
             this.displayName = this.checkName;
         }
-        //
+
         reload();
     }
 
@@ -113,10 +104,10 @@ public class Check extends GrimProcessor implements AbstractCheck {
 
     @Override
     public void reload(ConfigManager configuration) {
-        decay = configuration.getDoubleElse(configName + ".decay", decay);
-        setbackVL = configuration.getDoubleElse(configName + ".setbackvl", setbackVL);
-        displayName = configuration.getStringElse(configName + ".displayname", checkName);
-        description = configuration.getStringElse(configName + ".description", description);
+        decay = configuration.getDoubleElse(checkName + ".decay", decay);
+        setbackVL = configuration.getDoubleElse(checkName + ".setbackvl", setbackVL);
+        displayName = configuration.getStringElse(checkName + ".displayname", checkName);
+        description = configuration.getStringElse(checkName + ".description", description);
 
         if (setbackVL == -1) setbackVL = Double.MAX_VALUE;
         updateExempted();
@@ -185,4 +176,8 @@ public class Check extends GrimProcessor implements AbstractCheck {
         return isFlying(packetType);
     }
 
+    @Override
+    public String getConfigName() {
+        return checkName;
+    }
 }

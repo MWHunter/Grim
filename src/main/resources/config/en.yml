@@ -97,7 +97,7 @@ NoSlowA:
   # Decay's when the player uses an item AND is slowed by it
   decay: 0.05
 
-Knockback:
+AntiKB:
   # How much should we multiply total advantage by when the player is legit
   setback-decay-multiplier: 0.999
   # How large of an offset from the player's velocity should we create a violation for?
@@ -112,11 +112,11 @@ Knockback:
   # This is to stop the player from gathering too many violations and never being able to clear them all
   max-ceiling: 4
 
-Explosion:
+AntiExplosion:
   threshold: 0.001
   setbackvl: 3
 
-TimerA:
+Timer:
   setbackvl: 10
   # Milliseconds that the player can accumulate for later use when they fall behind
   # Could potentially allow 1.8 fast use/fast heal/fast bow bypasses if set too high, 120 ms seems like a good balance
@@ -130,7 +130,7 @@ NegativeTimer:
   # Number of milliseconds lost while moving before we should start flagging
   drift: 1200
 
-# Same check method as TimerA, but for vehicles
+# Same check method as Timer, but for vehicles
 TimerVehicle:
   # Target 1.005 timer
   setbackvl: 10

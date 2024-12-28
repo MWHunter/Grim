@@ -99,7 +99,7 @@ NoSlowA:
   # プレイヤーがアイテム使用時に速度低下が発生する場合、この値によりアドバンテージの累積が減少します
   decay: 0.05
 
-Knockback:
+AntiKB:
   # プレイヤーが違反していない場合、総アドバンテージにどれだけの倍率を掛けるか
   setback-decay-multiplier: 0.999
   # プレイヤーの速度からどれだけズレたら違反とみなすか
@@ -114,11 +114,11 @@ Knockback:
   # 違反が過剰に蓄積し、リセットが難しくなるのを防ぐための上限です
   max-ceiling: 4
 
-Explosion:
+AntiExplosion:
   threshold: 0.001
   setbackvl: 3
 
-TimerA:
+Timer:
   setbackvl: 10
   # プレイヤーがネットワーク遅延やラグの影響で操作がサーバーの予測より遅れている場合、
   # その遅れ分を後で使用できるように蓄積するためのミリ秒数を設定します。
@@ -135,8 +135,8 @@ NegativeTimer:
   # ここで指定した遅延量（ミリ秒）を超えると、違反として検知される可能性があります
   drift: 1200
 
-# TimerAと同じチェック方法ですが、乗り物操作に適用されます
-TimerVehicle:
+# Timerと同じチェック方法ですが、乗り物操作に適用されます
+VehicleTimer:
   # 目標タイマー値は1.005です
   setbackvl: 10
 
