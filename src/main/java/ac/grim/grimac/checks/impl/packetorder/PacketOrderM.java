@@ -7,6 +7,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerBlockPlacement;
@@ -48,7 +49,7 @@ public class PacketOrderM extends Check implements PostPredictionCheck {
             interacting = false;
         }
 
-        if (isTickPacket(event.getPacketType())) {
+        if (player.gamemode == GameMode.SPECTATOR || isTickPacket(event.getPacketType())) {
             usingWithoutInteract = interacting = false;
         }
     }
