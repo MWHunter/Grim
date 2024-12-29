@@ -81,15 +81,11 @@ public class Check extends GrimProcessor implements AbstractCheck {
     }
 
     public final boolean flagAndAlert() {
-        if (flag()) {
-            alert("");
-            return true;
-        }
-        return false;
+        return flagAndAlert("");
     }
 
     public final boolean flag() {
-        return flag(null);
+        return flag("");
     }
 
     public final boolean flag(String verbose) {
