@@ -6,6 +6,7 @@ import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.wrapper.play.client.*;
 import lombok.Getter;
@@ -104,7 +105,7 @@ public final class PacketOrderProcessor extends Check implements PacketCheck {
             closingInventory = true;
         }
 
-        if (isTickPacket(packetType)) {
+        if (player.gamemode == GameMode.SPECTATOR || isTickPacket(packetType)) {
             openingInventory = false;
             swapping = false;
             dropping = false;

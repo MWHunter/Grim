@@ -106,7 +106,7 @@ public class PacketOrderI extends Check implements PostPredictionCheck {
             }
         }
 
-        if (isTickPacket(event.getPacketType())) {
+        if (player.gamemode == GameMode.SPECTATOR || isTickPacket(event.getPacketType())) {
             digging = false;
         }
     }
