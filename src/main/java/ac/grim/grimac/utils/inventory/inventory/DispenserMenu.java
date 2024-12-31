@@ -1,10 +1,10 @@
 package ac.grim.grimac.utils.inventory.inventory;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
 import ac.grim.grimac.utils.inventory.Inventory;
 import ac.grim.grimac.utils.inventory.InventoryStorage;
 import ac.grim.grimac.utils.inventory.slot.Slot;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
 
 public class DispenserMenu extends AbstractContainerMenu {
     public DispenserMenu(GrimPlayer player, Inventory playerInventory) {

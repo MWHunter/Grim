@@ -1,22 +1,22 @@
 package ac.grim.grimac.utils.nmsutil;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.enchantment.type.EnchantmentTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.GameMode;
+import ac.grim.grimac.shaded.com.packetevents.protocol.potion.PotionTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.defaulttags.BlockTags;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3i;
 import ac.grim.grimac.utils.data.tags.SyncedTags;
 import ac.grim.grimac.utils.enums.FluidTag;
 import ac.grim.grimac.utils.inventory.EnchantmentHelper;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.enchantment.type.EnchantmentTypes;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.player.GameMode;
-import com.github.retrooper.packetevents.protocol.potion.PotionTypes;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
-import com.github.retrooper.packetevents.util.Vector3i;
 
 import java.util.OptionalInt;
 

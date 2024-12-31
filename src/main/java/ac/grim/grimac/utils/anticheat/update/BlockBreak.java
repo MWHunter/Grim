@@ -1,13 +1,13 @@
 package ac.grim.grimac.utils.anticheat.update;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.DiggingAction;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3i;
 import ac.grim.grimac.utils.collisions.HitboxData;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
-import com.github.retrooper.packetevents.protocol.player.DiggingAction;
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.util.Vector3i;
 import lombok.Getter;
 
 import java.util.ArrayList;

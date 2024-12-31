@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.data.packetentity;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityType;
 
 import java.util.UUID;
 

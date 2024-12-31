@@ -4,15 +4,15 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
-import com.github.retrooper.packetevents.util.Vector3f;
-import com.github.retrooper.packetevents.util.Vector3i;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerBlockPlacement;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketReceiveEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3f;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3i;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientPlayerBlockPlacement;
 
 @CheckData(name = "BadPacketsU", description = "Sent impossible use item packet")
 public class BadPacketsU extends Check implements PacketCheck {

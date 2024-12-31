@@ -1,17 +1,17 @@
 package ac.grim.grimac.utils.collisions.blocks;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.enums.Half;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.enums.Hinge;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionFactory;
 import ac.grim.grimac.utils.collisions.datatypes.HexCollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.NoCollisionBox;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.protocol.world.states.enums.Half;
-import com.github.retrooper.packetevents.protocol.world.states.enums.Hinge;
 
 public class DoorHandler implements CollisionFactory {
     protected static final CollisionBox SOUTH_AABB = new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D);

@@ -4,13 +4,13 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.defaulttags.BlockTags;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.nmsutil.Collisions;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 
 import java.util.ArrayList;
 import java.util.List;

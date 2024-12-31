@@ -4,11 +4,11 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketReceiveEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
 
 @CheckData(name = "SprintE", description = "Sprinting while colliding with a wall", setback = 5, experimental = true)
 public class SprintE extends Check implements PostPredictionCheck {

@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.collisions.datatypes;
 
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
 
 import java.util.List;
 

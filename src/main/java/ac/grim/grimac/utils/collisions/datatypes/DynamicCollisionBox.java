@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.collisions.datatypes;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
 
 import java.util.List;
 

@@ -1,16 +1,16 @@
 package ac.grim.grimac.predictionengine.movementtick;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.defaulttags.BlockTags;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateType;
+import ac.grim.grimac.shaded.com.packetevents.resources.ResourceLocation;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3d;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
 import ac.grim.grimac.utils.data.attribute.ValuedAttribute;
 import ac.grim.grimac.utils.data.packetentity.PacketEntityStrider;
 import ac.grim.grimac.utils.nmsutil.BlockProperties;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
-import com.github.retrooper.packetevents.resources.ResourceLocation;
-import com.github.retrooper.packetevents.util.Vector3d;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;

@@ -16,28 +16,22 @@
 package ac.grim.grimac.utils.data.packetentity;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attribute;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.potion.PotionType;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3d;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.ReachInterpolationData;
 import ac.grim.grimac.utils.data.TrackedPosition;
 import ac.grim.grimac.utils.data.attribute.ValuedAttribute;
 import ac.grim.grimac.utils.nmsutil.GetBoundingBox;
-import com.github.retrooper.packetevents.protocol.attribute.Attribute;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.potion.PotionType;
-import com.github.retrooper.packetevents.util.Vector3d;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.UUID;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 // You may not copy this check unless your anticheat is licensed under GPL
 public class PacketEntity extends TypedPacketEntity {

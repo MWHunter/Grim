@@ -4,9 +4,9 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
 import ac.grim.grimac.utils.enums.FluidTag;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
 @CheckData(name = "SprintB", description = "Sprinting while sneaking", setback = 5, experimental = true)
 public class SprintB extends Check implements PostPredictionCheck {

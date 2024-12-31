@@ -2,8 +2,8 @@ package ac.grim.grimac.checks.impl.timer;
 
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketTypeCommon;
 
 @CheckData(name = "Timer - Vehicle", configName = "TimerVehicle", setback = 10)
 public class VehicleTimer extends Timer {

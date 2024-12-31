@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.inventory.inventory;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientClickWindow;
 import ac.grim.grimac.utils.inventory.Inventory;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientClickWindow;
 
 public class NotImplementedMenu extends AbstractContainerMenu {
     public NotImplementedMenu(GrimPlayer player, Inventory playerInventory) {

@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.anticheat;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;

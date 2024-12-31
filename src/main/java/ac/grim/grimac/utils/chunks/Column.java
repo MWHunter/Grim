@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.chunks;
 
 
-import com.github.retrooper.packetevents.protocol.world.chunk.BaseChunk;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.chunk.BaseChunk;
 
 public record Column(int x, int z, BaseChunk[] chunks, int transaction) {
 

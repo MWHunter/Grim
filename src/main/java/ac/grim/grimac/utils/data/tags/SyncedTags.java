@@ -1,14 +1,14 @@
 package ac.grim.grimac.utils.data.tags;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
-import com.github.retrooper.packetevents.resources.ResourceLocation;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTags;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.defaulttags.BlockTags;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
+import ac.grim.grimac.shaded.com.packetevents.resources.ResourceLocation;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerTags;
 
 import java.util.HashMap;
 import java.util.Map;

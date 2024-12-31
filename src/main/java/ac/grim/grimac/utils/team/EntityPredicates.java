@@ -1,9 +1,9 @@
 package ac.grim.grimac.utils.team;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.GameMode;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerTeams;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
-import com.github.retrooper.packetevents.protocol.player.GameMode;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams;
 
 import java.util.function.Predicate;
 

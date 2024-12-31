@@ -2,8 +2,8 @@ package ac.grim.grimac.manager.init.start;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.Initable;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.protocol.player.User;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

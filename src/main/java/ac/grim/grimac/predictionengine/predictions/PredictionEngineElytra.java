@@ -1,10 +1,10 @@
 package ac.grim.grimac.predictionengine.predictions;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
 import ac.grim.grimac.utils.data.VectorData;
 import ac.grim.grimac.utils.nmsutil.ReachUtils;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;

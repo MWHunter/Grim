@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.math;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
 import lombok.Getter;
 import org.bukkit.util.Vector;
 

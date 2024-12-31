@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.inventory;
 
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.type.ItemType;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
 
 public enum EquipmentType {
     MAINHAND,

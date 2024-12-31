@@ -5,8 +5,8 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
 @CheckData(name = "NoSlow (Prediction)", configName = "NoSlow", description = "Was not slowed while using an item", setback = 5)
 public class NoSlow extends Check implements PostPredictionCheck {

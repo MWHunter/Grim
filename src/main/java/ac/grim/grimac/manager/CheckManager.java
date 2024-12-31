@@ -1,6 +1,9 @@
 package ac.grim.grimac.manager;
 
 import ac.grim.grimac.api.AbstractCheck;
+import ac.grim.grimac.api.AbstractProcessor;
+import ac.grim.grimac.api.GrimUser;
+import ac.grim.grimac.api.checks.AbstractCheckManager;
 import ac.grim.grimac.checks.impl.aim.AimDuplicateLook;
 import ac.grim.grimac.checks.impl.aim.AimModulo360;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
@@ -41,22 +44,25 @@ import ac.grim.grimac.manager.init.start.SuperDebug;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.predictionengine.GhostBlockDetector;
 import ac.grim.grimac.predictionengine.SneakingEstimator;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketReceiveEvent;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
 import ac.grim.grimac.utils.anticheat.update.*;
 import ac.grim.grimac.utils.latency.CompensatedCooldown;
 import ac.grim.grimac.utils.latency.CompensatedFireworks;
 import ac.grim.grimac.utils.latency.CompensatedInventory;
 import ac.grim.grimac.utils.team.TeamHandler;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CheckManager {
+public class CheckManager implements AbstractCheckManager {
     private static boolean inited;
     private static final AtomicBoolean initedAtomic = new AtomicBoolean(false);
 
@@ -399,5 +405,37 @@ public class CheckManager {
                 }
             }
         }
+    }
+
+    //TODO: implement these methods & recode this class
+
+    @Override
+    public <T extends AbstractProcessor> int registerProcessor(Class<T> aClass, T t) {
+        return 0;
+    }
+
+    @Override
+    public <T extends AbstractProcessor> boolean unregisterProcessor(Class<T> aClass) {
+        return false;
+    }
+
+    @Override
+    public Collection<? extends AbstractProcessor> getAllProcessors() {
+        return List.of();
+    }
+
+    @Override
+    public Collection<? extends AbstractCheck> getAllChecks() {
+        return allChecks.values();
+    }
+
+    @Override
+    public <T extends AbstractProcessor> @Nullable T getProcessor(Class<T> aClass) {
+        return null;
+    }
+
+    @Override
+    public boolean handleViolation(GrimUser grimUser, AbstractCheck abstractCheck, String s) {
+        return false;
     }
 }

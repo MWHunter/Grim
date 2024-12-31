@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.anticheat;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.shaded.kyori.adventure.text.Component;
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

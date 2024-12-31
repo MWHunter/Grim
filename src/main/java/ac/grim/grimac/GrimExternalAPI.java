@@ -8,11 +8,11 @@ import ac.grim.grimac.api.events.GrimReloadEvent;
 import ac.grim.grimac.manager.config.ConfigManagerFileImpl;
 import ac.grim.grimac.manager.init.Initable;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.netty.channel.ChannelHelper;
+import ac.grim.grimac.shaded.io.packetevents.util.SpigotReflectionUtil;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.common.ConfigReloadObserver;
-import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
-import io.github.retrooper.packetevents.util.SpigotReflectionUtil;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,11 +40,6 @@ public class GrimExternalAPI implements GrimAbstractAPI, ConfigReloadObserver, I
     @Override
     public GrimUser getGrimUser(Player player) {
         return api.getPlayerDataManager().getPlayer(player);
-    }
-
-    @Override
-    public void setServerName(String name) {
-        variableReplacements.put("%server%", user -> name);
     }
 
     @Getter

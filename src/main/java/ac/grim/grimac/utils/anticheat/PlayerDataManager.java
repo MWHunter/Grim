@@ -1,12 +1,12 @@
 package ac.grim.grimac.utils.anticheat;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.netty.channel.ChannelHelper;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.User;
+import ac.grim.grimac.shaded.io.packetevents.util.GeyserUtil;
 import ac.grim.grimac.utils.floodgate.FloodgateUtil;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
-import com.github.retrooper.packetevents.protocol.player.User;
-import io.github.retrooper.packetevents.util.GeyserUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

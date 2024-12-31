@@ -4,12 +4,12 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketReceiveEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
 import ac.grim.grimac.utils.anticheat.update.PredictionComplete;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
 
-import static com.github.retrooper.packetevents.protocol.potion.PotionTypes.BLINDNESS;
+import static ac.grim.grimac.shaded.com.packetevents.protocol.potion.PotionTypes.BLINDNESS;
 
 @CheckData(name = "SprintD", description = "Started sprinting while having blindness", setback = 5, experimental = true)
 public class SprintD extends Check implements PostPredictionCheck {

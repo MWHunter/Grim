@@ -2,16 +2,16 @@ package ac.grim.grimac.events.packets;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.event.PacketListenerAbstract;
-import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.player.GameMode;
-import com.github.retrooper.packetevents.protocol.player.UserProfile;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfo;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketListenerAbstract;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketListenerPriority;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.GameMode;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.UserProfile;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfo;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

@@ -3,7 +3,9 @@ package ac.grim.grimac.player;
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.GrimUser;
+import ac.grim.grimac.api.checks.AbstractCheckManager;
 import ac.grim.grimac.api.config.ConfigManager;
+import ac.grim.grimac.api.debug.AbstractDebugManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.impl.aim.processor.AimProcessor;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
@@ -13,6 +15,26 @@ import ac.grim.grimac.manager.*;
 import ac.grim.grimac.predictionengine.MovementCheckRunner;
 import ac.grim.grimac.predictionengine.PointThreeEstimator;
 import ac.grim.grimac.predictionengine.UncertaintyHandler;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.netty.channel.ChannelHelper;
+import ac.grim.grimac.shaded.com.packetevents.protocol.ConnectionState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attributes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.GameMode;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.User;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.dimension.DimensionType;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3d;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.PacketWrapper;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.*;
+import ac.grim.grimac.shaded.io.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
+import ac.grim.grimac.shaded.io.packetevents.util.viaversion.ViaVersionUtil;
+import ac.grim.grimac.shaded.kyori.adventure.text.Component;
+import ac.grim.grimac.shaded.kyori.adventure.text.TranslatableComponent;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.change.PlayerBlockHistory;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
@@ -27,31 +49,11 @@ import ac.grim.grimac.utils.math.GrimMath;
 import ac.grim.grimac.utils.math.TrigHandler;
 import ac.grim.grimac.utils.nmsutil.BlockProperties;
 import ac.grim.grimac.utils.nmsutil.GetBoundingBox;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
-import com.github.retrooper.packetevents.protocol.ConnectionState;
-import com.github.retrooper.packetevents.protocol.attribute.Attributes;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.player.GameMode;
-import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
-import com.github.retrooper.packetevents.protocol.world.dimension.DimensionType;
-import com.github.retrooper.packetevents.util.Vector3d;
-import com.github.retrooper.packetevents.wrapper.PacketWrapper;
-import com.github.retrooper.packetevents.wrapper.play.server.*;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.protocol.packet.PacketTracker;
-import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
-import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import io.netty.channel.Channel;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -540,6 +542,22 @@ public class GrimPlayer implements GrimUser {
         });
     }
 
+    @Override
+    public AbstractCheckManager getCheckManager() {
+        return checkManager;
+    }
+
+    //TODO: implement this
+    @Override
+    public AbstractDebugManager getDebugManager() {
+        return null;
+    }
+
+    @Override
+    public ConfigManager getConfigManager() {
+        return GrimAPI.INSTANCE.getConfigManager().getConfig();
+    }
+
     private int spamThreshold = 100;
 
     public boolean isPointThree() {
@@ -594,8 +612,10 @@ public class GrimPlayer implements GrimUser {
                      SPIN_ATTACK, // Riptide trident
                      SWIMMING -> // Swimming (includes crawling in 1.14+)
                         this.possibleEyeHeights[2]; // [swimming/gliding/riptide height, standing height, sneaking height]
-                case NINE_CROUCHING, CROUCHING -> this.possibleEyeHeights[1]; // [sneaking height, standing height, swimming/gliding/riptide height]
-                default -> this.possibleEyeHeights[0]; // [standing height, sneaking height, swimming/gliding/riptide height]
+                case NINE_CROUCHING, CROUCHING ->
+                        this.possibleEyeHeights[1]; // [sneaking height, standing height, swimming/gliding/riptide height]
+                default ->
+                        this.possibleEyeHeights[0]; // [standing height, sneaking height, swimming/gliding/riptide height]
             };
         }
     }
@@ -714,6 +734,21 @@ public class GrimPlayer implements GrimUser {
     }
 
     @Override
+    public boolean isDisabled() {
+        return disableGrim;
+    }
+
+    @Override
+    public boolean canModifyPackets() {
+        return !isDisabled() && !noModifyPacketPermission;
+    }
+
+    @Override
+    public void message(String s) {
+
+    }
+
+    @Override
     public String getName() {
         return user.getName();
     }
@@ -748,21 +783,20 @@ public class GrimPlayer implements GrimUser {
         return trigHandler.isVanillaMath();
     }
 
-    @Override
-    public Collection<? extends AbstractCheck> getChecks() {
-        return checkManager.allChecks.values();
-    }
-
     public void runNettyTaskInMs(Runnable runnable, int ms) {
         Channel channel = (Channel) user.getChannel();
         channel.eventLoop().schedule(runnable, ms, TimeUnit.MILLISECONDS);
     }
 
     private int maxTransactionTime = 60;
-    @Getter private boolean ignoreDuplicatePacketRotation = false;
-    @Getter private boolean experimentalChecks = false;
-    @Getter private boolean cancelDuplicatePacket = true;
-    @Getter private boolean exemptElytra = false;
+    @Getter
+    private boolean ignoreDuplicatePacketRotation = false;
+    @Getter
+    private boolean experimentalChecks = false;
+    @Getter
+    private boolean cancelDuplicatePacket = true;
+    @Getter
+    private boolean exemptElytra = false;
 
     @Override
     public void reload(ConfigManager config) {

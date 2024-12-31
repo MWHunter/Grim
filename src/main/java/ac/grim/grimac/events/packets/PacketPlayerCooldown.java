@@ -2,11 +2,11 @@ package ac.grim.grimac.events.packets;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.event.PacketListenerAbstract;
-import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetCooldown;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketListenerAbstract;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketListenerPriority;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerSetCooldown;
 
 public class PacketPlayerCooldown extends PacketListenerAbstract {
 

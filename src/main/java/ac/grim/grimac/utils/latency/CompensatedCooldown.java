@@ -3,9 +3,9 @@ package ac.grim.grimac.utils.latency;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.type.PositionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemType;
 import ac.grim.grimac.utils.anticheat.update.PositionUpdate;
 import ac.grim.grimac.utils.data.CooldownData;
-import com.github.retrooper.packetevents.protocol.item.type.ItemType;
 
 import java.util.Iterator;
 import java.util.Map;

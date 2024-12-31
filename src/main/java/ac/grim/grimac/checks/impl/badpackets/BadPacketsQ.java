@@ -4,11 +4,11 @@ import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType.Play.Client;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction.Action;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketReceiveEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType.Play.Client;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientEntityAction.Action;
 
 @CheckData(name = "BadPacketsQ")
 public class BadPacketsQ extends Check implements PacketCheck {

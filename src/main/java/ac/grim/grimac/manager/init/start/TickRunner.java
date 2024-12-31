@@ -2,8 +2,8 @@ package ac.grim.grimac.manager.init.start;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.Initable;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.Bukkit;
 
 public class TickRunner implements Initable {

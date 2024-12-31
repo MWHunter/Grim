@@ -1,6 +1,11 @@
 package ac.grim.grimac.commands;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
+import ac.grim.grimac.shaded.kyori.adventure.text.Component;
+import ac.grim.grimac.shaded.kyori.adventure.text.event.ClickEvent;
+import ac.grim.grimac.shaded.kyori.adventure.text.format.NamedTextColor;
+import ac.grim.grimac.shaded.kyori.adventure.text.format.TextDecoration;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import co.aikar.commands.BaseCommand;
@@ -9,11 +14,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 
 import java.net.URI;
@@ -59,14 +59,14 @@ public class GrimVersion extends BaseCommand {
     // Using UserAgent format recommended by https://docs.modrinth.com/api/
     @SuppressWarnings("deprecation")
     private static void checkForUpdates(CommandSender sender) {
-        String current = GrimAPI.INSTANCE.getExternalAPI().getGrimVersion();
+        String current = GrimAPI.INSTANCE.getExternalAPI().getGrimVersion().replace("-dev", "");
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.modrinth.com/v2/project/LJNGWSvH/version"))
                     .GET()
                     .header("User-Agent", "GrimAnticheat/Grim/" + GrimAPI.INSTANCE.getExternalAPI().getGrimVersion())
                     .header("Content-Type", "application/json")
-                    .timeout(Duration.of(5, ChronoUnit.SECONDS))
+                    .timeout(Duration.of(10, ChronoUnit.SECONDS))
                     .build();
 
             HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());

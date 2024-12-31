@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.blockstate.helper;
 
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
 import org.bukkit.util.Vector;
 
 public class BlockFaceHelper {

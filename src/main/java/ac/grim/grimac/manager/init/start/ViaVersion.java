@@ -1,11 +1,11 @@
 package ac.grim.grimac.manager.init.start;
 
 import ac.grim.grimac.manager.init.Initable;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.io.packetevents.util.viaversion.ViaVersionUtil;
 import ac.grim.grimac.utils.anticheat.LogUtil;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.viaversion.viaversion.api.Via;
-import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 import org.bukkit.Bukkit;
 
 public class ViaVersion implements Initable {

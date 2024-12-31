@@ -2,13 +2,13 @@ package ac.grim.grimac.commands;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.start.SuperDebug;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.command.CommandSender;
 
 import java.io.IOException;

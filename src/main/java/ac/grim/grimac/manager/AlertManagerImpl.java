@@ -35,6 +35,15 @@ public class AlertManagerImpl implements AlertManager {
     }
 
     @Override
+    public void showAlerts(Player player, boolean bool) {
+        if (bool) {
+            enabledAlerts.add(player);
+        } else {
+            enabledAlerts.remove(player);
+        }
+    }
+
+    @Override
     public boolean hasVerboseEnabled(Player player) {
         return enabledVerbose.contains(player);
     }
@@ -50,6 +59,15 @@ public class AlertManagerImpl implements AlertManager {
             String alertString = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("verbose-disabled", "%prefix% &fVerbose disabled");
             alertString = MessageUtil.replacePlaceholders(player, alertString);
             MessageUtil.sendMessage(player, MessageUtil.miniMessage(alertString));
+        }
+    }
+
+    @Override
+    public void showVerbose(Player player, boolean bool) {
+        if (bool) {
+            enabledVerbose.add(player);
+        } else {
+            enabledVerbose.remove(player);
         }
     }
 

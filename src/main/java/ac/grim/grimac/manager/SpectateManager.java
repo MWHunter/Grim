@@ -3,7 +3,7 @@ package ac.grim.grimac.manager;
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.Initable;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfo;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfo;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

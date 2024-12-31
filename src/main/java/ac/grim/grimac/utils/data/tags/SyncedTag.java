@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.data.tags;
 
-import com.github.retrooper.packetevents.resources.ResourceLocation;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTags;
+import ac.grim.grimac.shaded.com.packetevents.resources.ResourceLocation;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerTags;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;

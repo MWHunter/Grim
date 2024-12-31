@@ -8,9 +8,9 @@ import ac.grim.grimac.api.events.CommandExecuteEvent;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.events.packets.ProxyAlertMessenger;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -139,12 +139,12 @@ public class PunishmentManager implements ConfigReloadable {
                         // Any other number means execute every X interval
                         boolean inInterval = command.interval == 0 ? (command.executeCount == 0) : (violationCount % command.interval == 0);
                         if (inInterval) {
-                            CommandExecuteEvent executeEvent = new CommandExecuteEvent(player, check, cmd);
+                            CommandExecuteEvent executeEvent = new CommandExecuteEvent(player, check, cmd, verbose);
                             Bukkit.getPluginManager().callEvent(executeEvent);
                             if (executeEvent.isCancelled()) continue;
 
                             if (command.command.equals("[webhook]")) {
-                                GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, verbose, check.getDisplayName(), vl);
+                                GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, check, verbose, check.getDisplayName(), vl);
                             } else if (command.command.equals("[proxy]")) {
                                 ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.command, vl, group, check, proxyAlertString, verbose));
                             } else {

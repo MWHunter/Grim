@@ -10,7 +10,7 @@ public abstract class GrimProcessor implements AbstractProcessor, ConfigReloadab
     // Not everything has to be a check for it to process packets & be configurable
 
     @Override
-    public void reload() {
+    public final void reload() {
         reload(GrimAPI.INSTANCE.getConfigManager().getConfig());
     }
 

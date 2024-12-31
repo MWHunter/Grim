@@ -2,7 +2,7 @@ package ac.grim.grimac.manager.init.start;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.Initable;
-import io.github.retrooper.packetevents.bstats.bukkit.Metrics;
+import ac.grim.grimac.shaded.io.packetevents.bstats.bukkit.Metrics;
 
 public class BStats implements Initable {
     @Override

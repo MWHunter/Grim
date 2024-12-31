@@ -3,10 +3,10 @@ package ac.grim.grimac.events.packets;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.*;
 import ac.grim.grimac.utils.math.GrimMath;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.wrapper.play.server.*;
 
 public class PacketWorldBorder extends Check implements PacketCheck {
     double centerX;

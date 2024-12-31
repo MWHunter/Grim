@@ -1,10 +1,10 @@
 package ac.grim.grimac.utils.data.attribute;
 
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.attribute.Attribute;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
 import ac.grim.grimac.utils.math.GrimMath;
-import com.github.retrooper.packetevents.protocol.attribute.Attribute;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAttributes;
 
 import java.util.List;
 import java.util.Optional;

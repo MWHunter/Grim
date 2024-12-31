@@ -1,13 +1,13 @@
 package ac.grim.grimac.events.packets.worldreader;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.protocol.stream.NetStreamInput;
-import com.github.retrooper.packetevents.protocol.world.chunk.BaseChunk;
-import com.github.retrooper.packetevents.protocol.world.chunk.impl.v_1_18.Chunk_v1_18;
-import com.github.retrooper.packetevents.protocol.world.chunk.reader.impl.ChunkReader_v1_18;
-import com.github.retrooper.packetevents.protocol.world.dimension.DimensionTypes;
-import com.github.retrooper.packetevents.wrapper.PacketWrapper;
+import ac.grim.grimac.shaded.com.packetevents.event.PacketSendEvent;
+import ac.grim.grimac.shaded.com.packetevents.protocol.stream.NetStreamInput;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.chunk.BaseChunk;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.chunk.impl.v_1_18.Chunk_v1_18;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.chunk.reader.impl.ChunkReader_v1_18;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.dimension.DimensionTypes;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.PacketWrapper;
 
 import java.io.ByteArrayInputStream;
 

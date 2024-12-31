@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.collisions.datatypes;
 
-import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateType;
 
 // Exists for the same reason as HexCollisionBox but for offset blocks; read comments there if unsure
 public class HexOffsetCollisionBox extends OffsetCollisionBox {

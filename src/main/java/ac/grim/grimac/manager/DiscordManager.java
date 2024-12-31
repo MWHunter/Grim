@@ -1,13 +1,12 @@
 package ac.grim.grimac.manager;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.manager.init.Initable;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.LogUtil;
-import ac.grim.grimac.utils.anticheat.MessageUtil;
-import club.minnced.discord.webhook.WebhookClient;
-import club.minnced.discord.webhook.send.WebhookEmbed;
-import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
+import ac.grim.grimac.utils.discord.Image;
+import ac.grim.grimac.utils.discord.*;
 
 import java.awt.*;
 import java.time.Instant;
@@ -17,30 +16,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DiscordManager implements Initable {
-    private static WebhookClient client;
+    private boolean enabled = false;
     private int embedColor;
+    private boolean showHead;
     private String staticContent = "";
     private String embedTitle = "";
+    private String webhookUrl;
 
     public static final Pattern WEBHOOK_PATTERN = Pattern.compile("(?:https?://)?(?:\\w+\\.)?\\w+\\.\\w+/api(?:/v\\d+)?/webhooks/(\\d+)/([\\w-]+)(?:/(?:\\w+)?)?");
 
     @Override
     public void start() {
+        enabled = false;
         try {
             if (!GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("enabled", false)) return;
-            String webhook = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("webhook", "");
-            if (webhook.isEmpty()) {
+            webhookUrl = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("webhook", "");
+            if (webhookUrl.isEmpty()) {
                 LogUtil.warn("Discord webhook is empty, disabling Discord alerts");
-                client = null;
                 return;
             }
             //
-            Matcher matcher = WEBHOOK_PATTERN.matcher(webhook);
+            Matcher matcher = WEBHOOK_PATTERN.matcher(webhookUrl);
             if (!matcher.matches()) {
                 throw new IllegalArgumentException("Failed to parse webhook URL");
             }
-            client = WebhookClient.withId(Long.parseUnsignedLong(matcher.group(1)), matcher.group(2));
-            client.setTimeout(15000); // Requests expire after 15 seconds
+
+            showHead = GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("show-head", true);
 
             embedTitle = GrimAPI.INSTANCE.getConfigManager().getConfig().getStringElse("embed-title", "**Grim Alert**");
 
@@ -54,6 +55,7 @@ public class DiscordManager implements Initable {
                 sb.append(string).append("\n");
             }
             staticContent = sb.toString();
+            enabled = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,36 +73,34 @@ public class DiscordManager implements Initable {
         return list;
     }
 
-    public void sendAlert(GrimPlayer player, String verbose, String checkName, int violations) {
-        if (client != null) {
-
-            String content = staticContent;
-            content = content.replace("%check%", checkName);
-            content = content.replace("%violations%", Integer.toString(violations));
-            content = MessageUtil.replacePlaceholders(player, content);
-            content = content.replace("_", "\\_");
-
-            WebhookEmbedBuilder embed = new WebhookEmbedBuilder()
-                    .setImageUrl("https://i.stack.imgur.com/Fzh0w.png") // Constant width
-                    .setThumbnailUrl("https://crafthead.net/helm/" + player.user.getProfile().getUUID())
-                    .setColor(embedColor)
-                    .setTitle(new WebhookEmbed.EmbedTitle(embedTitle, null))
-                    .setDescription(content)
-                    .setTimestamp(Instant.now())
-                    .setFooter(new WebhookEmbed.EmbedFooter("", "https://grim.ac/images/grim.png"));
-
-            if (!verbose.isEmpty()) {
-                embed.addField(new WebhookEmbed.EmbedField(true, "Verbose", verbose));
-            }
-
-            sendWebhookEmbed(embed);
+    public void sendAlert(GrimPlayer player, AbstractCheck check, String verbose, String checkName, int violations) {
+        if (!enabled) return;
+        String content = staticContent;
+        content = content.replace("%check%", check.isExperimental() ? "\\*" + checkName : checkName);
+        content = content.replace("%violations%", violations + "");
+        if (!verbose.isEmpty()) content = content.replace("%verbose%", verbose);
+        content = GrimAPI.INSTANCE.getExternalAPI().replaceVariables(player, content);
+        content = content.replace("_", "\\_");
+        //
+        Embed embed = Embed.builder()
+                .color(embedColor)
+                .title(embedTitle)
+                .description(content)
+                .timestamp(Instant.now())
+                .footer(new Footer(player.getUniqueId().toString(), "https://grim.ac/images/grim.png"))
+                .build();
+        //
+        if (!verbose.isEmpty()) {
+            embed.addField(new Field("Verbose", verbose));
         }
+
+        if (showHead) {
+            embed.setThumbnail(new Image("https://crafthead.net/helm/" + player.user.getProfile().getUUID()));
+        }
+        //
+        DiscordMessage message = new DiscordMessage();
+        message.addEmbed(embed);
+        DiscordMessager.sendAsync(message, webhookUrl);
     }
 
-    public void sendWebhookEmbed(WebhookEmbedBuilder embed) {
-        try {
-            client.send(embed.build());
-        } catch (Exception ignored) {
-        }
-    }
 }

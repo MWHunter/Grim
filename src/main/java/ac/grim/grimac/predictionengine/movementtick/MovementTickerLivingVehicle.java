@@ -5,8 +5,8 @@ import ac.grim.grimac.predictionengine.predictions.rideable.PredictionEngineRide
 import ac.grim.grimac.predictionengine.predictions.rideable.PredictionEngineRideableNormal;
 import ac.grim.grimac.predictionengine.predictions.rideable.PredictionEngineRideableWater;
 import ac.grim.grimac.predictionengine.predictions.rideable.PredictionEngineRideableWaterLegacy;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
 import ac.grim.grimac.utils.nmsutil.BlockProperties;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import org.bukkit.util.Vector;
 
 public class MovementTickerLivingVehicle extends MovementTicker {

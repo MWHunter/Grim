@@ -2,11 +2,11 @@ package ac.grim.grimac.utils.lists;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.io.packetevents.util.SpigotConversionUtil;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import ac.grim.grimac.utils.inventory.Inventory;
 import ac.grim.grimac.utils.inventory.InventoryStorage;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.*;

@@ -2,17 +2,21 @@ package ac.grim.grimac.checks;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.api.AbstractCheck;
+import ac.grim.grimac.api.GrimUser;
+import ac.grim.grimac.api.checks.ListenerGroup;
 import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.api.events.FlagEvent;
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketTypeCommon;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
+import ac.grim.grimac.shaded.io.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+
+import java.util.function.Supplier;
 
 // Class from https://github.com/Tecnio/AntiCheatBase/blob/master/src/main/java/me/tecnio/anticheat/check/Check.java
 @Getter
@@ -33,6 +37,9 @@ public class Check extends GrimProcessor implements AbstractCheck {
     @Setter
     private boolean isEnabled;
     private boolean exempted;
+
+    private long lastViolation;
+    private long resetAfter;
 
     public Check(final GrimPlayer player) {
         this.player = player;
@@ -80,10 +87,14 @@ public class Check extends GrimProcessor implements AbstractCheck {
     }
 
     public final boolean flag() {
+        return flag("");
+    }
+
+    public final boolean flag(String verbose) {
         if (player.disableGrim || (experimental && !player.isExperimentalChecks()) || exempted)
             return false; // Avoid calling event if disabled
 
-        FlagEvent event = new FlagEvent(player, this);
+        FlagEvent event = new FlagEvent(player, this, verbose);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
@@ -107,7 +118,7 @@ public class Check extends GrimProcessor implements AbstractCheck {
     }
 
     @Override
-    public void reload(ConfigManager configuration) {
+    public final void reload(ConfigManager configuration) {
         decay = configuration.getDoubleElse(configName + ".decay", decay);
         setbackVL = configuration.getDoubleElse(configName + ".setbackvl", setbackVL);
         displayName = configuration.getStringElse(configName + ".displayname", checkName);
@@ -180,4 +191,46 @@ public class Check extends GrimProcessor implements AbstractCheck {
         return isFlying(packetType);
     }
 
+    @Override
+    public boolean supportsPlayer(GrimUser grimUser) {
+        return true;
+    }
+
+    @Override
+    public void checkViolations(long time) {
+
+    }
+
+    //TODO: this needs to be removed & properly implemented for each check
+    @Override
+    public String getListenerGroup() {
+        return ListenerGroup.PACKET.getName();
+    }
+
+    @Override
+    public boolean isSupported() {
+        return true;
+    }
+
+    @Override
+    public int getListeners() {
+        return listeners;
+    }
+
+    private int listeners;
+
+    @Override
+    public void setListeners(int listeners) {
+        this.listeners = listeners;
+    }
+
+    @Override
+    public int getReloadCount() {
+        return 0;
+    }
+
+    @Override
+    public void debug(Supplier<String> supplier) {
+
+    }
 }

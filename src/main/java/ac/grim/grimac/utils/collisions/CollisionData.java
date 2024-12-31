@@ -2,6 +2,18 @@ package ac.grim.grimac.utils.collisions;
 
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.predictionengine.movementtick.MovementTickerStrider;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.manager.server.ServerVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.ClientVersion;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.BlockFace;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.defaulttags.BlockTags;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.enums.*;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
+import ac.grim.grimac.shaded.io.packetevents.util.viaversion.ViaVersionUtil;
 import ac.grim.grimac.utils.collisions.blocks.*;
 import ac.grim.grimac.utils.collisions.blocks.connecting.DynamicCollisionFence;
 import ac.grim.grimac.utils.collisions.blocks.connecting.DynamicCollisionPane;
@@ -9,19 +21,7 @@ import ac.grim.grimac.utils.collisions.blocks.connecting.DynamicCollisionWall;
 import ac.grim.grimac.utils.collisions.datatypes.*;
 import ac.grim.grimac.utils.data.packetentity.PacketEntityStrider;
 import ac.grim.grimac.utils.nmsutil.Materials;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.world.BlockFace;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.enums.*;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 import com.viaversion.viaversion.api.Via;
-import io.github.retrooper.packetevents.util.viaversion.ViaVersionUtil;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -1053,7 +1053,7 @@ public enum CollisionData {
         this.materials = mList.toArray(new StateType[0]);
     }
 
-    private static CollisionBox getAmethystBox(ClientVersion version, com.github.retrooper.packetevents.protocol.world.BlockFace facing, int param_0, int param_1) {
+    private static CollisionBox getAmethystBox(ClientVersion version, BlockFace facing, int param_0, int param_1) {
         if (version.isOlderThanOrEquals(ClientVersion.V_1_16_4))
             return NoCollisionBox.INSTANCE;
 

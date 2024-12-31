@@ -2,16 +2,16 @@ package ac.grim.grimac.manager.init.load;
 
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.manager.init.Initable;
+import ac.grim.grimac.shaded.com.packetevents.PacketEvents;
+import ac.grim.grimac.shaded.com.packetevents.protocol.chat.ChatTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.data.EntityDataTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.enchantment.type.EnchantmentTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.particle.type.ParticleTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
+import ac.grim.grimac.shaded.io.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import ac.grim.grimac.utils.anticheat.LogUtil;
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.protocol.chat.ChatTypes;
-import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.item.enchantment.type.EnchantmentTypes;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
 import java.util.concurrent.Executors;
 

@@ -1,8 +1,8 @@
 package ac.grim.grimac.utils.data;
 
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3i;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
-import com.github.retrooper.packetevents.util.Vector3i;
 
 import java.util.Objects;
 

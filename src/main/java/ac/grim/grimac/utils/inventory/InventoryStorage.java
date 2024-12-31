@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.inventory;
 
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.ItemStack;
 
 public class InventoryStorage {
     protected ItemStack[] items;

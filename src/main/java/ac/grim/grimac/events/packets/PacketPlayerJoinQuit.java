@@ -1,11 +1,11 @@
 package ac.grim.grimac.events.packets;
 
 import ac.grim.grimac.GrimAPI;
+import ac.grim.grimac.shaded.com.packetevents.event.*;
+import ac.grim.grimac.shaded.com.packetevents.netty.channel.ChannelHelper;
+import ac.grim.grimac.shaded.com.packetevents.protocol.ConnectionState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.packettype.PacketType;
 import ac.grim.grimac.utils.anticheat.LogUtil;
-import com.github.retrooper.packetevents.event.*;
-import com.github.retrooper.packetevents.netty.channel.ChannelHelper;
-import com.github.retrooper.packetevents.protocol.ConnectionState;
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

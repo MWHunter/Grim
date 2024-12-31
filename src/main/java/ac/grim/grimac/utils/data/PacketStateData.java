@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.data;
 
-import com.github.retrooper.packetevents.protocol.player.InteractionHand;
-import com.github.retrooper.packetevents.util.Vector3d;
+import ac.grim.grimac.shaded.com.packetevents.protocol.player.InteractionHand;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3d;
 import lombok.Getter;
 
 // This is to keep all the packet data out of the main player class

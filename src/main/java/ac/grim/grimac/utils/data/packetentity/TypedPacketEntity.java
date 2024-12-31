@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.data.packetentity;
 
-import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.entity.type.EntityTypes;
 
 public abstract class TypedPacketEntity {
 

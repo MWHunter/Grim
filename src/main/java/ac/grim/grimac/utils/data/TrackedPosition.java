@@ -1,6 +1,6 @@
 package ac.grim.grimac.utils.data;
 
-import com.github.retrooper.packetevents.util.Vector3d;
+import ac.grim.grimac.shaded.com.packetevents.util.Vector3d;
 
 public final class TrackedPosition {
 

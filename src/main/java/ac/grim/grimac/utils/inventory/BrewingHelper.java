@@ -1,7 +1,7 @@
 package ac.grim.grimac.utils.inventory;
 
-import com.github.retrooper.packetevents.protocol.item.type.ItemType;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemType;
+import ac.grim.grimac.shaded.com.packetevents.protocol.item.type.ItemTypes;
 
 public class BrewingHelper {
     public static boolean isBaseModifier(ItemType type) {

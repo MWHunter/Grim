@@ -1,10 +1,10 @@
 package ac.grim.grimac.utils.nmsutil;
 
 import ac.grim.grimac.player.GrimPlayer;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
-import com.github.retrooper.packetevents.protocol.world.states.enums.Thickness;
-import com.github.retrooper.packetevents.protocol.world.states.enums.VerticalDirection;
-import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.WrappedBlockState;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.enums.Thickness;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.enums.VerticalDirection;
+import ac.grim.grimac.shaded.com.packetevents.protocol.world.states.type.StateTypes;
 
 public class Dripstone {
     public static WrappedBlockState update(GrimPlayer player, WrappedBlockState toPlace, int x, int y, int z, boolean secondaryUse) {
