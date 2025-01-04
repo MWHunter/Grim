@@ -767,6 +767,8 @@ public class GrimPlayer implements GrimUser {
     @Getter private boolean experimentalChecks = false;
     @Getter private boolean cancelDuplicatePacket = true;
     @Getter private boolean exemptElytra = false;
+    @Getter private boolean mitigateAutoBlock = true;
+    @Getter private boolean mitigateNoSlow = true;
 
     @Override
     public void reload(ConfigManager config) {
@@ -776,6 +778,8 @@ public class GrimPlayer implements GrimUser {
         ignoreDuplicatePacketRotation = config.getBooleanElse("ignore-duplicate-packet-rotation", false);
         cancelDuplicatePacket = config.getBooleanElse("cancel-duplicate-packet", true);
         exemptElytra = config.getBooleanElse("exempt-elytra", false);
+        mitigateAutoBlock = config.getBooleanElse("mitigate-auto-block", true);
+        mitigateNoSlow = config.getBooleanElse("mitigate-noslow", true);
         // reload all checks
         for (AbstractCheck value : checkManager.allChecks.values()) value.reload();
         // reload punishment manager
