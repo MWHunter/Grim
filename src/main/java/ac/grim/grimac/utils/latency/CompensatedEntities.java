@@ -190,9 +190,9 @@ public class CompensatedEntities {
         } else if (EntityTypes.PAINTING.equals(entityType)) {
             packetEntity = new PacketEntityPainting(player, uuid, position.x, position.y, position.z, Direction.getByHorizontalIndex(data));
         } else if (EntityTypes.GUARDIAN.equals(entityType)) {
-            packetEntity = new PacketEntityGuardian(player, entityType, false); // can still be an Elder Guardian in 1.8-1.10.2 from entity metadata updates
+            packetEntity = new PacketEntityGuardian(player, uuid, entityType, position.x, position.y, position.z, false); // can still be an Elder Guardian in 1.8-1.10.2 from entity metadata updates
         } else if (EntityTypes.ELDER_GUARDIAN.equals(entityType)) {
-            packetEntity = new PacketEntityGuardian(player, entityType, true);
+            packetEntity = new PacketEntityGuardian(player, uuid, entityType, position.x, position.y, position.z, true);
         } else {
             packetEntity = new PacketEntity(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
         }
@@ -461,28 +461,24 @@ public class CompensatedEntities {
                 ((PacketEntityArmorStand) entity).isMarker = (info & 0x10) != 0;
             }
         } else if (entity instanceof PacketEntityGuardian && PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_11)) {
-//            int index;
-//            int isElderlyBitMask;
-//            if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)) {
-//                index = 16;
-//                isElderlyBitMask = 0x02;
-//            } else if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_10)) {
-//                index = 11;
-//                isElderlyBitMask = 0x04;
-//            } else {
-//                index = 12;
-//                isElderlyBitMask = 0x04;
-//            }
-//
-//            EntityData guardianByte = WatchableIndexUtil.getIndex(watchableObjects, index);
-//            if (guardianByte != null) {
-//                if (guardianByte.getValue() instanceof Integer) {
-//                    System.out.println(guardianByte.getValue());
-//                } else if (guardianByte.getValue() instanceof Byte) {
-//                    byte info = (Byte) guardianByte.getValue();
-//                    ((PacketEntityGuardian) entity).isElder = (info & isElderlyBitMask) != 0;
-//                }
-//            }
+            int index;
+            int isElderlyBitMask;
+            if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9)) {
+                index = 16;
+                isElderlyBitMask = 0x04; // the wiki is wrong 0x02 is not "Is Elderly"
+            } else if (PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_10)) {
+                index = 11;
+                isElderlyBitMask = 0x04;
+            } else {
+                index = 12;
+                isElderlyBitMask = 0x04;
+            }
+
+            EntityData guardianByte = WatchableIndexUtil.getIndex(watchableObjects, index);
+            if (guardianByte != null) {
+                int info = (Integer) guardianByte.getValue(); // wiki says this is a byte but testing on 1.8 shows its an integer
+                ((PacketEntityGuardian) entity).isElder = (info & isElderlyBitMask) != 0;
+            }
         }
 
         if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9_4)) {
