@@ -11,9 +11,9 @@ import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity.InteractAction;
 
-@CheckData(name = "PacketOrderO", experimental = true)
-public class PacketOrderO extends Check implements PacketCheck {
-    public PacketOrderO(final GrimPlayer player) {
+@CheckData(name = "PacketOrderD", experimental = true)
+public class PacketOrderD extends Check implements PacketCheck {
+    public PacketOrderD(final GrimPlayer player) {
         super(player);
     }
 
