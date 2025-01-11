@@ -15,6 +15,7 @@ import ac.grim.grimac.checks.impl.elytra.ElytraA;
 import ac.grim.grimac.checks.impl.elytra.ElytraB;
 import ac.grim.grimac.checks.impl.exploit.ExploitA;
 import ac.grim.grimac.checks.impl.exploit.ExploitB;
+import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFall;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
 import ac.grim.grimac.checks.impl.misc.GhostBlockMitigation;
@@ -189,6 +190,7 @@ public class CheckManager {
                 .put(CrashH.class, new CrashH(player))
                 .put(ExploitA.class, new ExploitA(player))
                 .put(ExploitB.class, new ExploitB(player))
+                .put(ExploitC.class, new ExploitC(player))
                 .put(VehicleTimer.class, new VehicleTimer(player))
                 .build();
 
