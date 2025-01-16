@@ -9,8 +9,10 @@ import ac.grim.grimac.checks.impl.breaking.*;
 import ac.grim.grimac.checks.impl.combat.Hitboxes;
 import ac.grim.grimac.checks.impl.combat.*;
 import ac.grim.grimac.checks.impl.crash.*;
+import ac.grim.grimac.checks.impl.elytra.*;
 import ac.grim.grimac.checks.impl.exploit.ExploitA;
 import ac.grim.grimac.checks.impl.exploit.ExploitB;
+import ac.grim.grimac.checks.impl.exploit.ExploitC;
 import ac.grim.grimac.checks.impl.groundspoof.NoFall;
 import ac.grim.grimac.checks.impl.inventory.*;
 import ac.grim.grimac.checks.impl.misc.ClientBrand;
@@ -172,8 +174,18 @@ public class CheckManager {
                 .put(SprintC.class, new SprintC(player))
                 .put(SprintD.class, new SprintD(player))
                 .put(SprintE.class, new SprintE(player))
+                .put(SprintF.class, new SprintF(player))
                 .put(MultiInteractA.class, new MultiInteractA(player))
                 .put(MultiInteractB.class, new MultiInteractB(player))
+                .put(ElytraA.class, new ElytraA(player))
+                .put(ElytraB.class, new ElytraB(player))
+                .put(ElytraC.class, new ElytraC(player))
+                .put(ElytraD.class, new ElytraD(player))
+                .put(ElytraE.class, new ElytraE(player))
+                .put(ElytraF.class, new ElytraF(player))
+                .put(ElytraG.class, new ElytraG(player))
+                .put(ElytraH.class, new ElytraH(player))
+                .put(ElytraI.class, new ElytraI(player))
                 .put(SetbackTeleportUtil.class, new SetbackTeleportUtil(player)) // Avoid teleporting to new position, update safe pos last
                 .put(CompensatedFireworks.class, player.compensatedFireworks)
                 .put(SneakingEstimator.class, new SneakingEstimator(player))
@@ -209,6 +221,7 @@ public class CheckManager {
                 .put(CrashH.class, new CrashH(player))
                 .put(ExploitA.class, new ExploitA(player))
                 .put(ExploitB.class, new ExploitB(player))
+                .put(ExploitC.class, new ExploitC(player))
                 .put(VehicleTimer.class, new VehicleTimer(player))
                 .build();
 

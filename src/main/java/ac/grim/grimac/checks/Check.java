@@ -68,7 +68,7 @@ public class Check extends GrimProcessor implements AbstractCheck {
     }
 
     public final boolean flagAndAlert(String verbose) {
-        if (flag()) {
+        if (flag(verbose)) {
             alert(verbose);
             return true;
         }
@@ -80,16 +80,21 @@ public class Check extends GrimProcessor implements AbstractCheck {
     }
 
     public final boolean flag() {
+        return flag("");
+    }
+
+    private long lastViolationTime;
+
+    public final boolean flag(String verbose) {
         if (player.disableGrim || (experimental && !player.isExperimentalChecks()) || exempted)
             return false; // Avoid calling event if disabled
 
-        FlagEvent event = new FlagEvent(player, this);
+        FlagEvent event = new FlagEvent(player, this, verbose);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-
         player.punishmentManager.handleViolation(this);
-
+        lastViolationTime = System.currentTimeMillis();
         violations++;
         return true;
     }

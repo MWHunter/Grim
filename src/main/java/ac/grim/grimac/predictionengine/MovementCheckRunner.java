@@ -320,7 +320,7 @@ public class MovementCheckRunner extends Check implements PositionCheck {
             //player.fallDistance = 0;
             player.isFlying = false;
             player.isGliding = false;
-            player.isSprinting = riding instanceof PacketEntityCamel && player.isSprinting; // camels can sprint
+            player.isSprinting &= riding instanceof PacketEntityCamel; // camels can sprint
             player.isSneaking = false;
 
             if (riding.getType() != EntityTypes.PIG && riding.getType() != EntityTypes.STRIDER) {
