@@ -916,7 +916,7 @@ public class GrimPlayer implements GrimUser {
 
                 isUsingBukkitItem0 = player -> {
                     try {
-                        var item = getItemInUse.invoke(getHandle.invoke(player));
+                        Object item = getItemInUse.invoke(getHandle.invoke(player));
                         return item != null && !((boolean) isEmpty.invoke(item));
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new RuntimeException(e);
@@ -948,8 +948,14 @@ public class GrimPlayer implements GrimUser {
             } else if (version.isNewerThanOrEquals(ServerVersion.V_1_17_1)) {
                 isUsingBukkitItem0 = player -> player.getItemInUse() != null;
                 try { // paper only
-                    LivingEntity.class.getMethod("clearActiveItem");
-                    resetActiveBukkitItem0 = LivingEntity::clearActiveItem;
+                    Method clearActiveItem = LivingEntity.class.getMethod("clearActiveItem");
+                    resetActiveBukkitItem0 = player -> {
+                        try {
+                            clearActiveItem.invoke(player);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    };
                 } catch (NoSuchMethodException ignored) {}
             }
         } catch (ClassNotFoundException | NoSuchMethodException e) {
