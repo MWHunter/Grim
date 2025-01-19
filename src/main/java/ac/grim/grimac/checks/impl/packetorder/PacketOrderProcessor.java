@@ -67,7 +67,11 @@ public final class PacketOrderProcessor extends Check implements PacketCheck {
 
         if (packetType == PacketType.Play.Client.ENTITY_ACTION) {
             switch (new WrapperPlayClientEntityAction(event).getAction()) {
-                case START_SPRINTING, STOP_SPRINTING -> sprinting = true;
+                case START_SPRINTING, STOP_SPRINTING -> {
+                    if (!player.inVehicle()) {
+                        sprinting = true;
+                    }
+                }
                 case STOP_SNEAKING, START_SNEAKING -> sneaking = true;
                 case LEAVE_BED -> leavingBed = true;
                 case START_FLYING_WITH_ELYTRA -> startingToGlide = true;
@@ -105,7 +109,7 @@ public final class PacketOrderProcessor extends Check implements PacketCheck {
             closingInventory = true;
         }
 
-        if (player.gamemode == GameMode.SPECTATOR || player.vehicleData.wasVehicleSwitch || isTickPacket(packetType)) {
+        if (player.gamemode == GameMode.SPECTATOR || isTickPacket(packetType)) {
             openingInventory = false;
             swapping = false;
             dropping = false;
