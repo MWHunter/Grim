@@ -122,7 +122,6 @@ public class CheckManager {
                 .put(PacketOrderB.class, new PacketOrderB(player))
                 .put(PacketOrderC.class, new PacketOrderC(player))
                 .put(PacketOrderD.class, new PacketOrderD(player))
-                .put(PacketOrderD.class, new PacketOrderD(player))
                 .put(SprintA.class, new SprintA(player))
                 .put(VehicleA.class, new VehicleA(player))
                 .put(VehicleB.class, new VehicleB(player))
