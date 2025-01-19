@@ -18,7 +18,7 @@ public final class PacketOrderProcessor extends Check implements PacketCheck {
         super(player);
     }
 
-    private boolean openingInventory; // only pre 1.9 clients on pre 1.9 servers
+    private boolean openingInventory; // only pre 1.12 clients on pre 1.12 servers
     private boolean swapping;
     private boolean dropping;
     private boolean interacting;
@@ -105,7 +105,7 @@ public final class PacketOrderProcessor extends Check implements PacketCheck {
             closingInventory = true;
         }
 
-        if (player.gamemode == GameMode.SPECTATOR || isTickPacket(packetType)) {
+        if (player.gamemode == GameMode.SPECTATOR || player.vehicleData.wasVehicleSwitch || isTickPacket(packetType)) {
             openingInventory = false;
             swapping = false;
             dropping = false;
