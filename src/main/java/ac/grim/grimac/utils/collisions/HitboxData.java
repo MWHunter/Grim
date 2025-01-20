@@ -294,8 +294,8 @@ public enum HitboxData {
         // BEWARE OF https://bugs.mojang.com/browse/MC-85109 FOR 1.8 PLAYERS
         // 1.8 Brewing Stand hitbox is a fullblock until it is hit sometimes, can be caused be restarting client and joining server
         if (version.isOlderThan(ClientVersion.V_1_13)) {
-            if (block.getType() == StateTypes.BREWING_STAND && player.getClientVersion().equals(ClientVersion.V_1_8)) {
-                return new ComplexCollisionBox(
+            if (isTargetBlock && block.getType() == StateTypes.BREWING_STAND && player.getClientVersion().equals(ClientVersion.V_1_8)) {
+                return new ComplexCollisionBox(2,
                         new SimpleCollisionBox(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F),
                         new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true)
                 );
