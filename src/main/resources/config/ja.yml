@@ -66,6 +66,9 @@ Simulation:
   # デフォルトのアドバンテージの上限 (x軸 = 秒, y軸 = 1/1000ブロック): https://www.desmos.com/calculator/4lovswdarj
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 # プレイヤーが移動中にブロックに入ったかどうかをチェックします。
 Phase:
   setbackvl: 1 # 1ブロック以上のズレがある場合に違反と判断します。
