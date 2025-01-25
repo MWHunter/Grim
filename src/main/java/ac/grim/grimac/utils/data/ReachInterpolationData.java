@@ -90,6 +90,24 @@ public class ReachInterpolationData {
         return new SimpleCollisionBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
+    /**
+     * Calculates a bounding box that contains all possible positions where the entity could be located
+     * during interpolation. This takes into account:
+     * - The starting position
+     * - The target position
+     * - The number of interpolation steps
+     * - The current interpolation progress (low and high bounds)
+     *
+     * To avoid expensive branching when bruteforcing interpolation, this method combines
+     * the collision boxes for all possible steps into a single bounding box. This approach
+     * was specifically designed to handle the uncertainty of minimum interpolation,
+     * maximum interpolation, and target location on 1.9+ clients while still supporting 1.7-1.8.
+     *
+     * For each possible interpolation step between the bounds, it calculates the position
+     * and combines all these positions into a single bounding box that encompasses all of them.
+     *
+     * @return A SimpleCollisionBox containing all possible positions of the entity during interpolation
+     */
     public SimpleCollisionBox getPossibleLocationCombined() {
         int interpSteps = getInterpolationSteps();
 
@@ -121,10 +139,21 @@ public class ReachInterpolationData {
         return minimumInterpLocation;
     }
 
-    // To avoid huge branching when bruteforcing interpolation -
-    // we combine the collision boxes for the steps.
-    //
-    // Designed around being unsure of minimum interp, maximum interp, and target location on 1.9 clients
+    /**
+     * Builds upon getPossibleLocationCombined() to create a larger bounding box that contains
+     * not just where the entity could be located, but where any part of its hitbox could be.
+     * This is done by:
+     *
+     * 1. Getting the possible locations using getPossibleLocationCombined()
+     * 2. If needed expand appropriately due to a recent teleport that moved the entity by < X: 0.03125D Y: 0.015625D Z: 0.03125D
+     * 3. Expanding by the entity's bounding box dimensions, but only expanding:
+     *    - Minimum coordinates by negative bounding box values
+     *    - Maximum coordinates by positive bounding box values
+     *
+     * This ensures we have a box containing all possible hitbox positions during interpolation.
+     *
+     * @return A SimpleCollisionBox containing all possible hitbox positions during interpolation
+     */
     public SimpleCollisionBox getPossibleHitboxCombined() {
         SimpleCollisionBox minimumInterpLocation = getPossibleLocationCombined();
 
