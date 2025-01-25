@@ -34,12 +34,19 @@ public class ReachInterpolationData {
     private int interpolationSteps = 1;
     private boolean expandNonRelative = false;
 
+    private GrimPlayer player;
+    private TrackedPosition position;
+    private PacketEntity entity;
+
     public ReachInterpolationData(GrimPlayer player, SimpleCollisionBox startingLocation, TrackedPosition position, PacketEntity entity) {
         final boolean isPointNine = !player.compensatedEntities.getSelf().inVehicle() && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9);
 
         this.startingLocation = startingLocation;
         final Vector3d pos = position.getPos();
-        this.targetLocation = GetBoundingBox.getPacketEntityBoundingBox(player, pos.x, pos.y, pos.z, entity);
+        this.targetLocation = new SimpleCollisionBox(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z, false);
+        this.player = player;
+        this.position = position;
+        this.entity = entity;
 
         // 1.9 -> 1.8 precision loss in packets
         // (ViaVersion is doing some stuff that makes this code difficult)
@@ -83,10 +90,6 @@ public class ReachInterpolationData {
         return new SimpleCollisionBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    // To avoid huge branching when bruteforcing interpolation -
-    // we combine the collision boxes for the steps.
-    //
-    // Designed around being unsure of minimum interp, maximum interp, and target location on 1.9 clients
     public SimpleCollisionBox getPossibleLocationCombined() {
         int interpSteps = getInterpolationSteps();
 
@@ -115,8 +118,28 @@ public class ReachInterpolationData {
                     startingLocation.maxZ + (step * stepMaxZ)));
         }
 
+        return minimumInterpLocation;
+    }
+
+    // To avoid huge branching when bruteforcing interpolation -
+    // we combine the collision boxes for the steps.
+    //
+    // Designed around being unsure of minimum interp, maximum interp, and target location on 1.9 clients
+    public SimpleCollisionBox getPossibleHitboxCombined() {
+        SimpleCollisionBox minimumInterpLocation = getPossibleLocationCombined();
+
         if (expandNonRelative)
             minimumInterpLocation.expand(0.03125D, 0.015625D, 0.03125D);
+
+        Vector3d pos = position.getPos();
+        SimpleCollisionBox box = GetBoundingBox.getPacketEntityBoundingBox(player, pos.x, pos.y, pos.z, entity);
+
+        minimumInterpLocation.minX += Math.min(0, box.minX);
+        minimumInterpLocation.minY += Math.min(0, box.minY);
+        minimumInterpLocation.minZ += Math.min(0, box.minZ);
+        minimumInterpLocation.maxX += Math.max(0, box.maxX);
+        minimumInterpLocation.maxY += Math.max(0, box.maxY);
+        minimumInterpLocation.maxZ += Math.max(0, box.maxZ);
 
         return minimumInterpLocation;
     }
