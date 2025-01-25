@@ -92,16 +92,16 @@ public class ReachInterpolationData {
 
     /**
      * Calculates a bounding box that contains all possible positions where the entity could be located
-     * during interpolation. This takes into account:
-     * - The starting position
-     * - The target position
-     * - The number of interpolation steps
-     * - The current interpolation progress (low and high bounds)
+     * during interpolation. This takes into account:<p>
+     * • The starting position<br>
+     * • The target position<br>
+     * • The number of interpolation steps<br>
+     * • The current interpolation progress (low and high bounds)<p>
      *
      * To avoid expensive branching when bruteforcing interpolation, this method combines
      * the collision boxes for all possible steps into a single bounding box. This approach
      * was specifically designed to handle the uncertainty of minimum interpolation,
-     * maximum interpolation, and target location on 1.9+ clients while still supporting 1.7-1.8.
+     * maximum interpolation, and target location on 1.9+ clients while still supporting 1.7-1.8.<p>
      *
      * For each possible interpolation step between the bounds, it calculates the position
      * and combines all these positions into a single bounding box that encompasses all of them.
@@ -142,13 +142,16 @@ public class ReachInterpolationData {
     /**
      * Builds upon getPossibleLocationCombined() to create a larger bounding box that contains
      * not just where the entity could be located, but where any part of its hitbox could be.
-     * This is done by:
+     * This is done by:<p>
      *
-     * 1. Getting the possible locations using getPossibleLocationCombined()
-     * 2. If needed expand appropriately due to a recent teleport that moved the entity by < X: 0.03125D Y: 0.015625D Z: 0.03125D
-     * 3. Expanding by the entity's bounding box dimensions, but only expanding:
-     *    - Minimum coordinates by negative bounding box values
-     *    - Maximum coordinates by positive bounding box values
+     * 1. Getting the possible locations using getPossibleLocationCombined()<br>
+     * 2. If needed expand appropriately due to a recent teleport that moved the entity by:<br>
+     *    • X: 0.03125D<br>
+     *    • Y: 0.015625D<br>
+     *    • Z: 0.03125D<br>
+     * 3. Expanding by the entity's bounding box dimensions, but only expanding:<br>
+     *    • Minimum coordinates by negative bounding box values<br>
+     *    • Maximum coordinates by positive bounding box values<p>
      *
      * This ensures we have a box containing all possible hitbox positions during interpolation.
      *
