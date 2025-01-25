@@ -230,7 +230,7 @@ public class GrimPlayer implements GrimUser {
     public void onPacketCancel() {
         if (spamThreshold != -1 && cancelledPackets.incrementAndGet() > spamThreshold) {
             LogUtil.info("Disconnecting " + getName() + " for spamming invalid packets, packets cancelled within a second " + cancelledPackets);
-            disconnect(Component.translatable("disconnect.closed"));
+            disconnect(GrimAPI.INSTANCE.getConfigManager().getDisconnectClosed());
             cancelledPackets.set(0);
         }
     }
@@ -463,7 +463,7 @@ public class GrimPlayer implements GrimUser {
     }
 
     public void timedOut() {
-        disconnect(Component.translatable("disconnect.timeout"));
+        disconnect(GrimAPI.INSTANCE.getConfigManager().getDisconnectTimeout());
     }
 
     public void disconnect(Component reason) {
@@ -833,6 +833,7 @@ public class GrimPlayer implements GrimUser {
     @Getter private boolean cancelDuplicatePacket = true;
     @Getter @Setter private boolean exemptElytra = false;
     @Getter private boolean mitigateAutoblock;
+    @Getter private boolean mitigateDesyncNoSlow;
 
     @Override
     public void reload(ConfigManager config) {
@@ -841,7 +842,8 @@ public class GrimPlayer implements GrimUser {
         maxTransactionTime = GrimMath.clamp(config.getIntElse("max-transaction-time", 60), 1, 180);
         ignoreDuplicatePacketRotation = config.getBooleanElse("ignore-duplicate-packet-rotation", false);
         cancelDuplicatePacket = config.getBooleanElse("cancel-duplicate-packet", true);
-        mitigateAutoblock = config.getBooleanElse("mitigate-autoblock", false);
+        mitigateAutoblock = config.getBooleanElse("mitigate-autoblock", true);
+        mitigateDesyncNoSlow = config.getBooleanElse("mitigate-desync-noslow", true);
         // reload all checks
         for (AbstractCheck value : checkManager.allChecks.values()) value.reload();
         // reload punishment manager

@@ -4,6 +4,7 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.checks.impl.badpackets.BadPacketsW;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.packetentity.PacketEntity;
+import ac.grim.grimac.utils.math.GrimMath;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
@@ -16,7 +17,6 @@ import com.github.retrooper.packetevents.protocol.item.enchantment.type.Enchantm
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 public class PacketPlayerAttack extends PacketListenerAbstract {
 
@@ -51,23 +51,28 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                 PacketEntity entity = player.compensatedEntities.getEntity(interact.getEntityId());
 
                 if (entity != null && (!entity.isLivingEntity() || entity.getType() == EntityTypes.PLAYER)) {
-                    boolean hasKnockbackSword = heldItem != null && heldItem.getEnchantmentLevel(EnchantmentTypes.KNOCKBACK, PacketEvents.getAPI().getServerManager().getVersion().toClientVersion()) > 0;
+                    int knockbackLevel = player.getClientVersion().isOlderThan(ClientVersion.V_1_21) && heldItem != null
+                            ? heldItem.getEnchantmentLevel(EnchantmentTypes.KNOCKBACK, PacketEvents.getAPI().getServerManager().getVersion().toClientVersion())
+                            : 0;
+
                     boolean isLegacyPlayer = player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_8);
-                    boolean hasNegativeKB = heldItem != null && heldItem.getEnchantmentLevel(EnchantmentTypes.KNOCKBACK, PacketEvents.getAPI().getServerManager().getVersion().toClientVersion()) < 0;
+
+                    if (!isLegacyPlayer) {
+                        knockbackLevel = Math.max(knockbackLevel, 0);
+                    }
 
                     // 1.8 players who are packet sprinting WILL get slowed
                     // 1.9+ players who are packet sprinting might not, based on attack cooldown
                     // Players with knockback enchantments always get slowed
-                    if ((player.isSprinting && !hasNegativeKB && isLegacyPlayer) || hasKnockbackSword) {
-                        player.minPlayerAttackSlow += 1;
-                        player.maxPlayerAttackSlow += 1;
+                    if (player.lastSprinting && knockbackLevel >= 0 && isLegacyPlayer || knockbackLevel > 0) {
+                        player.minPlayerAttackSlow++;
+                        player.maxPlayerAttackSlow++;
 
                         // Players cannot slow themselves twice in one tick without a knockback sword
-                        if (!hasKnockbackSword) {
-                            player.minPlayerAttackSlow = 0;
-                            player.maxPlayerAttackSlow = 1;
+                        if (knockbackLevel == 0) {
+                            player.maxPlayerAttackSlow = player.minPlayerAttackSlow = 1;
                         }
-                    } else if (!isLegacyPlayer && player.isSprinting) {
+                    } else if (!isLegacyPlayer && player.lastSprinting) {
                         // 1.9+ players who have attack speed cannot slow themselves twice in one tick because their attack cooldown gets reset on swing.
                         if (player.maxPlayerAttackSlow > 0
                                 && PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_9)
@@ -76,17 +81,10 @@ public class PacketPlayerAttack extends PacketListenerAbstract {
                         }
 
                         // 1.9+ player who might have been slowed, but we can't be sure
-                        player.maxPlayerAttackSlow += 1;
+                        player.maxPlayerAttackSlow++;
                     }
                 }
             }
-        }
-
-        if (WrapperPlayClientPlayerFlying.isFlying(event.getPacketType())) {
-            GrimPlayer player = GrimAPI.INSTANCE.getPlayerDataManager().getPlayer(event.getUser());
-            if (player == null) return;
-
-            player.minPlayerAttackSlow = 0;
         }
     }
 }
