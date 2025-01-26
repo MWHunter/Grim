@@ -550,7 +550,7 @@ public enum HitboxData {
             CollisionBox result = flowerAmount < 2 ? NoCollisionBox.INSTANCE : new ComplexCollisionBox(flowerAmount);
 
             // Pre-defined collision boxes for each quadrant
-            SimpleCollisionBox[] boxes = new SimpleCollisionBox[] {
+            HexCollisionBox[] boxes = new HexCollisionBox[] {
                     new HexCollisionBox(8, 0, 8, 16, 3, 16),  // SE
                     new HexCollisionBox(8, 0, 0, 16, 3, 8),   // NE
                     new HexCollisionBox(0, 0, 0, 8, 3, 8),    // NW

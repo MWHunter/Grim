@@ -12,7 +12,10 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.world.BlockFace;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
 import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
-import com.github.retrooper.packetevents.protocol.world.states.enums.*;
+import com.github.retrooper.packetevents.protocol.world.states.enums.East;
+import com.github.retrooper.packetevents.protocol.world.states.enums.North;
+import com.github.retrooper.packetevents.protocol.world.states.enums.South;
+import com.github.retrooper.packetevents.protocol.world.states.enums.West;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateTypes;
 
@@ -44,7 +47,7 @@ public class DynamicHitboxFence extends DynamicConnecting implements HitBoxFacto
     static {
         SimpleCollisionBox[] boxes = new SimpleCollisionBox[MAX_MODERN_HITBOX_COMPLEX_COLLISION_BOX_SIZE];
 
-        // we start from one because MODERN_HITBOXES[0] is CollisionBox.NONE
+        // we start from one because MODERN_HITBOXES[0] is a NoCollisionBox
         for (int i = 1; i < MODERN_HITBOXES.length; i++) {
             CollisionBox collisionBox = MODERN_HITBOXES[i];
             int size = collisionBox.downCast(boxes);
