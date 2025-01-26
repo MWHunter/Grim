@@ -8,13 +8,14 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class TrackerData {
+    // Using wrapper classes for numbers so the compiler shuts up about using annotations on primitives
     @NonNull
-    double x, y, z;
+    Double x, y, z;
     @NonNull
-    float xRot, yRot;
+    Float xRot, yRot;
     @NonNull
     EntityType entityType;
     @NonNull
-    int lastTransactionHung;
+    Integer lastTransactionHung;
     int legacyPointEightMountedUpon;
 }
