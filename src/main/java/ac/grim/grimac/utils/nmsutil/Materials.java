@@ -96,64 +96,12 @@ public class Materials {
         PANES.add(StateTypes.IRON_BARS);
     }
 
-    public static boolean isStairs(StateType type) {
-        return BlockTags.STAIRS.contains(type);
+    public static StateType[] getPanes() {
+        return PANES.toArray(new StateType[0]);
     }
 
-    public static boolean isSlab(StateType type) {
-        return BlockTags.SLABS.contains(type);
-    }
-
-    public static boolean isWall(StateType type) {
-        return BlockTags.WALLS.contains(type);
-    }
-
-    public static boolean isButton(StateType type) {
-        return BlockTags.BUTTONS.contains(type);
-    }
-
-    public static boolean isFence(StateType type) {
-        return BlockTags.FENCES.contains(type);
-    }
-
-    public static boolean isGate(StateType type) {
-        return BlockTags.FENCE_GATES.contains(type);
-    }
-
-    public static boolean isBed(StateType type) {
-        return BlockTags.BEDS.contains(type);
-    }
-
-    public static boolean isAir(StateType type) {
-        return type.isAir();
-    }
-
-    public static boolean isLeaves(StateType type) {
-        return BlockTags.LEAVES.contains(type);
-    }
-
-    public static boolean isDoor(StateType type) {
-        return BlockTags.DOORS.contains(type);
-    }
-
-    public static boolean isShulker(StateType type) {
-        return BlockTags.SHULKER_BOXES.contains(type);
-    }
-
-    public static boolean isGlassBlock(StateType type) {
-        return BlockTags.GLASS_BLOCKS.contains(type);
-    }
-
-    public static Set<StateType> getPanes() {
-        return new HashSet<>(PANES);
-    }
-
-    public static boolean isGlassPane(StateType type) {
+    public static boolean isPane(StateType type) {
         return PANES.contains(type);
-    }
-
-    public static boolean isCauldron(StateType type) {
-        return BlockTags.CAULDRONS.contains(type);
     }
 
     public static boolean isWaterModern(StateType type) {
@@ -162,16 +110,6 @@ public class Materials {
 
     public static boolean isWaterLegacy(StateType type) {
         return WATER_LIQUIDS_LEGACY.contains(type);
-    }
-
-    public static boolean isShapeExceedsCube(StateType type) {
-        return type.exceedsCube();
-    }
-
-    public static boolean isUsable(ItemType material) {
-        return material != null && (material.hasAttribute(ItemTypes.ItemAttribute.EDIBLE) || material == ItemTypes.POTION || material == ItemTypes.MILK_BUCKET
-                || material == ItemTypes.CROSSBOW || material == ItemTypes.BOW || material.toString().endsWith("SWORD")
-                || material == ItemTypes.TRIDENT || material == ItemTypes.SHIELD);
     }
 
     public static boolean isWater(ClientVersion clientVersion, WrappedBlockState state) {
@@ -251,21 +189,8 @@ public class Materials {
         return false;
     }
 
-    public static boolean isAnvil(StateType mat) {
-        return BlockTags.ANVIL.contains(mat);
-    }
-
-    public static boolean isWoodenChest(StateType mat) {
-        return mat == StateTypes.CHEST || mat == StateTypes.TRAPPED_CHEST;
-    }
-
     public static boolean isNoPlaceLiquid(StateType material) {
         return NO_PLACE_LIQUIDS.contains(material);
-    }
-
-    public static boolean isWaterIgnoringWaterlogged(ClientVersion clientVersion, WrappedBlockState state) {
-        if (clientVersion.isNewerThanOrEquals(ClientVersion.V_1_13)) return isWaterModern(state.getType());
-        return isWaterLegacy(state.getType());
     }
 
     public static boolean isClientSideInteractable(StateType material) {

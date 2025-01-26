@@ -449,7 +449,7 @@ public class CompensatedInventory extends Check implements PacketCheck {
                 if (slot.getWindowId() == -1) { // Carried item
                     inventory.setCarried(slot.getItem());
                 } else if (slot.getWindowId() == -2) { // Direct inventory change (only applied if valid slot)
-                    if (inventory.getInventoryStorage().getSize() > slot.getSlot() && slot.getSlot() >= 0) {
+                    if (inventory.getInventoryStorage().size > slot.getSlot() && slot.getSlot() >= 0) {
                         inventory.getInventoryStorage().setItem(slot.getSlot(), slot.getItem());
                     }
                 } else if (slot.getWindowId() == 0) { // Player inventory

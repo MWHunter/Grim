@@ -181,7 +181,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             player.z = player.packetStateData.lastClaimedPosition.getZ();
 
             boolean lastSneaking = player.isSneaking;
-            player.isSneaking = snapshot.isSneaking();
+            player.isSneaking = snapshot.sneaking();
 
             if (player.inVehicle()) {
                 Vector3d posFromVehicle = BoundingBoxSize.getRidingOffsetFromVehicle(player.compensatedEntities.self.getRiding(), player);
@@ -199,8 +199,8 @@ public class CheckManagerListener extends PacketListenerAbstract {
             }
 
             player.compensatedWorld.startPredicting();
-            handleBlockPlaceOrUseItem(snapshot.getWrapper(), player);
-            player.compensatedWorld.stopPredicting(snapshot.getWrapper());
+            handleBlockPlaceOrUseItem(snapshot.wrapper(), player);
+            player.compensatedWorld.stopPredicting(snapshot.wrapper());
 
             player.x = lastX;
             player.y = lastY;
@@ -400,7 +400,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
             Vector3d position = VectorUtils.clampVector(flying.getLocation().getPosition());
             // Teleports must be POS LOOK
             teleportData = flying.hasPositionChanged() && flying.hasRotationChanged() ? player.getSetbackTeleportUtil().checkTeleportQueue(position.getX(), position.getY(), position.getZ()) : new TeleportAcceptData();
-            player.packetStateData.lastPacketWasTeleport = teleportData.isTeleport();
+            player.packetStateData.lastPacketWasTeleport = teleportData.isTeleport;
             // Teleports can't be stupidity packets
             player.packetStateData.lastPacketWasOnePointSeventeenDuplicate = !player.packetStateData.lastPacketWasTeleport && isMojangStupid(player, flying);
         }
@@ -744,7 +744,7 @@ public class CheckManagerListener extends PacketListenerAbstract {
         if (hasPosition) {
             Vector3d position = new Vector3d(x, y, z);
             Vector3d clampVector = VectorUtils.clampVector(position);
-            final PositionUpdate update = new PositionUpdate(new Vector3d(player.x, player.y, player.z), position, onGround, teleportData.getSetback(), teleportData.getTeleportData(), teleportData.isTeleport());
+            final PositionUpdate update = new PositionUpdate(new Vector3d(player.x, player.y, player.z), position, onGround, teleportData.setback, teleportData.teleportData, teleportData.isTeleport);
 
             // Stupidity doesn't care about 0.03
             if (!player.packetStateData.lastPacketWasOnePointSeventeenDuplicate) {
@@ -779,14 +779,14 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
         if (data != null) {
             // A lilypad cannot replace a fluid
-            if (player.compensatedWorld.getFluidLevelAt(data.getPosition().getX(), data.getPosition().getY() + 1, data.getPosition().getZ()) > 0)
+            if (player.compensatedWorld.getFluidLevel(data.getPosition().getX(), data.getPosition().getY() + 1, data.getPosition().getZ()) > 0)
                 return;
 
             BlockPlace blockPlace = new BlockPlace(player, hand, data.getPosition(), data.getClosestDirection().getFaceValue(), data.getClosestDirection(), ItemStack.EMPTY, data);
             blockPlace.setReplaceClicked(false); // Not possible with use item
 
             // We checked for a full fluid block below here.
-            if (player.compensatedWorld.getWaterFluidLevelAt(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()) > 0
+            if (player.compensatedWorld.getWaterFluidLevel(data.getPosition().getX(), data.getPosition().getY(), data.getPosition().getZ()) > 0
                     || data.getState().getType() == StateTypes.ICE || data.getState().getType() == StateTypes.FROSTED_ICE) {
                 Vector3i pos = data.getPosition();
                 pos = pos.add(0, 1, 0);
@@ -845,9 +845,9 @@ public class CheckManagerListener extends PacketListenerAbstract {
 
             if (sourcesHaveHitbox &&
                     (player.compensatedWorld.isWaterSourceBlock(vector3i.getX(), vector3i.getY(), vector3i.getZ())
-                            || player.compensatedWorld.getLavaFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ()) == (8 / 9f))) {
+                            || player.compensatedWorld.getLavaFluidLevel(vector3i.getX(), vector3i.getY(), vector3i.getZ()) == (8 / 9f))) {
                 double waterHeight = player.getClientVersion().isOlderThan(ClientVersion.V_1_13) ? 1
-                        : player.compensatedWorld.getFluidLevelAt(vector3i.getX(), vector3i.getY(), vector3i.getZ());
+                        : player.compensatedWorld.getFluidLevel(vector3i.getX(), vector3i.getY(), vector3i.getZ());
                 SimpleCollisionBox box = new SimpleCollisionBox(vector3i.getX(), vector3i.getY(), vector3i.getZ(), vector3i.getX() + 1, vector3i.getY() + waterHeight, vector3i.getZ() + 1);
 
                 Pair<Vector, BlockFace> intercept = ReachUtils.calculateIntercept(box, trace.getOrigin(), trace.getPointAtDistance(distance));

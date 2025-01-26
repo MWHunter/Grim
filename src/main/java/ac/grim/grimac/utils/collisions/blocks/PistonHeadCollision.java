@@ -1,10 +1,7 @@
 package ac.grim.grimac.utils.collisions.blocks;
 
 import ac.grim.grimac.player.GrimPlayer;
-import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.CollisionFactory;
-import ac.grim.grimac.utils.collisions.datatypes.ComplexCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.HexCollisionBox;
+import ac.grim.grimac.utils.collisions.datatypes.*;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
@@ -31,50 +28,48 @@ public class PistonHeadCollision implements CollisionFactory {
         if (version.isOlderThanOrEquals(ClientVersion.V_1_12_2) || PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_12_2))
             longAmount = 4;
 
-
         // 1.8 and 1.7 clients always have "short" piston collision boxes
         // Apply last to overwrite other long amount setters
         if (version.isOlderThan(ClientVersion.V_1_9) || PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9))
             longAmount = 0;
 
-
         return switch (block.getFacing()) {
             case UP -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(0, 12, 0, 16, 16, 16),
-                    new HexCollisionBox(6, 0 - longAmount, 6, 10, 12, 10));
+                    SimpleCollisionBox.hex(0, 12, 0, 16, 16, 16),
+                    SimpleCollisionBox.hex(6, 0 - longAmount, 6, 10, 12, 10));
             case NORTH -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(0, 0, 0, 16, 16, 4),
-                    new HexCollisionBox(6, 6, 4, 10, 10, 16 + longAmount));
+                    SimpleCollisionBox.hex(0, 0, 0, 16, 16, 4),
+                    SimpleCollisionBox.hex(6, 6, 4, 10, 10, 16 + longAmount));
             case SOUTH -> {
                 // SOUTH piston is glitched in 1.7 and 1.8, fixed in 1.9
                 // Don't bother with short piston boxes as 1.7/1.8 clients don't have them
                 if (version.isOlderThanOrEquals(ClientVersion.V_1_8))
                     yield new ComplexCollisionBox(2,
-                            new HexCollisionBox(0, 0, 12, 16, 16, 16),
-                            new HexCollisionBox(4, 6, 0, 12, 10, 12));
+                            SimpleCollisionBox.hex(0, 0, 12, 16, 16, 16),
+                            SimpleCollisionBox.hex(4, 6, 0, 12, 10, 12));
 
                 yield new ComplexCollisionBox(2,
-                        new HexCollisionBox(0, 0, 12, 16, 16, 16),
-                        new HexCollisionBox(6, 6, 0 - longAmount, 10, 10, 12));
+                        SimpleCollisionBox.hex(0, 0, 12, 16, 16, 16),
+                        SimpleCollisionBox.hex(6, 6, 0 - longAmount, 10, 10, 12));
             }
             case WEST -> {
                 // WEST piston is glitched in 1.7 and 1.8, fixed in 1.9
                 // Don't bother with short piston boxes as 1.7/1.8 clients don't have them
                 if (version.isOlderThanOrEquals(ClientVersion.V_1_8))
                     yield new ComplexCollisionBox(2,
-                            new HexCollisionBox(0, 0, 0, 4, 16, 16),
-                            new HexCollisionBox(6, 4, 4, 10, 12, 16));
+                            SimpleCollisionBox.hex(0, 0, 0, 4, 16, 16),
+                            SimpleCollisionBox.hex(6, 4, 4, 10, 12, 16));
 
                 yield new ComplexCollisionBox(2,
-                        new HexCollisionBox(0, 0, 0, 4, 16, 16),
-                        new HexCollisionBox(4, 6, 6, 16 + longAmount, 10, 10));
+                        SimpleCollisionBox.hex(0, 0, 0, 4, 16, 16),
+                        SimpleCollisionBox.hex(4, 6, 6, 16 + longAmount, 10, 10));
             }
             case EAST -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(12, 0, 0, 16, 16, 16),
-                    new HexCollisionBox(0 - longAmount, 6, 4, 12, 10, 12));
+                    SimpleCollisionBox.hex(12, 0, 0, 16, 16, 16),
+                    SimpleCollisionBox.hex(0 - longAmount, 6, 4, 12, 10, 12));
             default -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(0, 0, 0, 16, 4, 16),
-                    new HexCollisionBox(6, 4, 6, 10, 16 + longAmount, 10));
+                    SimpleCollisionBox.hex(0, 0, 0, 16, 4, 16),
+                    SimpleCollisionBox.hex(6, 4, 6, 10, 16 + longAmount, 10));
         };
     }
 }

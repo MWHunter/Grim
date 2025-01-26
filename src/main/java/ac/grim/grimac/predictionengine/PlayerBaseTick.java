@@ -108,7 +108,7 @@ public final class PlayerBaseTick {
             return;
         }
 
-        double d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
+        double d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevel(player.lastX, d0, player.lastZ);
         if (d1 > d0) {
             player.fluidOnEyes = FluidTag.WATER;
             if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2))
@@ -119,7 +119,7 @@ public final class PlayerBaseTick {
         if (player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2))
             player.wasEyeInWater = false;
 
-        d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevelAt(player.lastX, d0, player.lastZ);
+        d1 = (float) Math.floor(d0) + player.compensatedWorld.getWaterFluidLevel(player.lastX, d0, player.lastZ);
         if (d1 > d0) {
             player.fluidOnEyes = FluidTag.LAVA;
         }
@@ -255,7 +255,7 @@ public final class PlayerBaseTick {
                 // Requirement added in 1.17 to fix player glitching between two swimming states
                 // while swimming with feet in air and eyes in water
                 boolean feetInWater = player.getClientVersion().isOlderThan(ClientVersion.V_1_17)
-                        || player.compensatedWorld.getWaterFluidLevelAt(player.lastX, player.lastY, player.lastZ) > 0;
+                        || player.compensatedWorld.getWaterFluidLevel(player.lastX, player.lastY, player.lastZ) > 0;
                 player.isSwimming = player.lastSprinting && player.wasEyeInWater && player.wasTouchingWater && feetInWater;
             }
         }
@@ -416,9 +416,9 @@ public final class PlayerBaseTick {
                 for (int z = floorZ; z < ceilZ; ++z) {
                     double fluidHeight;
                     if (tag == FluidTag.WATER) {
-                        fluidHeight = player.compensatedWorld.getWaterFluidLevelAt(x, y, z);
+                        fluidHeight = player.compensatedWorld.getWaterFluidLevel(x, y, z);
                     } else {
-                        fluidHeight = player.compensatedWorld.getLavaFluidLevelAt(x, y, z);
+                        fluidHeight = player.compensatedWorld.getLavaFluidLevel(x, y, z);
                     }
 
                     if (fluidHeight == 0)
@@ -469,9 +469,9 @@ public final class PlayerBaseTick {
 
                     double fluidHeight;
                     if (tag == FluidTag.WATER) {
-                        fluidHeight = player.compensatedWorld.getWaterFluidLevelAt(x, y, z);
+                        fluidHeight = player.compensatedWorld.getWaterFluidLevel(x, y, z);
                     } else {
-                        fluidHeight = player.compensatedWorld.getLavaFluidLevelAt(x, y, z);
+                        fluidHeight = player.compensatedWorld.getLavaFluidLevel(x, y, z);
                     }
 
                     if (player.getClientVersion().isOlderThan(ClientVersion.V_1_14))

@@ -3,7 +3,6 @@ package ac.grim.grimac.utils.collisions.blocks;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionFactory;
-import ac.grim.grimac.utils.collisions.datatypes.NoCollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
@@ -34,6 +33,6 @@ public class TrapDoorHandler implements CollisionFactory {
             }
         }
 
-        return NoCollisionBox.INSTANCE;
+        return CollisionBox.NONE;
     }
 }

@@ -3,12 +3,12 @@ package ac.grim.grimac.events.packets;
 import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.data.ShulkerData;
-import ac.grim.grimac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
+import com.github.retrooper.packetevents.protocol.world.states.defaulttags.BlockTags;
 import com.github.retrooper.packetevents.util.Vector3i;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockAction;
 
@@ -35,7 +35,7 @@ public class PacketBlockAction extends PacketListenerAbstract {
             player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> {
                 // The client ignores the state sent to the client.
                 WrappedBlockState existing = player.compensatedWorld.getBlock(blockPos);
-                if (Materials.isShulker(existing.getType())) {
+                if (BlockTags.SHULKER_BOXES.contains(existing.getType())) {
                     // Param is the number of viewers of the shulker box.
                     // Hashset with .equals() set to be position
                     if (blockAction.getActionData() >= 1) {

@@ -3,8 +3,6 @@ package ac.grim.grimac.utils.collisions.blocks.connecting;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.ComplexCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.HexCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.NoCollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
 import ac.grim.grimac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.PacketEvents;
@@ -23,17 +21,17 @@ public class DynamicConnecting {
         float middleMax = 8.0F + p_196408_1_;
         float f2 = 8.0F - p_196408_2_;
         float f3 = 8.0F + p_196408_2_;
-        SimpleCollisionBox up = new HexCollisionBox(middleMin, 0.0D, middleMin, middleMax, p_196408_3_, middleMax);
-        SimpleCollisionBox voxelshape1 = new HexCollisionBox(f2, p_196408_4_, 0.0D, f3, p_196408_5_, f3);
-        SimpleCollisionBox voxelshape2 = new HexCollisionBox(f2, p_196408_4_, f2, f3, p_196408_5_, 16.0D);
-        SimpleCollisionBox voxelshape3 = new HexCollisionBox(0.0D, p_196408_4_, f2, f3, p_196408_5_, f3);
-        SimpleCollisionBox voxelshape4 = new HexCollisionBox(f2, p_196408_4_, f2, 16.0D, p_196408_5_, f3);
+        SimpleCollisionBox up = SimpleCollisionBox.hex(middleMin, 0.0D, middleMin, middleMax, p_196408_3_, middleMax);
+        SimpleCollisionBox voxelshape1 = SimpleCollisionBox.hex(f2, p_196408_4_, 0.0D, f3, p_196408_5_, f3);
+        SimpleCollisionBox voxelshape2 = SimpleCollisionBox.hex(f2, p_196408_4_, f2, f3, p_196408_5_, 16.0D);
+        SimpleCollisionBox voxelshape3 = SimpleCollisionBox.hex(0.0D, p_196408_4_, f2, f3, p_196408_5_, f3);
+        SimpleCollisionBox voxelshape4 = SimpleCollisionBox.hex(f2, p_196408_4_, f2, 16.0D, p_196408_5_, f3);
 
         ComplexCollisionBox voxelshape5 = new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape1, voxelshape4);
         ComplexCollisionBox voxelshape6 = new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape2, voxelshape3);
 
         CollisionBox[] avoxelshape = new CollisionBox[]{
-                NoCollisionBox.INSTANCE, voxelshape2, voxelshape3, voxelshape6, voxelshape1,
+                CollisionBox.NONE, voxelshape2, voxelshape3, voxelshape6, voxelshape1,
                 new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape2, voxelshape1), new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape3, voxelshape1),
                 new ComplexCollisionBox(3 + additionalMaxIndex, voxelshape2, voxelshape3, voxelshape1), voxelshape4,
                 new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape2, voxelshape4), new ComplexCollisionBox(2 + additionalMaxIndex, voxelshape3, voxelshape4),
@@ -93,7 +91,7 @@ public class DynamicConnecting {
 
     /** Some blocks override isFullBlock whilst actually having a full state */
     boolean isBlacklisted(StateType m, StateType fence, ClientVersion clientVersion) {
-        if (BlockTags.LEAVES.contains(m)) return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isGlassPane(fence);
+        if (BlockTags.LEAVES.contains(m)) return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isPane(fence);
         if (BlockTags.SHULKER_BOXES.contains(m)) return true;
         if (BlockTags.TRAPDOORS.contains(m)) return true;
 
@@ -134,6 +132,6 @@ public class DynamicConnecting {
     }
 
     public boolean canConnectToGate(StateType fence) {
-        return !Materials.isGlassPane(fence);
+        return !Materials.isPane(fence);
     }
 }

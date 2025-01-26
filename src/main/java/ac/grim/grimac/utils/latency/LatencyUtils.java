@@ -50,7 +50,6 @@ public class LatencyUtils {
                 if (transaction == pair.first() - 1)
                     continue;
 
-
                 try {
                     // Run the task
                     pair.second().run();

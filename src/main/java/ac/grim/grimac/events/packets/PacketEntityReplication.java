@@ -350,7 +350,7 @@ public class PacketEntityReplication extends Check implements PacketCheck {
             player.latencyUtils.addRealTimeTask(destroyTransaction, () -> {
                 for (int integer : destroyEntityIds) {
                     player.compensatedEntities.removeEntity(integer);
-                    player.fireworks.removeFirework(integer);
+                    player.fireworks.remove(integer);
                 }
             });
 
