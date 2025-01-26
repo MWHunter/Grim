@@ -14,16 +14,16 @@ import com.github.retrooper.packetevents.protocol.world.states.enums.Shape;
 import java.util.stream.IntStream;
 
 public class DynamicStair implements CollisionFactory {
-    protected static final SimpleCollisionBox TOP_AABB = SimpleCollisionBox.hex(0, 8, 0, 16, 16, 16);
-    protected static final SimpleCollisionBox BOTTOM_AABB = SimpleCollisionBox.hex(0, 0, 0, 16, 8, 16);
-    protected static final SimpleCollisionBox OCTET_NNN = SimpleCollisionBox.hex(0, 0, 0, 8, 8, 8);
-    protected static final SimpleCollisionBox OCTET_NNP = SimpleCollisionBox.hex(0, 0, 8, 8, 8, 16);
-    protected static final SimpleCollisionBox OCTET_NPN = SimpleCollisionBox.hex(0, 8, 0, 8, 16, 8);
-    protected static final SimpleCollisionBox OCTET_NPP = SimpleCollisionBox.hex(0, 8, 8, 8, 16, 16);
-    protected static final SimpleCollisionBox OCTET_PNN = SimpleCollisionBox.hex(8, 0, 0, 16, 8, 8);
-    protected static final SimpleCollisionBox OCTET_PNP = SimpleCollisionBox.hex(8, 0, 8, 16, 8, 16);
-    protected static final SimpleCollisionBox OCTET_PPN = SimpleCollisionBox.hex(8, 8, 0, 16, 16, 8);
-    protected static final SimpleCollisionBox OCTET_PPP = SimpleCollisionBox.hex(8, 8, 8, 16, 16, 16);
+    protected static final SimpleCollisionBox TOP_AABB = new HexCollisionBox(0, 8, 0, 16, 16, 16);
+    protected static final SimpleCollisionBox BOTTOM_AABB = new HexCollisionBox(0, 0, 0, 16, 8, 16);
+    protected static final SimpleCollisionBox OCTET_NNN = new HexCollisionBox(0, 0, 0, 8, 8, 8);
+    protected static final SimpleCollisionBox OCTET_NNP = new HexCollisionBox(0, 0, 8, 8, 8, 16);
+    protected static final SimpleCollisionBox OCTET_NPN = new HexCollisionBox(0, 8, 0, 8, 16, 8);
+    protected static final SimpleCollisionBox OCTET_NPP = new HexCollisionBox(0, 8, 8, 8, 16, 16);
+    protected static final SimpleCollisionBox OCTET_PNN = new HexCollisionBox(8, 0, 0, 16, 8, 8);
+    protected static final SimpleCollisionBox OCTET_PNP = new HexCollisionBox(8, 0, 8, 16, 8, 16);
+    protected static final SimpleCollisionBox OCTET_PPN = new HexCollisionBox(8, 8, 0, 16, 16, 8);
+    protected static final SimpleCollisionBox OCTET_PPP = new HexCollisionBox(8, 8, 8, 16, 16, 16);
     protected static final CollisionBox[] TOP_SHAPES = makeShapes(TOP_AABB, OCTET_NNN, OCTET_PNN, OCTET_NNP, OCTET_PNP);
     protected static final CollisionBox[] BOTTOM_SHAPES = makeShapes(BOTTOM_AABB, OCTET_NPN, OCTET_PPN, OCTET_NPP, OCTET_PPP);
     private static final int[] SHAPE_BY_STATE = new int[]{12, 5, 3, 10, 14, 13, 7, 11, 13, 7, 11, 14, 8, 4, 1, 2, 4, 1, 2, 8};

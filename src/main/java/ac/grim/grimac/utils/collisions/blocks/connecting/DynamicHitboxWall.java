@@ -60,7 +60,7 @@ public class DynamicHitboxWall extends DynamicConnecting implements HitBoxFactor
     private CollisionBox getModernHitBox(int north, int south, int west, int east, int up) {
         ComplexCollisionBox box = new ComplexCollisionBox(5);
         if (up == 1) {
-            box.add(SimpleCollisionBox.hex(4, 0, 4, 12, 16, 12));
+            box.add(new HexCollisionBox(4, 0, 4, 12, 16, 12));
         }
 
         addDirectionalBox(box, north, 5, 0, 0.0D, 11, 14, 11);
@@ -73,9 +73,9 @@ public class DynamicHitboxWall extends DynamicConnecting implements HitBoxFactor
 
     private void addDirectionalBox(ComplexCollisionBox box, int direction, double x1, double y1, double z1, double x2, double y2, double z2) {
         if (direction == 1) {
-            box.add(SimpleCollisionBox.hex(x1, y1, z1, x2, y2, z2));
+            box.add(new HexCollisionBox(x1, y1, z1, x2, y2, z2));
         } else if (direction == 2) {
-            box.add(SimpleCollisionBox.hex(x1, y1, z1, x2, 16, z2));
+            box.add(new HexCollisionBox(x1, y1, z1, x2, 16, z2));
         }
     }
 

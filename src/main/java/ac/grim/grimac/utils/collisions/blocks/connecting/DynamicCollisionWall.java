@@ -58,28 +58,28 @@ public class DynamicCollisionWall extends DynamicConnecting implements Collision
 
             // Proper and faster way would be to compute all this beforehand
             if (up == 1) {
-                box.add(SimpleCollisionBox.hex(4, 0, 4, 12, 16, 12));
+                box.add(new HexCollisionBox(4, 0, 4, 12, 16, 12));
             }
 
             if (north == 1) {
-                box.add(SimpleCollisionBox.hex(5, 0, 0.0D, 11, 14, 11));
+                box.add(new HexCollisionBox(5, 0, 0.0D, 11, 14, 11));
             } else if (north == 2) {
-                box.add(SimpleCollisionBox.hex(5, 0, 0, 11, 16, 11));
+                box.add(new HexCollisionBox(5, 0, 0, 11, 16, 11));
             }
             if (south == 1) {
-                box.add(SimpleCollisionBox.hex(5, 0, 5, 11, 14, 16));
+                box.add(new HexCollisionBox(5, 0, 5, 11, 14, 16));
             } else if (south == 2) {
-                box.add(SimpleCollisionBox.hex(5, 0, 5, 11, 16, 16));
+                box.add(new HexCollisionBox(5, 0, 5, 11, 16, 16));
             }
             if (west == 1) {
-                box.add(SimpleCollisionBox.hex(0, 0, 5, 11, 14, 11));
+                box.add(new HexCollisionBox(0, 0, 5, 11, 14, 11));
             } else if (west == 2) {
-                box.add(SimpleCollisionBox.hex(0, 0, 5, 11, 16, 11));
+                box.add(new HexCollisionBox(0, 0, 5, 11, 16, 11));
             }
             if (east == 1) {
-                box.add(SimpleCollisionBox.hex(5, 0, 5, 16, 14, 11));
+                box.add(new HexCollisionBox(5, 0, 5, 16, 14, 11));
             } else if (east == 2) {
-                box.add(SimpleCollisionBox.hex(5, 0, 5, 16, 16, 11));
+                box.add(new HexCollisionBox(5, 0, 5, 16, 16, 11));
             }
             return box;
         }
@@ -134,7 +134,7 @@ public class DynamicCollisionWall extends DynamicConnecting implements Collision
             boolean east = block.getEast() != East.NONE;
 
             return block.isUp()
-                    ? COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy().union(SimpleCollisionBox.hex(4, 0, 4, 12, 24, 12))
+                    ? COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy().union(new HexCollisionBox(4, 0, 4, 12, 24, 12))
                     : COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy();
         }
 
@@ -160,7 +160,7 @@ public class DynamicCollisionWall extends DynamicConnecting implements Collision
                 up = (!selfNorth || !selfSouth || selfWest || selfEast) &&
                         (!selfWest || !selfEast || selfNorth || selfSouth);
                 return up
-                        ? COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy().union(SimpleCollisionBox.hex(4, 0, 4, 12, 24, 12))
+                        ? COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy().union(new HexCollisionBox(4, 0, 4, 12, 24, 12))
                         : COLLISION_BOXES[getAABBIndex(north, east, south, west)].copy();
             }
         }

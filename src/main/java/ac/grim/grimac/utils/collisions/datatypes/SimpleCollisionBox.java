@@ -27,7 +27,7 @@ public class SimpleCollisionBox implements CollisionBox {
 
     /**
      * Creates a box defined by two points in 3d space; used to represent hitboxes and collision boxes.
-     * If your min/max values are > 1 you should probably check out {@linkplain SimpleCollisionBox#hex(double, double, double, double, double, double) hex}.
+     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}.
      * @param minX x position of first corner
      * @param minY y position of first corner
      * @param minZ z position of first corner
@@ -61,7 +61,7 @@ public class SimpleCollisionBox implements CollisionBox {
 
     /**
      * Creates a box defined by two points in 3d space; used to represent hitboxes and collision boxes.
-     * If your min/max values are > 1 you should probably check out {@linkplain SimpleCollisionBox#hex(double, double, double, double, double, double) hex}.
+     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}.
      * Use only if you don't know the fullBlock status, which is rare.
      *
      * @param minX x position of first corner
@@ -94,23 +94,6 @@ public class SimpleCollisionBox implements CollisionBox {
 
         expand(width / 2, 0, width / 2);
         maxY += height;
-    }
-
-    /**
-     * Creates a box defined by two points in 3d space; used to represent hitboxes and collision boxes.
-     * Mojang's block hitbox values are all based on chunks, so they're stored in game as 16 * the actual size
-     * When copying block hitbox values, it may be easier to simple copy the multiplied values and use this method.
-     * If your min/max values are < 1 you should probably check out the {@linkplain SimpleCollisionBox#SimpleCollisionBox(double, double, double, double, double, double) constructor}.
-     *
-     * @param minX 16 * x position of first corner
-     * @param minY 16 * y position of first corner
-     * @param minZ 16 * z position of first corner
-     * @param maxX 16 * x position of second corner
-     * @param maxY 16 * y position of second corner
-     * @param maxZ 16 * z position of second corner
-     */
-    public static SimpleCollisionBox hex(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return new SimpleCollisionBox(minX / 16d, minY / 16d, minZ / 16d, maxX / 16d, maxY / 16d, maxZ / 16d);
     }
 
     public SimpleCollisionBox expand(double x, double y, double z) {

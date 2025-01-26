@@ -45,10 +45,6 @@ public class OffsetCollisionBox extends SimpleCollisionBox {
         throw new RuntimeException("Invalid State Type for OffSetCollisionBox: " + block);
     }
 
-    public static OffsetCollisionBox hex(StateType block, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return new OffsetCollisionBox(block, minX / 16d, minY / 16d, minZ / 16d, maxX / 16d, maxY / 16d, maxZ / 16d);
-    }
-
     @Override
     public SimpleCollisionBox offset(double x, double y, double z) {
         // In case you want to call .offset() again or get the box values without offset.

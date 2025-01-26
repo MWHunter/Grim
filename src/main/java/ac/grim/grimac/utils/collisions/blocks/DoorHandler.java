@@ -3,7 +3,8 @@ package ac.grim.grimac.utils.collisions.blocks;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
 import ac.grim.grimac.utils.collisions.datatypes.CollisionFactory;
-import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
+import ac.grim.grimac.utils.collisions.datatypes.HexCollisionBox;
+import ac.grim.grimac.utils.collisions.datatypes.NoCollisionBox;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
@@ -13,10 +14,10 @@ import com.github.retrooper.packetevents.protocol.world.states.enums.Half;
 import com.github.retrooper.packetevents.protocol.world.states.enums.Hinge;
 
 public class DoorHandler implements CollisionFactory {
-    protected static final CollisionBox SOUTH_AABB = SimpleCollisionBox.hex(0, 0, 0, 16, 16, 3);
-    protected static final CollisionBox NORTH_AABB = SimpleCollisionBox.hex(0, 0, 13, 16, 16, 16);
-    protected static final CollisionBox WEST_AABB = SimpleCollisionBox.hex(13, 0, 0, 16, 16, 16);
-    protected static final CollisionBox EAST_AABB = SimpleCollisionBox.hex(0, 0, 0, 3, 16, 16);
+    protected static final CollisionBox SOUTH_AABB = new HexCollisionBox(0, 0, 0, 16, 16, 3);
+    protected static final CollisionBox NORTH_AABB = new HexCollisionBox(0, 0, 13, 16, 16, 16);
+    protected static final CollisionBox WEST_AABB = new HexCollisionBox(13, 0, 0, 16, 16, 16);
+    protected static final CollisionBox EAST_AABB = new HexCollisionBox(0, 0, 0, 3, 16, 16);
 
     @Override
     public CollisionBox fetch(GrimPlayer player, ClientVersion version, WrappedBlockState block, int x, int y, int z) {
@@ -25,7 +26,7 @@ public class DoorHandler implements CollisionFactory {
             case SOUTH -> SOUTH_AABB.copy();
             case EAST -> EAST_AABB.copy();
             case WEST -> WEST_AABB.copy();
-            default -> CollisionBox.NONE;
+            default -> NoCollisionBox.INSTANCE;
         };
     }
 
