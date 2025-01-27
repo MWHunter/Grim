@@ -72,8 +72,8 @@ public class AlertManagerImpl implements AlertManager {
         private final Supplier<String> disableAlertStringSupplier;
 
         public void toggle(Player player, boolean silent) {
-            boolean newState = enabled.remove(player);
-            if (!newState) {
+            boolean newState = !enabled.remove(player);
+            if (newState) {
                 enabled.add(player);
             }
 
