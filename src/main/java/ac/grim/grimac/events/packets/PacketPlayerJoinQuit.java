@@ -43,7 +43,7 @@ public class PacketPlayerJoinQuit extends PacketListenerAbstract {
             GrimAPI.INSTANCE.getAlertManager().toggleVerbose(player);
         }
         if (player.hasPermission("grim.brand") && player.hasPermission("grim.brand.enable-on-join")) {
-            GrimAPI.INSTANCE.getAlertManager().toggleBrands(player);
+            GrimAPI.INSTANCE.getAlertManager().toggleBrands(player, true);
         }
         if (player.hasPermission("grim.spectate") && GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("spectators.hide-regardless", false)) {
             GrimAPI.INSTANCE.getSpectateManager().onLogin(player);
@@ -56,7 +56,8 @@ public class PacketPlayerJoinQuit extends PacketListenerAbstract {
         if (grimPlayer != null) Bukkit.getPluginManager().callEvent(new GrimQuitEvent(grimPlayer));
         GrimAPI.INSTANCE.getPlayerDataManager().exemptUsers.remove(event.getUser());
         //Check if calling async is safe
-        if (event.getUser().getProfile().getUUID() == null) return; // folia doesn't like null getPlayer()
+        if (event.getUser().getProfile().getUUID() == null)
+            return; // folia doesn't like null getPlayer()
         Player player = Bukkit.getPlayer(event.getUser().getProfile().getUUID());
         if (player != null) {
             GrimAPI.INSTANCE.getAlertManager().handlePlayerQuit(player);

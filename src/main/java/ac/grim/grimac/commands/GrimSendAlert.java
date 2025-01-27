@@ -18,7 +18,7 @@ public class GrimSendAlert extends BaseCommand {
         string = MessageUtil.replacePlaceholders((Object) null, string);
         Component message = MessageUtil.miniMessage(string);
 
-        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getEnabledAlerts()) {
+        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getAlerts().getEnabled()) {
             MessageUtil.sendMessage(bukkitPlayer, message);
         }
 
