@@ -119,6 +119,7 @@ public class CheckManager {
                 .put(BadPacketsY.class, new BadPacketsY(player))
                 .put(InventoryC.class, new InventoryC(player))
                 .put(InventoryD.class, new InventoryD(player))
+                .put(InventoryE.class, new InventoryE(player))
                 .put(InventoryF.class, new InventoryF(player))
                 .put(EntityA.class, new EntityA(player))
                 .put(MultiActionsA.class, new MultiActionsA(player))
@@ -144,7 +145,6 @@ public class CheckManager {
                 .put(AimDuplicateLook.class, new AimDuplicateLook(player))
                 .put(AimRoundedX.class, new AimRoundedX(player))
                 .put(AimRoundedY.class, new AimRoundedY(player))
-                .put(InventoryE.class, new InventoryE(player))
 //                .put(Baritone.class, new Baritone(player))
                 .build();
         vehicleCheck = new ImmutableClassToInstanceMap.Builder<VehicleCheck>()
