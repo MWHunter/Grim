@@ -59,7 +59,7 @@ public class ProxyAlertMessenger extends PacketListenerAbstract {
             return;
         }
 
-        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getEnabledAlerts())
+        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getAlerts().getEnabled())
             MessageUtil.sendMessage(bukkitPlayer, MessageUtil.miniMessage(alert));
     }
 
@@ -92,7 +92,7 @@ public class ProxyAlertMessenger extends PacketListenerAbstract {
     }
 
     public static boolean canReceiveAlerts() {
-        return usingProxy && GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("alerts.proxy.receive", false) && !GrimAPI.INSTANCE.getAlertManager().getEnabledAlerts().isEmpty();
+        return usingProxy && GrimAPI.INSTANCE.getConfigManager().getConfig().getBooleanElse("alerts.proxy.receive", false) && !GrimAPI.INSTANCE.getAlertManager().getAlerts().getEnabled().isEmpty();
     }
 
     private static boolean getBooleanFromFile(String pathToFile, String pathToValue) {

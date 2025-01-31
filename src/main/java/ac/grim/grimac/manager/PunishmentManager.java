@@ -124,9 +124,9 @@ public class PunishmentManager implements ConfigReloadable {
                     String cmd = replaceAlertPlaceholders(command.command, vl, group, check, alertString, verbose);
 
                     // Verbose that prints all flags
-                    if (!GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose().isEmpty() && command.command.equals("[alert]")) {
+                    if (!GrimAPI.INSTANCE.getAlertManager().getVerbose().getEnabled().isEmpty() && command.command.equals("[alert]")) {
                         sentDebug = true;
-                        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose()) {
+                        for (Player bukkitPlayer : GrimAPI.INSTANCE.getAlertManager().getVerbose().getEnabled()) {
                             MessageUtil.sendMessage(bukkitPlayer, MessageUtil.miniMessage(cmd));
                         }
                         if (printToConsole) {
