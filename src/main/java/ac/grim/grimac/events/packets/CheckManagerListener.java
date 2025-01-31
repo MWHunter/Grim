@@ -366,6 +366,8 @@ public class CheckManagerListener extends PacketListenerAbstract {
         if (!player.packetStateData.lastPacketWasTeleport && flying.hasPositionChanged() && flying.hasRotationChanged() &&
                 // Ground status will never change in this stupidity packet
                 ((flying.isOnGround() == player.packetStateData.packetPlayerOnGround
+                        // rotations must be the same for all duplicates sent in the same tick
+                        && (player.lastDuplicateRotationThisTick == null || player.lastDuplicateRotationThisTick.getYaw() == location.getYaw() && player.lastDuplicateRotationThisTick.getPitch() == location.getPitch())
                         // Mojang added this stupid mechanic in 1.17
                         && (player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_17) &&
                         // Due to 0.03, we can't check exact position, only within 0.03
@@ -385,6 +387,10 @@ public class CheckManagerListener extends PacketListenerAbstract {
                 flying.setLocation(new Location(player.filterMojangStupidityOnMojangStupidity.getX(), player.filterMojangStupidityOnMojangStupidity.getY(), player.filterMojangStupidityOnMojangStupidity.getZ(), location.getYaw(), location.getPitch()));
             }
 
+            if (player.lastDuplicateRotationThisTick == null) {
+                player.lastDuplicateRotationThisTick = new HeadRotation(location.getYaw(), location.getPitch());
+            }
+
             player.packetStateData.lastPacketWasOnePointSeventeenDuplicate = true;
 
             if (!player.isIgnoreDuplicatePacketRotation()) {
@@ -401,6 +407,8 @@ public class CheckManagerListener extends PacketListenerAbstract {
             player.packetStateData.lastClaimedPosition = location.getPosition();
             return true;
         }
+
+        player.lastDuplicateRotationThisTick = null;
         return false;
     }
 
