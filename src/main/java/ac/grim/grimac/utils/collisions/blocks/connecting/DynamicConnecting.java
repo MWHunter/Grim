@@ -1,11 +1,7 @@
 package ac.grim.grimac.utils.collisions.blocks.connecting;
 
 import ac.grim.grimac.player.GrimPlayer;
-import ac.grim.grimac.utils.collisions.datatypes.CollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.ComplexCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.HexCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.NoCollisionBox;
-import ac.grim.grimac.utils.collisions.datatypes.SimpleCollisionBox;
+import ac.grim.grimac.utils.collisions.datatypes.*;
 import ac.grim.grimac.utils.nmsutil.Materials;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
@@ -93,7 +89,7 @@ public class DynamicConnecting {
 
     /** Some blocks override isFullBlock whilst actually having a full state */
     boolean isBlacklisted(StateType m, StateType fence, ClientVersion clientVersion) {
-        if (BlockTags.LEAVES.contains(m)) return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isGlassPane(fence);
+        if (BlockTags.LEAVES.contains(m)) return clientVersion.isNewerThan(ClientVersion.V_1_8) || !Materials.isPane(fence);
         if (BlockTags.SHULKER_BOXES.contains(m)) return true;
         if (BlockTags.TRAPDOORS.contains(m)) return true;
 
@@ -134,6 +130,6 @@ public class DynamicConnecting {
     }
 
     public boolean canConnectToGate(StateType fence) {
-        return !Materials.isGlassPane(fence);
+        return !Materials.isPane(fence);
     }
 }

@@ -14,11 +14,11 @@ public class LegacyFastMath {
         }
     }
 
-    public static float sin(float par0) {
-        return SIN_TABLE_FAST[(int) (par0 * 651.8986f) & 4095];
+    public static float sin(float value) {
+        return SIN_TABLE_FAST[(int) (value * 651.8986f) & 4095];
     }
 
-    public static float cos(float par0) {
-        return SIN_TABLE_FAST[(int) ((par0 + ((float) Math.PI / 2f)) * 651.8986f) & 4095];
+    public static float cos(float value) {
+        return SIN_TABLE_FAST[(int) ((value + ((float) Math.PI / 2f)) * 651.8986f) & 4095];
     }
 }

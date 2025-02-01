@@ -38,7 +38,7 @@ public class ReachInterpolationData {
         final boolean isPointNine = !player.inVehicle() && player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_9);
 
         this.startingLocation = startingLocation;
-        final Vector3d pos = position.getPos();
+        final Vector3d pos = position.pos;
         this.targetLocation = GetBoundingBox.getPacketEntityBoundingBox(player, pos.x, pos.y, pos.z, entity);
 
         // 1.9 -> 1.8 precision loss in packets
@@ -122,9 +122,9 @@ public class ReachInterpolationData {
     }
 
     public void updatePossibleStartingLocation(SimpleCollisionBox possibleLocationCombined) {
-        //GrimAC.staticGetLogger().info(ChatColor.BLUE + "Updated new starting location as second trans hasn't arrived " + startingLocation);
+        //LogUtil.info(ChatColor.BLUE + "Updated new starting location as second trans hasn't arrived " + startingLocation);
         this.startingLocation = combineCollisionBox(startingLocation, possibleLocationCombined);
-        //GrimAC.staticGetLogger().info(ChatColor.BLUE + "Finished updating new starting location as second trans hasn't arrived " + startingLocation);
+        //LogUtil.info(ChatColor.BLUE + "Finished updating new starting location as second trans hasn't arrived " + startingLocation);
     }
 
     public void tickMovement(boolean incrementLowBound, boolean tickingReliably) {

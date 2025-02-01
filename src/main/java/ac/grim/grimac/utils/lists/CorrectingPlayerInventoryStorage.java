@@ -143,7 +143,7 @@ public class CorrectingPlayerInventoryStorage extends InventoryStorage {
         // (Required as mojang has screwed up some things with inventories that we can't easily fix.
         // Don't spam this as it could cause lag (I was getting 0.3 ms to query this, this is done async though)
         if (tickID % 5 == 0) {
-            int slotToCheck = (tickID / 5) % getSize();
+            int slotToCheck = (tickID / 5) % size;
             // If both these things are true, there is nothing that should be broken.
             if (!pendingFinalizedSlot.containsKey(slotToCheck) && !serverIsCurrentlyProcessingThesePredictions.containsKey(slotToCheck)) {
                 checkThatBukkitIsSynced(slotToCheck);

@@ -27,14 +27,14 @@ public class SimpleCollisionBox implements CollisionBox {
 
     /**
      * Creates a box defined by two points in 3d space; used to represent hitboxes and collision boxes.
-     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}
+     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}.
      * @param minX x position of first corner
      * @param minY y position of first corner
      * @param minZ z position of first corner
      * @param maxX x position of second corner
      * @param maxY y position of second corner
      * @param maxZ z position of second corner
-     * @param fullBlock - whether on not the box is a perfect 1x1x1 sized block
+     * @param fullBlock whether the box is a perfect 1x1x1 sized block
      */
     public SimpleCollisionBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, boolean fullBlock) {
         this.minX = minX;
@@ -51,7 +51,7 @@ public class SimpleCollisionBox implements CollisionBox {
     }
 
     public SimpleCollisionBox(Vector3i pos) {
-        this(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+        this(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
     }
 
     // If you want to set a full block from a point
@@ -61,8 +61,9 @@ public class SimpleCollisionBox implements CollisionBox {
 
     /**
      * Creates a box defined by two points in 3d space; used to represent hitboxes and collision boxes.
-     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}
-     * Use only if you don't know the fullBlock status, which is rare
+     * If your min/max values are > 1 you should probably check out {@link HexCollisionBox}.
+     * Use only if you don't know the fullBlock status, which is rare.
+     *
      * @param minX x position of first corner
      * @param minY y position of first corner
      * @param minZ z position of first corner
@@ -93,10 +94,6 @@ public class SimpleCollisionBox implements CollisionBox {
 
         expand(width / 2, 0, width / 2);
         maxY += height;
-    }
-
-    public SimpleCollisionBox(BoundingBox box) {
-        this(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
 
     public SimpleCollisionBox expand(double x, double y, double z) {
@@ -479,10 +476,6 @@ public class SimpleCollisionBox implements CollisionBox {
     }
 
     public DoubleList getYPointPositions() {
-        return create(minX, minY, minZ, maxX, maxY, maxZ);
-    }
-
-    private DoubleList create(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (!(maxX - minX < 1.0E-7) && !(maxY - minY < 1.0E-7) && !(maxZ - minZ < 1.0E-7)) {
             int i = findBits(minX, maxX);
             int j = findBits(minY, maxY);

@@ -150,7 +150,7 @@ public enum BlockPlaceResult {
 
     BAMBOO((player, place) -> {
         Vector3i clicked = place.getPlacedAgainstBlockLocation();
-        if (player.compensatedWorld.getFluidLevelAt(clicked.getX(), clicked.getY(), clicked.getZ()) > 0) return;
+        if (player.compensatedWorld.getFluidLevel(clicked.getX(), clicked.getY(), clicked.getZ()) > 0) return;
 
         WrappedBlockState below = place.getBelowState();
         if (BlockTags.BAMBOO_PLANTABLE_ON.contains(below.getType())) {

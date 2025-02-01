@@ -59,8 +59,8 @@ public final class BoundingBoxSize {
             }
 
             return 1.5f;
-        } else if (EntityTypes.ELDER_GUARDIAN.equals(type)) { // TODO: 2.35 * guardian?
-            return 1.9975f;
+        } else if (EntityTypes.ELDER_GUARDIAN.equals(type)) {
+            return 1.9975f; // 2.35 * guardian
         } else if (EntityTypes.END_CRYSTAL.equals(type)) {
             return 2f;
         } else if (EntityTypes.ENDER_DRAGON.equals(type)) {

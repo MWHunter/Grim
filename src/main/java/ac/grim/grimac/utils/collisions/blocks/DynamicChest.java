@@ -21,20 +21,19 @@ public class DynamicChest implements CollisionFactory {
         if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_13)
                 && version.isNewerThanOrEquals(ClientVersion.V_1_13)) {
             if (chest.getTypeData() == Type.SINGLE) {
-                return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+                return new HexCollisionBox(1, 0, 1, 15, 14, 15);
             }
 
             if (chest.getFacing() == BlockFace.SOUTH && chest.getTypeData() == Type.RIGHT || chest.getFacing() == BlockFace.NORTH && chest.getTypeData() == Type.LEFT) {
-                return new HexCollisionBox(1.0D, 0.0D, 1.0D, 16.0D, 14.0D, 15.0D); // Connected to the east face
+                return new HexCollisionBox(1, 0, 1, 16, 14, 15); // Connected to the east face
             } else if (chest.getFacing() == BlockFace.SOUTH && chest.getTypeData() == Type.LEFT || chest.getFacing() == BlockFace.NORTH && chest.getTypeData() == Type.RIGHT) {
-                return new HexCollisionBox(0.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D); // Connected to the west face
+                return new HexCollisionBox(0, 0, 1, 15, 14, 15); // Connected to the west face
             } else if (chest.getFacing() == BlockFace.WEST && chest.getTypeData() == Type.RIGHT || chest.getFacing() == BlockFace.EAST && chest.getTypeData() == Type.LEFT) {
-                return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 16.0D); // Connected to the south face
+                return new HexCollisionBox(1, 0, 1, 15, 14, 16); // Connected to the south face
             } else {
-                return new HexCollisionBox(1.0D, 0.0D, 0.0D, 15.0D, 14.0D, 15.0D); // Connected to the north face
+                return new HexCollisionBox(1, 0, 0, 15, 14, 15); // Connected to the north face
             }
         }
-
 
         // 1.12 clients on 1.12 servers
         // 1.12 clients on 1.12 servers
@@ -43,26 +42,26 @@ public class DynamicChest implements CollisionFactory {
             WrappedBlockState westState = player.compensatedWorld.getBlock(x - 1, y, z);
 
             if (westState.getType() == chest.getType()) {
-                return new HexCollisionBox(0.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D); // Connected to the west face
+                return new HexCollisionBox(0, 0, 1, 15, 14, 15); // Connected to the west face
             }
 
             WrappedBlockState eastState = player.compensatedWorld.getBlock(x + 1, y, z);
             if (eastState.getType() == chest.getType()) {
-                return new HexCollisionBox(1.0D, 0.0D, 1.0D, 16.0D, 14.0D, 15.0D); // Connected to the east face
+                return new HexCollisionBox(1, 0, 1, 16, 14, 15); // Connected to the east face
             }
         } else {
             WrappedBlockState northState = player.compensatedWorld.getBlock(x, y, z - 1);
             if (northState.getType() == chest.getType()) {
-                return new HexCollisionBox(1.0D, 0.0D, 0.0D, 15.0D, 14.0D, 15.0D); // Connected to the north face
+                return new HexCollisionBox(1, 0, 0, 15, 14, 15); // Connected to the north face
             }
 
             WrappedBlockState southState = player.compensatedWorld.getBlock(x, y, z + 1);
             if (southState.getType() == chest.getType()) {
-                return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 16.0D); // Connected to the south face
+                return new HexCollisionBox(1, 0, 1, 15, 14, 16); // Connected to the south face
             }
         }
 
         // Single chest
-        return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        return new HexCollisionBox(1, 0.0D, 1, 15, 14, 15);
     }
 }

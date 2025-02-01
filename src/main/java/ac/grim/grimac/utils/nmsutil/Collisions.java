@@ -324,7 +324,7 @@ public class Collisions {
                                     ((z == minBlockZ || z == maxBlockZ) ? 1 : 0);
 
                             final StateType type = data.getType();
-                            if (edgeCount != 3 && (edgeCount != 1 || Materials.isShapeExceedsCube(type))
+                            if (edgeCount != 3 && (edgeCount != 1 || type.exceedsCube())
                                     && (edgeCount != 2 || type == StateTypes.PISTON_HEAD)) {
                                 final CollisionBox collisionBox = CollisionData.getData(type).getMovementCollisionBox(player, player.getClientVersion(), data, x, y, z);
                                 // Don't add to a list if we only care if the player intersects with the block
@@ -781,7 +781,7 @@ public class Collisions {
                                     ((z == minBlockZ || z == maxBlockZ) ? 1 : 0);
 
                             final StateType type = data.getType();
-                            if (edgeCount != 3 && (edgeCount != 1 || Materials.isShapeExceedsCube(type))
+                            if (edgeCount != 3 && (edgeCount != 1 || type.exceedsCube())
                                     && (edgeCount != 2 || type == StateTypes.PISTON_HEAD)) {
                                 final CollisionBox collisionBox = CollisionData.getData(type).getMovementCollisionBox(player, player.getClientVersion(), data, x, y, z);
 

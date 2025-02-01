@@ -125,7 +125,6 @@ public class CompensatedWorld {
         });
     }
 
-
     private void applyBlockChanges(List<Vector3i> toApplyBlocks) {
         player.sendTransaction();
         player.latencyUtils.addRealTimeTask(player.lastTransactionSent.get(), () -> toApplyBlocks.forEach(vector3i -> {
@@ -133,9 +132,9 @@ public class CompensatedWorld {
 
             // We are the last to care about this prediction, remove it to stop memory leak
             // Block changes are allowed to execute out of order, because it actually doesn't matter
-            if (predictionData != null && predictionData.getForBlockUpdate() == toApplyBlocks) {
+            if (predictionData != null && predictionData.forBlockUpdate == toApplyBlocks) {
                 originalServerBlocks.remove(vector3i.getSerializedPosition());
-                handleAck(vector3i, predictionData.getOriginalBlockId(), predictionData.getPlayerPosition());
+                handleAck(vector3i, predictionData.originalBlockId, predictionData.playerPosition);
             }
         }));
     }
@@ -187,14 +186,10 @@ public class CompensatedWorld {
         // We don't need to simulate any packets, it is native to the version we are on
         if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_19)) {
             // Pull the confirmation ID out of the packet
-            int confirmationId = 0;
-            if (wrapper instanceof WrapperPlayClientPlayerBlockPlacement) {
-                confirmationId = ((WrapperPlayClientPlayerBlockPlacement) wrapper).getSequence();
-            } else if (wrapper instanceof WrapperPlayClientUseItem) {
-                confirmationId = ((WrapperPlayClientUseItem) wrapper).getSequence();
-            } else if (wrapper instanceof WrapperPlayClientPlayerDigging) {
-                confirmationId = ((WrapperPlayClientPlayerDigging) wrapper).getSequence();
-            }
+            int confirmationId = wrapper instanceof WrapperPlayClientPlayerBlockPlacement packet ? packet.getSequence()
+                    : wrapper instanceof WrapperPlayClientUseItem packet ? packet.getSequence()
+                    : wrapper instanceof WrapperPlayClientPlayerDigging packet ? packet.getSequence()
+                    : 0;
 
             serverIsCurrentlyProcessingThesePredictions.put(confirmationId, toApplyBlocks);
         } else {
@@ -253,7 +248,7 @@ public class CompensatedWorld {
     }
 
     public void updateBlock(Vector3i pos, WrappedBlockState state) {
-        updateBlock(pos.getX(), pos.getY(), pos.getZ(), state.getGlobalId());
+        updateBlock(pos.x, pos.y, pos.z, state.getGlobalId());
     }
 
     public void updateBlock(int x, int y, int z, int combinedID) {
@@ -262,16 +257,16 @@ public class CompensatedWorld {
 
         if (isCurrentlyPredicting) {
             if (prediction == null) {
-                originalServerBlocks.put(asVector.getSerializedPosition(), new BlockPrediction(currentlyChangedBlocks, asVector, getBlock(asVector).getGlobalId(), new Vector3d(player.x, player.y, player.z))); // Remember server controlled block type
+                originalServerBlocks.put(asVector.getSerializedPosition(), new BlockPrediction(currentlyChangedBlocks, getBlock(asVector).getGlobalId(), new Vector3d(player.x, player.y, player.z))); // Remember server controlled block type
             } else {
-                prediction.setForBlockUpdate(currentlyChangedBlocks); // Block existing there was placed by client, mark block to have a new prediction
+                prediction.forBlockUpdate = currentlyChangedBlocks; // Block existing there was placed by client, mark block to have a new prediction
             }
             currentlyChangedBlocks.add(asVector);
         }
 
         if (!isCurrentlyPredicting && prediction != null) {
             // Server has a more up-to-date block, although client is more recent, replace the original serialized position
-            prediction.setOriginalBlockId(combinedID);
+            prediction.originalBlockId = combinedID;
             return;
         }
 
@@ -426,7 +421,7 @@ public class CompensatedWorld {
         // Remove if a shulker is not in this block position anymore
         openShulkerBoxes.removeIf(box -> {
             if (box.blockPos != null) { // Block is no longer valid
-                return !Materials.isShulker(getBlock(box.blockPos).getType());
+                return !BlockTags.SHULKER_BOXES.contains(getBlock(box.blockPos).getType());
             } else { // Entity is no longer valid
                 return !player.compensatedEntities.entityMap.containsValue(box.entity);
             }
@@ -605,15 +600,15 @@ public class CompensatedWorld {
     }
 
     public StateType getBlockType(double x, double y, double z) {
-        return getBlock((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z)).getType();
+        return getBlock(x, y, z).getType();
     }
 
     public WrappedBlockState getBlock(double x, double y, double z) {
         return getBlock((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
     }
 
-    public double getFluidLevelAt(int x, int y, int z) {
-        return Math.max(getWaterFluidLevelAt(x, y, z), getLavaFluidLevelAt(x, y, z));
+    public double getFluidLevel(int x, int y, int z) {
+        return Math.max(getWaterFluidLevel(x, y, z), getLavaFluidLevel(x, y, z));
     }
 
     public boolean isWaterSourceBlock(int x, int y, int z) {
@@ -621,11 +616,11 @@ public class CompensatedWorld {
         return Materials.isWaterSource(player.getClientVersion(), bukkitBlock);
     }
 
-    public boolean containsLiquid(SimpleCollisionBox var0) {
-        return Collisions.hasMaterial(player, var0, data -> Materials.isWater(player.getClientVersion(), data.first()) || data.first().getType() == StateTypes.LAVA);
+    public boolean containsLiquid(SimpleCollisionBox box) {
+        return Collisions.hasMaterial(player, box, data -> Materials.isWater(player.getClientVersion(), data.first()) || data.first().getType() == StateTypes.LAVA);
     }
 
-    public double getLavaFluidLevelAt(int x, int y, int z) {
+    public double getLavaFluidLevel(int x, int y, int z) {
         WrappedBlockState magicBlockState = getBlock(x, y, z);
         WrappedBlockState magicBlockStateAbove = getBlock(x, y + 1, z);
 
@@ -647,11 +642,11 @@ public class CompensatedWorld {
         return Collisions.hasMaterial(player, var0, data -> data.first().getType() == StateTypes.LAVA);
     }
 
-    public double getWaterFluidLevelAt(double x, double y, double z) {
-        return getWaterFluidLevelAt(GrimMath.floor(x), GrimMath.floor(y), GrimMath.floor(z));
+    public double getWaterFluidLevel(double x, double y, double z) {
+        return getWaterFluidLevel(GrimMath.floor(x), GrimMath.floor(y), GrimMath.floor(z));
     }
 
-    public double getWaterFluidLevelAt(int x, int y, int z) {
+    public double getWaterFluidLevel(int x, int y, int z) {
         WrappedBlockState wrappedBlock = getBlock(x, y, z);
         boolean isWater = Materials.isWater(player.getClientVersion(), wrappedBlock);
 

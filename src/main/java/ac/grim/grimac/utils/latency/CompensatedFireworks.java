@@ -30,11 +30,11 @@ public class CompensatedFireworks extends Check implements PostPredictionCheck {
         return activeFireworks.contains(entityId);
     }
 
-    public void addNewFirework(int entityID) {
+    public void add(int entityID) {
         activeFireworks.add(entityID);
     }
 
-    public void removeFirework(int entityID) {
+    public void remove(int entityID) {
         fireworksToRemoveNextTick.add(entityID);
     }
 

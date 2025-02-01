@@ -39,19 +39,19 @@ public enum HitboxData {
                     // https://bugs.mojang.com/browse/MC-102638 All sloped rails are full blocks in 1.10
                     yield new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true);
                 }
-                yield new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+                yield new HexCollisionBox(0, 0, 0, 16, 8, 16);
             }
-            default -> new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+            default -> new HexCollisionBox(0, 0, 0, 16, 2, 16);
         };
     }, BlockTags.RAILS.getStates().toArray(new StateType[0])),
 
     END_PORTAL((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (version.isOlderThan(ClientVersion.V_1_9)) {
-            return new SimpleCollisionBox(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D, 1.0D);
+            return new SimpleCollisionBox(0, 0, 0, 1, 0.0625D, 1);
         } else if (version.isOlderThan(ClientVersion.V_1_17)) {
-            return new SimpleCollisionBox(0.0, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
+            return new SimpleCollisionBox(0.0, 0, 0, 1, 0.75D, 1);
         }
-        return new HexCollisionBox(0.0D, 6.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+        return new HexCollisionBox(0, 6, 0, 16, 12, 16);
     }, StateTypes.END_PORTAL),
 
     FENCE_GATE((player, item, version, data, isTargetBlock, x, y, z) -> {
@@ -60,26 +60,26 @@ public enum HitboxData {
         boolean isInWall;
         boolean isXAxis = data.getFacing() == BlockFace.WEST || data.getFacing() == BlockFace.EAST;
         if (isXAxis) {
-            boolean zPosWall = Materials.isWall(player.compensatedWorld.getBlockType(x, y, z + 1));
-            boolean zNegWall = Materials.isWall(player.compensatedWorld.getBlockType(x, y, z - 1));
+            boolean zPosWall = BlockTags.WALLS.contains(player.compensatedWorld.getBlockType(x, y, z + 1));
+            boolean zNegWall = BlockTags.WALLS.contains(player.compensatedWorld.getBlockType(x, y, z - 1));
             isInWall = zPosWall || zNegWall;
         } else {
-            boolean xPosWall = Materials.isWall(player.compensatedWorld.getBlockType(x + 1, y, z));
-            boolean xNegWall = Materials.isWall(player.compensatedWorld.getBlockType(x - 1, y, z));
+            boolean xPosWall = BlockTags.WALLS.contains(player.compensatedWorld.getBlockType(x + 1, y, z));
+            boolean xNegWall = BlockTags.WALLS.contains(player.compensatedWorld.getBlockType(x - 1, y, z));
             isInWall = xPosWall || xNegWall;
         }
 
         if (isInWall) {
-            return isXAxis ? new HexCollisionBox(6.0D, 0.0D, 0.0D, 10.0D, 13.0D, 16.0D) : new HexCollisionBox(0.0D, 0.0D, 6.0D, 16.0D, 13.0D, 10.0D);
+            return isXAxis ? new HexCollisionBox(6, 0, 0, 10, 13, 16) : new HexCollisionBox(0, 0, 6, 16, 13, 10);
         }
 
-        return isXAxis ? new HexCollisionBox(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D) : new HexCollisionBox(0.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
+        return isXAxis ? new HexCollisionBox(6, 0, 0, 10, 16, 16) : new HexCollisionBox(0, 0, 6, 16, 16, 10);
     }, BlockTags.FENCE_GATES.getStates().toArray(new StateType[0])),
 
 
     FENCE(new DynamicHitboxFence(), BlockTags.FENCES.getStates().toArray(new StateType[0])),
 
-    PANE(new DynamicHitboxPane(), Materials.getPanes().toArray(new StateType[0])),
+    PANE(new DynamicHitboxPane(), Materials.getPanes()),
 
     LEVER(((player, item, version, data, isTargetBlock, x, y, z) -> {
         Face face = data.getFace();
@@ -217,11 +217,11 @@ public enum HitboxData {
     WALL_HANGING_SIGN((player, item, version, data, isTargetBlock, x, y, z) -> {
         return switch (data.getFacing()) {
             case NORTH, SOUTH -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(0.0D, 14.0D, 6.0D, 16.0D, 16.0D, 10.0D),
-                    new HexCollisionBox(1.0D, 0.0D, 7.0D, 15.0D, 10.0D, 9.0D));
+                    new HexCollisionBox(0, 14, 6, 16, 16, 10),
+                    new HexCollisionBox(1, 0, 7, 15, 10, 9));
             default -> new ComplexCollisionBox(2,
-                    new HexCollisionBox(6.0D, 14.0D, 0.0D, 10.0D, 16.0D, 16.0D),
-                    new HexCollisionBox(7.0D, 0.0D, 1.0D, 9.0D, 10.0D, 15.0D));
+                    new HexCollisionBox(6, 14, 0, 10, 16, 16),
+                    new HexCollisionBox(7, 0, 1, 9, 10, 15));
         };
     }, BlockTags.WALL_HANGING_SIGNS.getStates().toArray(new StateType[0])),
 
@@ -229,13 +229,13 @@ public enum HitboxData {
             new HexCollisionBox(4.0, 0.0, 4.0, 12.0, 16.0, 12.0),
             BlockTags.STANDING_SIGNS.getStates().toArray(new StateType[0])),
 
-    SAPLING(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D),
+    SAPLING(new HexCollisionBox(2, 0, 2, 14, 12, 14),
             BlockTags.SAPLINGS.getStates().toArray(new StateType[0])),
 
-    ROOTS(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D),
+    ROOTS(new HexCollisionBox(2, 0, 2, 14, 13, 14),
             StateTypes.WARPED_ROOTS, StateTypes.CRIMSON_ROOTS),
 
-    BANNER(new HexCollisionBox(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
+    BANNER(new HexCollisionBox(4, 0, 4, 12, 16, 12),
             StateTypes.WHITE_BANNER, StateTypes.ORANGE_BANNER, StateTypes.MAGENTA_BANNER, StateTypes.LIGHT_BLUE_BANNER,
             StateTypes.YELLOW_BANNER, StateTypes.LIME_BANNER, StateTypes.PINK_BANNER, StateTypes.GRAY_BANNER,
             StateTypes.LIGHT_GRAY_BANNER, StateTypes.CYAN_BANNER, StateTypes.PURPLE_BANNER, StateTypes.BLUE_BANNER,
@@ -279,8 +279,8 @@ public enum HitboxData {
     }, StateTypes.BREWING_STAND),
 
     SMALL_FLOWER((player, item, version, data, isTargetBlock, x, y, z) ->  player.getClientVersion().isOlderThan(ClientVersion.V_1_13)
-            ? new SimpleCollisionBox(0.3125D, 0.0D, 0.3125D, 0.6875D, 0.625D, 0.6875D)
-            : new OffsetCollisionBox(data.getType(), 0.3125D, 0.0D, 0.3125D, 0.6875D, 0.625D, 0.6875D),
+            ? new SimpleCollisionBox(0.3125D, 0, 0.3125D, 0.6875D, 0.625D, 0.6875D)
+            : new OffsetCollisionBox(data.getType(), 0.3125D, 0, 0.3125D, 0.6875D, 0.625D, 0.6875D),
             BlockTags.SMALL_FLOWERS.getStates().toArray(new StateType[0])),
 
     TALL_FLOWERS(new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true), BlockTags.TALL_FLOWERS.getStates().toArray(new StateType[0])),
@@ -288,7 +288,7 @@ public enum HitboxData {
     FIRE((player, item, version, data, isTargetBlock, x, y, z) -> {
         // Since 1.16 fire has a small hitbox
         if (version.isNewerThanOrEquals(ClientVersion.V_1_16)) {
-            return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+            return new HexCollisionBox(0, 0, 0, 16, 1, 16);
         }
         return NoCollisionBox.INSTANCE;
     }, BlockTags.FIRE.getStates().toArray(new StateType[0])),
@@ -304,7 +304,7 @@ public enum HitboxData {
             // https://bugs.mojang.com/browse/MC-59610
             return new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true);
         }
-        return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+        return new HexCollisionBox(1, 0, 1, 15, 16, 15);
     }, StateTypes.CACTUS),
 
     SNOW((player, item, version, data, isTargetBlock, x, y, z) -> {
@@ -313,25 +313,25 @@ public enum HitboxData {
 
     LECTERN_BLOCK((player, item, version, data, isTargetBlock, x, y, z) -> {
         ComplexCollisionBox common = new ComplexCollisionBox(5,
-                new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
-                new HexCollisionBox(4.0D, 2.0D, 4.0D, 12.0D, 14.0D, 12.0D));
+                new HexCollisionBox(0, 0, 0, 16, 2, 16),
+                new HexCollisionBox(4, 2, 4, 12, 14, 12));
 
         if (data.getFacing() == BlockFace.WEST) {
-            common.add(new HexCollisionBox(1.0D, 10.0D, 0.0D, 5.333333D, 14.0D, 16.0D));
-            common.add(new HexCollisionBox(5.333333D, 12.0D, 0.0D, 9.666667D, 16.0D, 16.0D));
-            common.add(new HexCollisionBox(9.666667D, 14.0D, 0.0D, 14.0D, 18.0D, 16.0D));
+            common.add(new HexCollisionBox(1, 10, 0, 5.333333D, 14, 16));
+            common.add(new HexCollisionBox(5.333333D, 12, 0, 9.666667D, 16, 16));
+            common.add(new HexCollisionBox(9.666667D, 14, 0, 14, 18, 16));
         } else if (data.getFacing() == BlockFace.NORTH) {
-            common.add(new HexCollisionBox(0.0D, 10.0D, 1.0D, 16.0D, 14.0D, 5.333333D));
-            common.add(new HexCollisionBox(0.0D, 12.0D, 5.333333D, 16.0D, 16.0D, 9.666667D));
-            common.add(new HexCollisionBox(0.0D, 14.0D, 9.666667D, 16.0D, 18.0D, 14.0D));
+            common.add(new HexCollisionBox(0, 10, 1, 16, 14, 5.333333D));
+            common.add(new HexCollisionBox(0, 12, 5.333333D, 16, 16, 9.666667D));
+            common.add(new HexCollisionBox(0, 14, 9.666667D, 16, 18, 14));
         } else if (data.getFacing() == BlockFace.EAST) {
-            common.add(new HexCollisionBox(10.666667D, 10.0D, 0.0D, 15.0D, 14.0D, 16.0D));
-            common.add(new HexCollisionBox(6.333333D, 12.0D, 0.0D, 10.666667D, 16.0D, 16.0D));
-            common.add(new HexCollisionBox(2.0D, 14.0D, 0.0D, 6.333333D, 18.0D, 16.0D));
+            common.add(new HexCollisionBox(10.666667D, 10, 0, 15, 14, 16));
+            common.add(new HexCollisionBox(6.333333D, 12, 0, 10.666667D, 16, 16));
+            common.add(new HexCollisionBox(2, 14, 0, 6.333333D, 18, 16));
         } else { // SOUTH
-            common.add(new HexCollisionBox(0.0D, 10.0D, 10.666667D, 16.0D, 14.0D, 15.0D));
-            common.add(new HexCollisionBox(0.0D, 12.0D, 6.333333D, 16.0D, 16.0D, 10.666667D));
-            common.add(new HexCollisionBox(0.0D, 14.0D, 2.0D, 16.0D, 18.0D, 6.333333D));
+            common.add(new HexCollisionBox(0, 10, 10.666667D, 16, 14, 15));
+            common.add(new HexCollisionBox(0, 12, 6.333333D, 16, 16, 10.666667D));
+            common.add(new HexCollisionBox(0, 14, 2, 16, 18, 6.333333D));
         }
 
         return common;
@@ -342,22 +342,22 @@ public enum HitboxData {
             ComplexCollisionBox box = new ComplexCollisionBox(6);
 
             if (data.isUp()) {
-                box.add(new HexCollisionBox(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D));
+                box.add(new HexCollisionBox(0, 15, 0, 16, 16, 16));
             }
             if (data.isDown()) {
-                box.add(new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D));
+                box.add(new HexCollisionBox(0, 0, 0, 16, 1, 16));
             }
             if (data.getWest() == West.TRUE) {
-                box.add(new HexCollisionBox(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D));
+                box.add(new HexCollisionBox(0, 0, 0, 1, 16, 16));
             }
             if (data.getEast() == East.TRUE) {
-                box.add(new HexCollisionBox(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D));
+                box.add(new HexCollisionBox(15, 0, 0, 16, 16, 16));
             }
             if (data.getNorth() == North.TRUE) {
-                box.add(new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D));
+                box.add(new HexCollisionBox(0, 0, 0, 16, 16, 1));
             }
             if (data.getSouth() == South.TRUE) {
-                box.add(new HexCollisionBox(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D));
+                box.add(new HexCollisionBox(0, 0, 15, 16, 16, 16));
             }
 
             return box;
@@ -368,7 +368,7 @@ public enum HitboxData {
 
     SPORE_BLOSSOM((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (version.isNewerThan(ClientVersion.V_1_16_4)) {
-            return new HexCollisionBox(2.0D, 13.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+            return new HexCollisionBox(2, 13, 2, 14, 16, 14);
         } else { // ViaVersion replacement is a Peony
             return new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true);
         }
@@ -376,12 +376,12 @@ public enum HitboxData {
 
     PITCHER_CROP((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (version.isNewerThan(ClientVersion.V_1_19_4)) {
-            final SimpleCollisionBox FULL_UPPER_SHAPE = new HexCollisionBox(3.0D, 0.0D, 3.0D, 13.0D, 15.0D, 13.0D);
-            final SimpleCollisionBox FULL_LOWER_SHAPE = new HexCollisionBox(3.0D, -1.0D, 3.0D, 13.0D, 16.0D, 13.0D);
-            final SimpleCollisionBox COLLISION_SHAPE_BULB = new HexCollisionBox(5.0D, -1.0D, 5.0D, 11.0D, 3.0D, 11.0D);
-            final SimpleCollisionBox COLLISION_SHAPE_CROP = new HexCollisionBox(3.0D, -1.0D, 3.0D, 13.0D, 5.0D, 13.0D);
-            final SimpleCollisionBox[] UPPER_SHAPE_BY_AGE = new SimpleCollisionBox[]{new HexCollisionBox(3.0D, 0.0D, 3.0D, 13.0D, 11.0D, 13.0D), FULL_UPPER_SHAPE};
-            final SimpleCollisionBox[] LOWER_SHAPE_BY_AGE = new SimpleCollisionBox[]{COLLISION_SHAPE_BULB, new HexCollisionBox(3.0D, -1.0D, 3.0D, 13.0D, 14.0D, 13.0D), FULL_LOWER_SHAPE, FULL_LOWER_SHAPE, FULL_LOWER_SHAPE};
+            final SimpleCollisionBox FULL_UPPER_SHAPE = new HexCollisionBox(3, 0, 3, 13, 15, 13);
+            final SimpleCollisionBox FULL_LOWER_SHAPE = new HexCollisionBox(3, -1, 3, 13, 16, 13);
+            final SimpleCollisionBox COLLISION_SHAPE_BULB = new HexCollisionBox(5, -1, 5, 11, 3, 11);
+            final SimpleCollisionBox COLLISION_SHAPE_CROP = new HexCollisionBox(3, -1, 3, 13, 5, 13);
+            final SimpleCollisionBox[] UPPER_SHAPE_BY_AGE = new SimpleCollisionBox[]{new HexCollisionBox(3, 0, 3, 13, 11, 13), FULL_UPPER_SHAPE};
+            final SimpleCollisionBox[] LOWER_SHAPE_BY_AGE = new SimpleCollisionBox[]{COLLISION_SHAPE_BULB, new HexCollisionBox(3, -1, 3, 13, 14, 13), FULL_LOWER_SHAPE, FULL_LOWER_SHAPE, FULL_LOWER_SHAPE};
 
             return data.getHalf() == Half.UPPER ? UPPER_SHAPE_BY_AGE[Math.min(Math.abs(4 - (data.getAge() + 1)), UPPER_SHAPE_BY_AGE.length - 1)] : LOWER_SHAPE_BY_AGE[data.getAge()];
         } else {
@@ -390,26 +390,26 @@ public enum HitboxData {
     }, StateTypes.PITCHER_CROP),
 
     WHEAT_BEETROOTS((player, item, version, data, isTargetBlock, x, y, z) -> {
-        return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, (data.getAge() + 1) * 2, 16.0D);
+        return new HexCollisionBox(0, 0, 0, 16, (data.getAge() + 1) * 2, 16);
     }, StateTypes.WHEAT, StateTypes.BEETROOTS),
 
     CARROT_POTATOES((player, item, version, data, isTargetBlock, x, y, z) -> {
-        return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, data.getAge() + 2, 16.0D);
+        return new HexCollisionBox(0, 0, 0, 16, data.getAge() + 2, 16);
     }, StateTypes.CARROTS, StateTypes.POTATOES),
 
     NETHER_WART((player, item, version, data, isTargetBlock, x, y, z) -> {
-        return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0, 5 + (data.getAge() * 3), 16.0D);
+        return new HexCollisionBox(0, 0, 0, 16.0, 5 + (data.getAge() * 3), 16);
     }, StateTypes.NETHER_WART),
 
     ATTACHED_PUMPKIN_STEM((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (version.isOlderThan(ClientVersion.V_1_13))
-            return new HexCollisionBox(7.0D, 0.0D, 7.0D, 9.0D, 16.0D, 9.0D);
+            return new HexCollisionBox(7, 0, 7, 9, 16, 9);
 
         return switch (data.getFacing()) {
-            case SOUTH -> new HexCollisionBox(6.0D, 0.0D, 6.0D, 10.0D, 10.0D, 16.0D);
-            case WEST -> new HexCollisionBox(0.0D, 0.0D, 6.0D, 10.0D, 10.0D, 10.0D);
-            case NORTH -> new HexCollisionBox(6.0D, 0.0D, 0.0D, 10.0D, 10.0D, 10.0D);
-            default -> new HexCollisionBox(6.0D, 0.0D, 6.0D, 16.0D, 10.0D, 10.0D);
+            case SOUTH -> new HexCollisionBox(6, 0, 6, 10, 10, 16);
+            case WEST -> new HexCollisionBox(0, 0, 6, 10, 10, 10);
+            case NORTH -> new HexCollisionBox(6, 0, 0, 10, 10, 10);
+            default -> new HexCollisionBox(6, 0, 6, 16, 10, 10);
         };
     }, StateTypes.ATTACHED_MELON_STEM, StateTypes.ATTACHED_PUMPKIN_STEM),
 
@@ -429,39 +429,39 @@ public enum HitboxData {
 
     SWEET_BERRY((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (data.getAge() == 0) {
-            return new HexCollisionBox(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D);
+            return new HexCollisionBox(3, 0, 3, 13, 8, 13);
         } else if (data.getAge() < 3) {
-            return new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+            return new HexCollisionBox(1, 0, 1, 15, 16, 15);
         }
         return new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true);
     }, StateTypes.SWEET_BERRY_BUSH),
 
-    CORAL_FAN(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D), BlockTags.CORALS.getStates().toArray(new StateType[0])),
+    CORAL_FAN(new HexCollisionBox(2, 0, 2, 14, 4, 14), BlockTags.CORALS.getStates().toArray(new StateType[0])),
 
     TORCHFLOWER_CROP((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (data.getAge() == 0) {
-            return new HexCollisionBox(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D);
+            return new HexCollisionBox(5, 0, 5, 11, 6, 11);
         }
         // age is 1
-        return new HexCollisionBox(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
+        return new HexCollisionBox(5, 0, 5, 11, 10, 11);
     }, StateTypes.TORCHFLOWER_CROP),
 
-    DEAD_BUSH(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D), StateTypes.DEAD_BUSH),
+    DEAD_BUSH(new HexCollisionBox(2, 0, 2, 14, 13, 14), StateTypes.DEAD_BUSH),
 
-    SUGARCANE(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D), StateTypes.SUGAR_CANE),
+    SUGARCANE(new HexCollisionBox(2, 0, 2, 14, 16, 14), StateTypes.SUGAR_CANE),
 
-    NETHER_SPROUTS(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), StateTypes.NETHER_SPROUTS),
+    NETHER_SPROUTS(new HexCollisionBox(2, 0, 2, 14, 3, 14), StateTypes.NETHER_SPROUTS),
 
-    HANGING_ROOTS(new HexCollisionBox(2.0D, 10.0D, 2.0D, 14.0D, 16.0D, 14.0D), StateTypes.HANGING_ROOTS),
+    HANGING_ROOTS(new HexCollisionBox(2, 10, 2, 14, 16, 14), StateTypes.HANGING_ROOTS),
 
     GRASS_FERN((player, item, version, data, isTargetBlock, x ,y, z) -> {
         if (version.isOlderThan(ClientVersion.V_1_13)) {
             return new SimpleCollisionBox(0.1F, 0.0F, 0.1F, 0.9F, 0.8F, 0.9F);
         }
-        return new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D);
+        return new HexCollisionBox(2, 0, 2, 14, 13, 14);
     }, StateTypes.SHORT_GRASS, StateTypes.FERN),
 
-    SEA_GRASS(new HexCollisionBox(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D),
+    SEA_GRASS(new HexCollisionBox(2, 0, 2, 14, 12, 14),
             StateTypes.SEAGRASS),
 
     TALL_SEAGRASS(new HexCollisionBox(2.0, 0.0, 2.0, 14.0, 16.0, 14.0),
@@ -469,7 +469,7 @@ public enum HitboxData {
 
     SMALL_DRIPLEAF(new HexCollisionBox(2.0, 0.0, 2.0, 14.0, 13.0, 14.0), StateTypes.SMALL_DRIPLEAF),
 
-    CAVE_VINES(new HexCollisionBox(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D), StateTypes.CAVE_VINES, StateTypes.CAVE_VINES_PLANT),
+    CAVE_VINES(new HexCollisionBox(1, 0, 1, 15, 16, 15), StateTypes.CAVE_VINES, StateTypes.CAVE_VINES_PLANT),
 
     // Then your enum entries become:
     TWISTING_VINES_BLOCK((player, item, version, data, isTargetBlock, x, y, z) ->
@@ -487,12 +487,10 @@ public enum HitboxData {
     TALL_PLANT(new SimpleCollisionBox(0, 0, 0, 1, 1, 1, true), StateTypes.TALL_GRASS, StateTypes.LARGE_FERN),
 
     BAMBOO((player, item, version, data, isTargetBlock, x, y, z) -> data.getLeaves() == Leaves.LARGE
-            ? new HexOffsetCollisionBox(data.getType(), 3.0, 0.0, 3.0, 13.0, 16.0, 13.0)
-            : new HexOffsetCollisionBox(data.getType(), 5.0, 0.0, 5.0, 11.0, 16.0, 11.0), StateTypes.BAMBOO),
+            ? new HexOffsetCollisionBox(data.getType(), 3, 0, 3, 13, 16, 13)
+            : new HexOffsetCollisionBox(data.getType(), 5, 0, 5, 11, 16, 11), StateTypes.BAMBOO),
 
-    BAMBOO_SAPLING((player, item, version, data, isTargetBlock, x, y, z) -> {
-        return new HexOffsetCollisionBox(data.getType(), 4.0D, 0.0D, 4.0D, 12.0D, 12.0D, 12.0D);
-    }, StateTypes.BAMBOO_SAPLING),
+    BAMBOO_SAPLING((player, item, version, data, isTargetBlock, x, y, z) -> new HexOffsetCollisionBox(data.getType(), 4, 0, 4, 12, 12, 12), StateTypes.BAMBOO_SAPLING),
 
     SCAFFOLDING((player, item, version, data, isTargetBlock, x, y, z) -> {
         // If is holding scaffolding or Via replacement - hay bale
@@ -502,17 +500,17 @@ public enum HitboxData {
 
         // STABLE_SHAPE for the scaffolding
         ComplexCollisionBox box = new ComplexCollisionBox(9,
-                new HexCollisionBox(0.0D, 14.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                new HexCollisionBox(0.0D, 0.0D, 0.0D, 2.0D, 16.0D, 2.0D),
-                new HexCollisionBox(14.0D, 0.0D, 0.0D, 16.0D, 16.0D, 2.0D),
-                new HexCollisionBox(0.0D, 0.0D, 14.0D, 2.0D, 16.0D, 16.0D),
-                new HexCollisionBox(14.0D, 0.0D, 14.0D, 16.0D, 16.0D, 16.0D));
+                new HexCollisionBox(0, 14, 0, 16, 16, 16),
+                new HexCollisionBox(0, 0, 0, 2, 16, 2),
+                new HexCollisionBox(14, 0, 0, 16, 16, 2),
+                new HexCollisionBox(0, 0, 14, 2, 16, 16),
+                new HexCollisionBox(14, 0, 14, 16, 16, 16));
 
         if (data.getHalf() == Half.LOWER) { // Add the unstable shape to the collision boxes
-            box.add(new HexCollisionBox(0.0D, 0.0D, 0.0D, 2.0D, 2.0D, 16.0D));
-            box.add(new HexCollisionBox(14.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D));
-            box.add(new HexCollisionBox(0.0D, 0.0D, 14.0D, 16.0D, 2.0D, 16.0D));
-            box.add(new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 2.0D));
+            box.add(new HexCollisionBox(0, 0, 0, 2, 2, 16));
+            box.add(new HexCollisionBox(14, 0, 0, 16, 2, 16));
+            box.add(new HexCollisionBox(0, 0, 14, 16, 2, 16));
+            box.add(new HexCollisionBox(0, 0, 0, 16, 2, 2));
         }
 
         return box;
@@ -525,13 +523,13 @@ public enum HitboxData {
         ComplexCollisionBox box = new ComplexCollisionBox(2);
 
         if (data.getFacing() == BlockFace.NORTH) { // Stem
-            box.add(new HexCollisionBox(5.0D, 0.0D, 9.0D, 11.0D, 15.0D, 15.0D));
+            box.add(new HexCollisionBox(5, 0, 9, 11, 15, 15));
         } else if (data.getFacing() == BlockFace.SOUTH) {
-            box.add(new HexCollisionBox(5.0D, 0.0D, 1.0D, 11.0D, 15.0D, 7.0D));
+            box.add(new HexCollisionBox(5, 0, 1, 11, 15, 7));
         } else if (data.getFacing() == BlockFace.EAST) {
-            box.add(new HexCollisionBox(1.0D, 0.0D, 5.0D, 7.0D, 15.0D, 11.0D));
+            box.add(new HexCollisionBox(1, 0, 5, 7, 15, 11));
         } else {
-            box.add(new HexCollisionBox(9.0D, 0.0D, 5.0D, 15.0D, 15.0D, 11.0D));
+            box.add(new HexCollisionBox(9, 0, 5, 15, 15, 11));
         }
 
         if (data.getTilt() == Tilt.NONE || data.getTilt() == Tilt.UNSTABLE) {
@@ -567,7 +565,7 @@ public enum HitboxData {
 
             return result;
         } else if (version.isNewerThan(ClientVersion.V_1_19_3)) {
-            return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
+            return new HexCollisionBox(0, 0, 0, 16, 3, 16);
         } else if (version.isNewerThan(ClientVersion.V_1_12_2)) {
             return CORAL_FAN.box.copy();
         }
@@ -584,7 +582,7 @@ public enum HitboxData {
 
     FROGSPAWN((player, item, version, data, isTargetBlock, x, y, z) -> {
         if (version.isNewerThan(ClientVersion.V_1_18_2)) {
-            return new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 1.5D, 16.0D);
+            return new HexCollisionBox(0, 0, 0, 16, 1.5D, 16);
         } else { // ViaVersion just replaces this with... nothing
             return NoCollisionBox.INSTANCE;
         }
@@ -659,15 +657,15 @@ public enum HitboxData {
                         ? new HexCollisionBox(4.0, 9.0, 4.0, 12.0, 16.0, 12.0)
                         : new HexCollisionBox(1.0, 0.0, 1.0, 15.0, 16.0, 15.0);
             } else {
-                return new HexCollisionBox(4.0D, 0.0D, 4.0D, 12.0D, isBlock ? 15.0D : 16.0D, 12.0D);
+                return new HexCollisionBox(4, 0, 4, 12, isBlock ? 15 : 16, 12);
             }
         } else {
             // Via replacement - 4 sided vine
             return new ComplexCollisionBox(4,
-                    new HexCollisionBox(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D),
-                    new HexCollisionBox(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
-                    new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D),
-                    new HexCollisionBox(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D)
+                    new HexCollisionBox(0, 0, 0, 1, 16, 16),
+                    new HexCollisionBox(15, 0, 0, 16, 16, 16),
+                    new HexCollisionBox(0, 0, 0, 16, 16, 1),
+                    new HexCollisionBox(0, 0, 15, 16, 16, 16)
             );
         }
     }

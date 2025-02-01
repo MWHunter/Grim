@@ -14,10 +14,10 @@ import com.github.retrooper.packetevents.protocol.world.states.enums.Half;
 import com.github.retrooper.packetevents.protocol.world.states.enums.Hinge;
 
 public class DoorHandler implements CollisionFactory {
-    protected static final CollisionBox SOUTH_AABB = new HexCollisionBox(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D);
-    protected static final CollisionBox NORTH_AABB = new HexCollisionBox(0.0D, 0.0D, 13.0D, 16.0D, 16.0D, 16.0D);
-    protected static final CollisionBox WEST_AABB = new HexCollisionBox(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    protected static final CollisionBox EAST_AABB = new HexCollisionBox(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
+    protected static final CollisionBox SOUTH_AABB = new HexCollisionBox(0, 0, 0, 16, 16, 3);
+    protected static final CollisionBox NORTH_AABB = new HexCollisionBox(0, 0, 13, 16, 16, 16);
+    protected static final CollisionBox WEST_AABB = new HexCollisionBox(13, 0, 0, 16, 16, 16);
+    protected static final CollisionBox EAST_AABB = new HexCollisionBox(0, 0, 0, 3, 16, 16);
 
     @Override
     public CollisionBox fetch(GrimPlayer player, ClientVersion version, WrappedBlockState block, int x, int y, int z) {
@@ -28,7 +28,6 @@ public class DoorHandler implements CollisionFactory {
             case WEST -> WEST_AABB.copy();
             default -> NoCollisionBox.INSTANCE;
         };
-
     }
 
     public BlockFace fetchDirection(GrimPlayer player, ClientVersion version, WrappedBlockState door, int x, int y, int z) {

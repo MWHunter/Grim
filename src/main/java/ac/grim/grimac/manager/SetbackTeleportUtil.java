@@ -293,12 +293,12 @@ public class SetbackTeleportUtil extends Check implements PostPredictionCheck {
                 // Player has accepted their setback!
                 // We can compare transactions to check if equals because each teleport gets its own transaction
                 if (requiredSetBack != null && requiredSetBack.getTeleportData().getTransaction() == teleportPos.getTransaction()) {
-                    teleportData.setSetback(requiredSetBack);
+                    teleportData.setback = requiredSetBack;
                     requiredSetBack.setComplete(true);
                 }
 
-                teleportData.setTeleportData(teleportPos);
-                teleportData.setTeleport(true);
+                teleportData.teleportData = teleportPos;
+                teleportData.isTeleport = true;
                 break;
             } else if (player.lastTransactionReceived.get() > teleportPos.getTransaction()) {
                 // The player ignored the teleport (and this teleport matters), resynchronize

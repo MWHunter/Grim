@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 
 public class FluidTypeFlowing {
     public static Vector getFlow(GrimPlayer player, int originalX, int originalY, int originalZ) {
-        float fluidLevel = (float) Math.min(player.compensatedWorld.getFluidLevelAt(originalX, originalY, originalZ), 8 / 9D);
+        float fluidLevel = (float) Math.min(player.compensatedWorld.getFluidLevel(originalX, originalY, originalZ), 8 / 9D);
         ClientVersion version = player.getClientVersion();
 
         if (fluidLevel == 0) return new Vector();
@@ -25,7 +25,7 @@ public class FluidTypeFlowing {
             int modifiedZ = originalZ + enumdirection.getModZ();
 
             if (affectsFlow(player, originalX, originalY, originalZ, modifiedX, originalY, modifiedZ)) {
-                float f = (float) Math.min(player.compensatedWorld.getFluidLevelAt(modifiedX, originalY, modifiedZ), 8 / 9D);
+                float f = (float) Math.min(player.compensatedWorld.getFluidLevel(modifiedX, originalY, modifiedZ), 8 / 9D);
                 float f1 = 0.0F;
                 if (f == 0.0F) {
                     StateType mat = player.compensatedWorld.getBlockType(modifiedX, originalY, modifiedZ);
@@ -35,7 +35,7 @@ public class FluidTypeFlowing {
                     // Use method call to support 1.13-1.15 clients and banner oddity
                     if (Materials.isSolidBlockingBlacklist(mat, version)) {
                         if (affectsFlow(player, originalX, originalY, originalZ, modifiedX, originalY - 1, modifiedZ)) {
-                            f = (float) Math.min(player.compensatedWorld.getFluidLevelAt(modifiedX, originalY - 1, modifiedZ), 8 / 9D);
+                            f = (float) Math.min(player.compensatedWorld.getFluidLevel(modifiedX, originalY - 1, modifiedZ), 8 / 9D);
                             if (f > 0.0F) {
                                 f1 = fluidLevel - (f - 0.8888889F);
                             }
@@ -107,8 +107,8 @@ public class FluidTypeFlowing {
             //
             // Everything is hardcoded, and I have attempted by best at figuring out things, although it's not perfect
             // Report bugs on GitHub, as always.  1.13 is an odd version and issues could be lurking here.
-            if (Materials.isStairs(type) || Materials.isLeaves(type)
-                    || Materials.isShulker(type) || Materials.isGlassBlock(type)
+            if (BlockTags.STAIRS.contains(type) || BlockTags.LEAVES.contains(type)
+                    || BlockTags.SHULKER_BOXES.contains(type) || BlockTags.GLASS_BLOCKS.contains(type)
                     || BlockTags.TRAPDOORS.contains(type))
                 return false;
 
@@ -121,12 +121,12 @@ public class FluidTypeFlowing {
 
             return type == StateTypes.SOUL_SAND || (CollisionData.getData(type).getMovementCollisionBox(player, player.getClientVersion(), data, x, y, z).isFullBlock());
         } else {
-            if (Materials.isLeaves(type)) {
+            if (BlockTags.LEAVES.contains(type)) {
                 // Leaves don't have solid faces in 1.13, they do in 1.14 and 1.15, and they don't in 1.16 and beyond
                 return player.getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_14) && player.getClientVersion().isOlderThanOrEquals(ClientVersion.V_1_15_2);
             } else if (type == StateTypes.SNOW) {
                 return data.getLayers() == 8;
-            } else if (Materials.isStairs(type)) {
+            } else if (BlockTags.STAIRS.contains(type)) {
                 return data.getFacing() == direction;
             } else if (type == StateTypes.COMPOSTER) {
                 return true;
@@ -156,15 +156,15 @@ public class FluidTypeFlowing {
     }
 
     public static boolean isEmpty(GrimPlayer player, int x, int y, int z) {
-        return player.compensatedWorld.getFluidLevelAt(x, y, z) == 0;
+        return player.compensatedWorld.getFluidLevel(x, y, z) == 0;
     }
 
     // Check if both are a type of water or both are a type of lava
     // This is a bit slow... but I don't see a better way to do it with the bukkit api and no nms
     public static boolean isSame(GrimPlayer player, int x1, int y1, int z1, int x2, int y2, int z2) {
-        return player.compensatedWorld.getWaterFluidLevelAt(x1, y1, z1) > 0 &&
-                player.compensatedWorld.getWaterFluidLevelAt(x2, y2, z2) > 0 ||
-                player.compensatedWorld.getLavaFluidLevelAt(x1, y1, z1) > 0 &&
-                        player.compensatedWorld.getLavaFluidLevelAt(x2, y2, z2) > 0;
+        return player.compensatedWorld.getWaterFluidLevel(x1, y1, z1) > 0 &&
+                player.compensatedWorld.getWaterFluidLevel(x2, y2, z2) > 0 ||
+                player.compensatedWorld.getLavaFluidLevel(x1, y1, z1) > 0 &&
+                        player.compensatedWorld.getLavaFluidLevel(x2, y2, z2) > 0;
     }
 }

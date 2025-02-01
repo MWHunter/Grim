@@ -31,12 +31,10 @@ public class PistonHeadCollision implements CollisionFactory {
         if (version.isOlderThanOrEquals(ClientVersion.V_1_12_2) || PacketEvents.getAPI().getServerManager().getVersion().isOlderThanOrEquals(ServerVersion.V_1_12_2))
             longAmount = 4;
 
-
         // 1.8 and 1.7 clients always have "short" piston collision boxes
         // Apply last to overwrite other long amount setters
         if (version.isOlderThan(ClientVersion.V_1_9) || PacketEvents.getAPI().getServerManager().getVersion().isOlderThan(ServerVersion.V_1_9))
             longAmount = 0;
-
 
         return switch (block.getFacing()) {
             case UP -> new ComplexCollisionBox(2,

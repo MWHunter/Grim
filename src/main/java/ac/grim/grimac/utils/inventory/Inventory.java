@@ -142,39 +142,33 @@ public class Inventory extends AbstractContainerMenu {
             inventoryStorage.setItem(slot, itemstack);
         }
 
-        int j = i;
-        if (i > itemstack.getMaxStackSize() - itemstack.getAmount()) {
-            j = itemstack.getMaxStackSize() - itemstack.getAmount();
-        }
+        int j = Math.min(i, itemstack.getMaxStackSize() - itemstack.getAmount());
 
         if (j > this.getMaxStackSize() - itemstack.getAmount()) {
             j = this.getMaxStackSize() - itemstack.getAmount();
         }
 
-        if (j == 0) {
-            return i;
-        } else {
-            i = i - j;
+        if (j != 0) {
             itemstack.grow(j);
-            return i;
         }
+        return i - j;
     }
 
-    public boolean add(int p_36041_, ItemStack p_36042_) {
-        if (p_36042_.isEmpty()) {
+    public boolean add(int p_36041_, ItemStack itemStack) {
+        if (itemStack.isEmpty()) {
             return false;
         } else {
-            if (p_36042_.isDamaged()) {
+            if (itemStack.isDamaged()) {
                 if (p_36041_ == -1) {
                     p_36041_ = this.getFreeSlot();
                 }
 
                 if (p_36041_ >= 0) {
-                    inventoryStorage.setItem(p_36041_, p_36042_.copy());
-                    p_36042_.setAmount(0);
+                    inventoryStorage.setItem(p_36041_, itemStack.copy());
+                    itemStack.setAmount(0);
                     return true;
                 } else if (player.gamemode == GameMode.CREATIVE) {
-                    p_36042_.setAmount(0);
+                    itemStack.setAmount(0);
                     return true;
                 } else {
                     return false;
@@ -182,19 +176,19 @@ public class Inventory extends AbstractContainerMenu {
             } else {
                 int i;
                 do {
-                    i = p_36042_.getAmount();
+                    i = itemStack.getAmount();
                     if (p_36041_ == -1) {
-                        p_36042_.setAmount(this.addResource(p_36042_));
+                        itemStack.setAmount(this.addResource(itemStack));
                     } else {
-                        p_36042_.setAmount(this.addResource(p_36041_, p_36042_));
+                        itemStack.setAmount(this.addResource(p_36041_, itemStack));
                     }
-                } while (!p_36042_.isEmpty() && p_36042_.getAmount() < i);
+                } while (!itemStack.isEmpty() && itemStack.getAmount() < i);
 
-                if (p_36042_.getAmount() == i && player.gamemode == GameMode.CREATIVE) {
-                    p_36042_.setAmount(0);
+                if (itemStack.getAmount() == i && player.gamemode == GameMode.CREATIVE) {
+                    itemStack.setAmount(0);
                     return true;
                 } else {
-                    return p_36042_.getAmount() < i;
+                    return itemStack.getAmount() < i;
                 }
             }
         }
@@ -213,11 +207,11 @@ public class Inventory extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(toMove, 9, 45, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID >= 1 && slotID < 5) {
+            } else if (slotID < 5) {
                 if (!this.moveItemStackTo(toMove, 9, 45, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID >= 5 && slotID < 9) {
+            } else if (slotID < 9) {
                 if (!this.moveItemStackTo(toMove, 9, 45, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -230,11 +224,11 @@ public class Inventory extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(toMove, 45, 46, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID >= 9 && slotID < 36) {
+            } else if (slotID < 36) {
                 if (!this.moveItemStackTo(toMove, 36, 45, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID >= 36 && slotID < 45) {
+            } else if (slotID < 45) {
                 if (!this.moveItemStackTo(toMove, 9, 36, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -255,7 +249,7 @@ public class Inventory extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean canTakeItemForPickAll(ItemStack p_38908_, Slot p_38909_) {
-        return p_38909_.inventoryStorageSlot != 0; // Result slot
+    public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
+        return slot.inventoryStorageSlot != 0; // Result slot
     }
 }

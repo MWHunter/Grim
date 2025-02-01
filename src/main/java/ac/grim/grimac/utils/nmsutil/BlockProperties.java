@@ -122,7 +122,7 @@ public class BlockProperties {
     }
 
     private static Vector3i getOnPos(GrimPlayer player, Vector3d playerPos, MainSupportingBlockData mainSupportingBlockData, float searchBelowPlayer) {
-        Vector3i mainBlockPos = mainSupportingBlockData.getBlockPos();
+        Vector3i mainBlockPos = mainSupportingBlockData.blockPos();
         if (mainBlockPos != null) {
             StateType blockstate = player.compensatedWorld.getBlockType(mainBlockPos.x, mainBlockPos.y, mainBlockPos.z);
 
@@ -162,7 +162,7 @@ public class BlockProperties {
         if (block1.isAir()) {
             StateType block2 = player.compensatedWorld.getBlockType(GrimMath.floor(x), GrimMath.floor(y - 1.2F), GrimMath.floor(z));
 
-            if (Materials.isFence(block2) || Materials.isWall(block2) || Materials.isGate(block2)) {
+            if (BlockTags.FENCES.contains(block2) || BlockTags.WALLS.contains(block2) || BlockTags.FENCE_GATES.contains(block2)) {
                 return block2;
             }
         }

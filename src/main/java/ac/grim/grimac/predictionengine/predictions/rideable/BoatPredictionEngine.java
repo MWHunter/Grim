@@ -61,7 +61,7 @@ public class BoatPredictionEngine extends PredictionEngine {
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
-                    double level = player.compensatedWorld.getWaterFluidLevelAt(k1, l1, i2);
+                    double level = player.compensatedWorld.getWaterFluidLevel(k1, l1, i2);
                     if (d0 < l1 + level) {
                         if (!player.compensatedWorld.isWaterSourceBlock(k1, l1, i2)) {
                             return BoatEntityStatus.UNDER_FLOWING_WATER;
@@ -90,7 +90,7 @@ public class BoatPredictionEngine extends PredictionEngine {
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
-                    double level = grimPlayer.compensatedWorld.getWaterFluidLevelAt(k1, l1, i2);
+                    double level = grimPlayer.compensatedWorld.getWaterFluidLevel(k1, l1, i2);
                     if (level > 0) {
                         float f = (float) ((float) l1 + level);
                         grimPlayer.vehicleData.waterLevel = Math.max(f, grimPlayer.vehicleData.waterLevel);
@@ -242,7 +242,7 @@ public class BoatPredictionEngine extends PredictionEngine {
 
             for (int l1 = i; l1 < j; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
-                    double level = player.compensatedWorld.getWaterFluidLevelAt(l1, k1, i2);
+                    double level = player.compensatedWorld.getWaterFluidLevel(l1, k1, i2);
 
                     f = (float) Math.max(f, level);
 

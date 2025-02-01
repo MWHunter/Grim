@@ -509,7 +509,7 @@ public enum CollisionData {
 
     }, StateTypes.GRINDSTONE),
 
-    PANE(new DynamicCollisionPane(), Materials.getPanes().toArray(new StateType[0])),
+    PANE(new DynamicCollisionPane(), Materials.getPanes()),
 
     CHAIN_BLOCK((player, version, data, x, y, z) -> {
         if (version.isOlderThan(ClientVersion.V_1_16)) {

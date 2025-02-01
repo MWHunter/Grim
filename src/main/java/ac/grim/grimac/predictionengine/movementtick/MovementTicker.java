@@ -354,7 +354,7 @@ public class MovementTicker {
 
         double lavaLevel = 0;
         if (canStandOnLava())
-            lavaLevel = player.compensatedWorld.getLavaFluidLevelAt(GrimMath.floor(player.lastX), GrimMath.floor(player.lastY), GrimMath.floor(player.lastZ));
+            lavaLevel = player.compensatedWorld.getLavaFluidLevel(GrimMath.floor(player.lastX), GrimMath.floor(player.lastY), GrimMath.floor(player.lastZ));
 
         if (player.wasTouchingWater && !player.isFlying) {
             // 0.8F seems hardcoded in

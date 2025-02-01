@@ -40,7 +40,7 @@ public class CompensatedEntities {
     public Integer serverPlayerVehicle = null;
     public boolean hasSprintingAttributeEnabled = false;
 
-    GrimPlayer player;
+    private final GrimPlayer player;
 
     public TrackerData selfTrackedEntity;
     public PacketEntitySelf self;
@@ -163,28 +163,28 @@ public class CompensatedEntities {
 
         PacketEntity packetEntity;
 
-        if (EntityTypes.CAMEL.equals(entityType)) {
-            packetEntity = new PacketEntityCamel(player, uuid, entityType, position.getX(), position.getY(), position.getZ(), xRot);
+        if (entityType == EntityTypes.CAMEL) {
+            packetEntity = new PacketEntityCamel(player, uuid, entityType, position.x, position.y, position.z, xRot);
         } else if (EntityTypes.isTypeInstanceOf(entityType, EntityTypes.ABSTRACT_HORSE)) {
-            packetEntity = new PacketEntityHorse(player, uuid, entityType, position.getX(), position.getY(), position.getZ(), xRot);
+            packetEntity = new PacketEntityHorse(player, uuid, entityType, position.x, position.y, position.z, xRot);
         } else if (entityType == EntityTypes.SLIME || entityType == EntityTypes.MAGMA_CUBE || entityType == EntityTypes.PHANTOM) {
-            packetEntity = new PacketEntitySizeable(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
-        } else if (EntityTypes.PIG.equals(entityType)) {
-            packetEntity = new PacketEntityRideable(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
-        } else if (EntityTypes.SHULKER.equals(entityType)) {
-            packetEntity = new PacketEntityShulker(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
-        } else if (EntityTypes.STRIDER.equals(entityType)) {
-            packetEntity = new PacketEntityStrider(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
-        } else if (EntityTypes.isTypeInstanceOf(entityType, EntityTypes.BOAT) || EntityTypes.CHICKEN.equals(entityType)) {
-            packetEntity = new PacketEntityTrackXRot(player, uuid, entityType, position.getX(), position.getY(), position.getZ(), xRot);
-        } else if (EntityTypes.FISHING_BOBBER.equals(entityType)) {
-            packetEntity = new PacketEntityHook(player, uuid, entityType, position.getX(), position.getY(), position.getZ(), data);
-        } else if (EntityTypes.ENDER_DRAGON.equals(entityType)) {
-            packetEntity = new PacketEntityEnderDragon(player, uuid, entityID, position.getX(), position.getY(), position.getZ());
-        } else if (EntityTypes.PAINTING.equals(entityType)) {
+            packetEntity = new PacketEntitySizeable(player, uuid, entityType, position.x, position.y, position.z);
+        } else if (entityType == EntityTypes.PIG) {
+            packetEntity = new PacketEntityRideable(player, uuid, entityType, position.x, position.y, position.z);
+        } else if (entityType == EntityTypes.SHULKER) {
+            packetEntity = new PacketEntityShulker(player, uuid, entityType, position.x, position.y, position.z);
+        } else if (entityType == EntityTypes.STRIDER) {
+            packetEntity = new PacketEntityStrider(player, uuid, entityType, position.x, position.y, position.z);
+        } else if (EntityTypes.isTypeInstanceOf(entityType, EntityTypes.BOAT) || entityType == EntityTypes.CHICKEN) {
+            packetEntity = new PacketEntityTrackXRot(player, uuid, entityType, position.x, position.y, position.z, xRot);
+        } else if (entityType == EntityTypes.FISHING_BOBBER) {
+            packetEntity = new PacketEntityHook(player, uuid, entityType, position.x, position.y, position.z, data);
+        } else if (entityType == EntityTypes.ENDER_DRAGON) {
+            packetEntity = new PacketEntityEnderDragon(player, uuid, entityID, position.x, position.y, position.z);
+        } else if (entityType == EntityTypes.PAINTING) {
             packetEntity = new PacketEntityPainting(player, uuid, position.x, position.y, position.z, Direction.getByHorizontalIndex(data));
         } else {
-            packetEntity = new PacketEntity(player, uuid, entityType, position.getX(), position.getY(), position.getZ());
+            packetEntity = new PacketEntity(player, uuid, entityType, position.x, position.y, position.z);
         }
 
         entityMap.put(entityID, packetEntity);
@@ -419,13 +419,13 @@ public class CompensatedEntities {
             if (fireworkWatchableObject.getValue() instanceof Integer) { // Pre 1.14
                 int attachedEntityID = (Integer) fireworkWatchableObject.getValue();
                 if (attachedEntityID == player.entityID) {
-                    player.fireworks.addNewFirework(entityID);
+                    player.fireworks.add(entityID);
                 }
             } else { // 1.14+
                 Optional<Integer> attachedEntityID = (Optional<Integer>) fireworkWatchableObject.getValue();
 
                 if (attachedEntityID.isPresent() && attachedEntityID.get().equals(player.entityID)) {
-                    player.fireworks.addNewFirework(entityID);
+                    player.fireworks.add(entityID);
                 }
             }
         }

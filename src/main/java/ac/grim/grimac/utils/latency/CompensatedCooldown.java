@@ -29,7 +29,7 @@ public class CompensatedCooldown extends Check implements PositionCheck {
             Map.Entry<ItemType, CooldownData> entry = it.next();
 
             // Only tick if we have known that this packet has arrived
-            if (entry.getValue().getTransaction() < player.lastTransactionReceived.get()) {
+            if (entry.getValue().transaction < player.lastTransactionReceived.get()) {
                 entry.getValue().tick();
             }
 

@@ -92,7 +92,7 @@ public class BlockBreakSpeed {
         if (tool.getType() == ItemTypes.SHEARS) {
             isCorrectToolForDrop = true;
 
-            if (block.getType() == StateTypes.COBWEB || Materials.isLeaves(block.getType())) {
+            if (block.getType() == StateTypes.COBWEB || BlockTags.LEAVES.contains(block.getType())) {
                 speedMultiplier = 15.0f;
             } else if (BlockTags.WOOL.contains(block.getType())) {
                 speedMultiplier = 5.0f;

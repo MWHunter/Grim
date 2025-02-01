@@ -7,7 +7,7 @@ import com.github.retrooper.packetevents.util.Vector3i;
 
 import java.util.Objects;
 
-public class ShulkerData {
+public final class ShulkerData {
     public final int lastTransactionSent;
     public final boolean isClosing;
 
@@ -38,18 +38,12 @@ public class ShulkerData {
     }
 
     public SimpleCollisionBox getCollision() {
-        if (blockPos != null) {
-            return new SimpleCollisionBox(blockPos);
-        }
-        return entity.getPossibleCollisionBoxes();
+        return blockPos != null ? new SimpleCollisionBox(blockPos) : entity.getPossibleCollisionBoxes();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ShulkerData that = (ShulkerData) o;
-        return Objects.equals(entity, that.entity) && Objects.equals(blockPos, that.blockPos);
+        return this == o || o instanceof ShulkerData data && Objects.equals(entity, data.entity) && Objects.equals(blockPos, data.blockPos);
     }
 
     @Override
