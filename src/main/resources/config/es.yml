@@ -66,6 +66,9 @@ Simulation:
   # Tope de ventaja por defecto (eje x = segundos, eje y = bloque 1/1000): https://www.desmos.com/calculator/4lovswdarj
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 # Comprobaciones para ver si un jugador entro a un bloque durante un movimiento
 Phase:
   setbackvl: 1 # Entrar a un bloque mediante bugs puede permitir subir paredes, además esta comprobación es relativamente estable.

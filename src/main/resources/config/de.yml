@@ -65,6 +65,9 @@ Simulation:
   # Standard-Vorteilsgrenze (x-Achse = Sekunden, y-Achse = 1/1000 Block): https://www.desmos.com/calculator/4lovswdarj
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 # Überprüft, ob ein Spieler während einer Bewegung einen Block betreten hat.
 Phase:
   setbackvl: 1 # Glitching in Blöcken kann das Klettern an der Wand ermöglichen, außerdem ist dieser Check relativ stabil.

@@ -57,6 +57,9 @@ Simulation:
   # Limite massimo di vantaggio accumulabile prima di arretrare il giocatore
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 Phase:
   # Livello di violazione per il glitch nel blocco
   setbackvl: 1 

@@ -66,6 +66,9 @@ Simulation:
   # Cela de vantagens padrão (eixo X = segundos, eixo Y = 1/1000 blocos): https://www.desmos.com/calculator/4lovswdarj
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 # Verifica se um jogador entrou em um bloco ao se mover.
 Phase:
   setbackvl: 1 # Entrar em blocos possibilita escalar paredes, além disso, essa verificação é relativamente estável.

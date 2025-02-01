@@ -66,6 +66,9 @@ Simulation:
   # 这是默认配置的样子（x 轴 = seconds ，y 轴 = 1/1000 方块）: https://www.desmos.com/calculator/4lovswdarj
   max-ceiling: 4
 
+  vl-scale: 10
+  max-vls-per-flag: 5
+
 # 检查玩家是否穿墙
 Phase:
   setbackvl: 1 # 错误的方块可以允许爬墙，加上这个检查是相对稳定的
